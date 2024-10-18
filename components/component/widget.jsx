@@ -9,7 +9,7 @@ export function Widget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, wi
     "Iron 3": "/iron.png",
     "Gold 1": "/gold.png",
     "Gold 2": "/gold.png",
-    "Gold 3": "/gol3.png",
+    "Gold 3": "/gold.png",
     "Emerald 1": "/emerald.png",
     "Emerald 2": "/emerald.png",
     "Emerald 3": "/emerald.png",
