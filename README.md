@@ -23,5 +23,6 @@ There are some endpoints that are used for the widget to set time:
 All widget endpoints are using "player" query parameter to set the player name. If the player name is not found, it will show an error message.
 
 ## Examples
-` /widget/now?player=7rowl` - This will show the widget for 7rowl from now to the future.
-` /widget/2021-10-10T00:00:00Z?player=7rowl` - This will show the widget for 7rowl from 2021-10-10 to the future.
+`/widget/now?player=7rowl` - This will show the widget for 7rowl from now to the future.
+
+`/widget/2021-10-10T00:00:00Z?player=7rowl` - This will show the widget for 7rowl from 2021-10-10 to the future.
