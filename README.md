@@ -28,4 +28,4 @@ All widget endpoints are using "player" query parameter to set the player name. 
 
 
 ## Know Issues
-- If mcsrc-ranked api is down, the widget will show an error message. and will not reset inself (so you need to refresh the browser source).
+- If mcsr-ranked api is down, the widget will show an error message. and will not reset inself (so you need to refresh the browser source).
