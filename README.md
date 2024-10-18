@@ -11,7 +11,7 @@ The widget shows all these stats based on startTime and updates every 2 minutes 
 3. Add a new browser source in OBS and paste the URL. (Recommended width: 300px, height: 100px)
 
 ## Endpoints
-Defualt domain is `https://not-yet-deployed.domain.com/`.
+Defualt domain is `https://mcsrr-widget.vercel.app`.
 - `/` - Contains the documentation.
 - `/generator` - Contains the generator for the widget.
 - `/widget` - Contains the widget itself.
