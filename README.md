@@ -25,3 +25,7 @@ All widget endpoints are using "player" query parameter to set the player name. 
 ## Examples
 - `/widget/now?player=7rowl` - This will show the widget for 7rowl from now to the future.
 - `/widget/2021-10-10T00:00:00Z?player=7rowl` - This will show the widget for 7rowl from 2021-10-10 to the future.
+
+
+## Know Issues
+- If mcsrc-ranked api is down, the widget will show an error message. and will not reset inself (so you need to refresh the browser source).
