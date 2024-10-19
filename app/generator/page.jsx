@@ -11,7 +11,7 @@ async function fetchInitPlayer(playerName) {
 }
 
 async function fetchPlayerMatches(playerUUID) {
-  const res = await fetch(`https://mcsrranked.com/api/users/${playerUUID}/matches?type=2&excludedecay=false`);
+  const res = await fetch(`https://mcsrranked.com/api/users/${playerUUID}/matches?type=2&excludedecay=false&count=50`);
   const result = await res.json();
   console.log(result);
   return result.data;
