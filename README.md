@@ -18,7 +18,7 @@ Defualt domain is `https://mcsrr-widget.vercel.app`.
 
 There are some endpoints that are used for the widget to set time:
 - `/widget/now` - This widget will set startTime to the current time. So it will show data from now to the future.
-- `/widget/[time]` - This widget will set startTime to the given time. So it will show data from the given time to the future. (not implemented yet)
+- `/widget/[time]` - This widget will set startTime to the given time. So it will show data from the given time to the future.
 
 All widget endpoints are using "player" query parameter to set the player name. If the player name is not found, it will show an error message.
 
