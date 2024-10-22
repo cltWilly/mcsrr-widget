@@ -43,7 +43,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
 
 function getCurrentTimestamp() {
   const date = Math.floor(Date.now() / 1000);
-  return date - 2 * 60 * 60; // adjust the date by -2 hours
+  return date;
 }
 
 function getWinLoss(matches, playerUUID, startTimestamp) {
