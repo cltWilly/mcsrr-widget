@@ -6,8 +6,8 @@ The widget shows all these stats based on startTime and updates every 2 minutes 
 ![Widget Example](https://i.imgur.com/KtEXrnP.png)
 
 ## Attention (UPDATE)
-The widget is now able to show much more win/loss. Before 50 was max. Now the currently tested maxium is **866 matches** at once (theoretically it should be anble to fetch more).
-Now added new count of draw matches. Same as win/loss, it is show in the same row.
+- The widget is now able to show much more win/loss. Before 50 was max. Now the currently tested maxium is **866 matches** at once (theoretically it should be anble to fetch more).
+- Now added new count of draw matches. Same as win/loss, it is show in the same row.
 
 ## Usage
 1. Go to /generator and set all the settings you want.
