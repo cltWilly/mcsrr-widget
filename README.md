@@ -5,8 +5,8 @@ The widget shows all these stats based on startTime and updates every 2 minutes 
 
 ![Widget Example](https://i.imgur.com/KtEXrnP.png)
 
-## Attention
-The widget is currently able to show max 50 matches. If the player has more than 50 matches, the widget will show the last 50 matches. (For exmaple, 30W 20L, 50W 0L, 10W 40L... etc. you got the point) I´am currently working on a solution to show all the matches. 
+## Attention (UPDATE)
+The widget is now able to show much more win/loss. Before 50 was max. Now the currently tested maxium is 866 matches at once (theoretically it should be anble to fetch more).
 
 ## Usage
 1. Go to /generator and set all the settings you want.
