@@ -19,7 +19,7 @@ async function fetchPlayerMatches(playerUUID, page = 1) {
 
 // Function to fetch all matches with pagination
 async function fetchAllMatches(playerUUID, startTimestamp) {
-  let page = 1;
+  let page = 0;
   let allMatches = [];
   let winCount = 0;
   let lossCount = 0;

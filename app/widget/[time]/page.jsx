@@ -11,7 +11,7 @@ async function fetchInitPlayer(playerName) {
   return result.data;
 }
 
-async function fetchPlayerMatches(playerUUID, page = 1) {
+async function fetchPlayerMatches(playerUUID, page = 0) {
   const res = await fetch(`https://mcsrranked.com/api/users/${playerUUID}/matches?type=2&excludedecay=false&count=50&page=${page}`);
   const result = await res.json();
   console.log(result);
@@ -59,7 +59,7 @@ function getEloPlusMinus(matches, playerUUID, startTimestamp) {
 }
 
 async function fetchAllMatches(playerUUID, startTimestamp) {
-  let page = 1;
+  let page = 0;
   let allMatches = [];
   let winCount = 0;
   let lossCount = 0;
