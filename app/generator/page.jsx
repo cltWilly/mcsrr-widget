@@ -265,32 +265,32 @@ export default function Page() {
       >
         {isUpdating ? "Generating..." : "Generate Preview"}
       </button>
-
-      <div className="mt-8">
+  
+      <div className="mt-8 widget-container">
         <h2 className="text-xl font-bold mb-4">Widget Preview</h2>
         <Widget {...previewData} />
       </div>
       {widgetUrl && (
-       <div className="mt-4">
-       <h3 className="text-lg font-bold mb-2">Widget URL</h3>
-       <div className="flex items-center">
-         <input
-           type="text"
-           value={widgetUrl}
-           readOnly
-           className="p-2 w-1/2 border border-gray-300 rounded-md bg-gray-900 text-white"
-         />
-         <button
-           onClick={handleCopyUrl}
-           className="ml-2 px-4 py-2 bg-green-500 text-white rounded-md"
-         >
-           {copyButtonText}
-         </button>
-       </div>
-       <p className="mt-2 text-sm text-gray-600">
-         Copy this link and paste it into a browser source. It is recommended to use width of <strong>300px</strong> and height of <strong>100px</strong>.
-       </p>
-     </div>
+        <div className="mt-4">
+          <h3 className="text-lg font-bold mb-2">Widget URL</h3>
+          <div className="flex items-center">
+            <input
+              type="text"
+              value={widgetUrl}
+              readOnly
+              className="p-2 w-1/2 border border-gray-300 rounded-md bg-gray-900 text-white"
+            />
+            <button
+              onClick={handleCopyUrl}
+              className="ml-2 px-4 py-2 bg-green-500 text-white rounded-md"
+            >
+              {copyButtonText}
+            </button>
+          </div>
+          <p className="mt-2 text-sm text-gray-600">
+            Copy this link and paste it into a browser source. It is recommended to use width of <strong>300px</strong> and height of <strong>100px</strong>.
+          </p>
+        </div>
       )}
     </div>
   );
