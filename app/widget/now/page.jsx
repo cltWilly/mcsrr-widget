@@ -3,7 +3,6 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Widget } from "@/components/component/widget";
-import { setDashoffset } from "animejs";
 
 async function fetchInitPlayer(playerName) {
   const res = await fetch(`https://mcsrranked.com/api/users/${playerName}`);

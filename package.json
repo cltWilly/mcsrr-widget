@@ -20,10 +20,6 @@
     "tailwindcss-animate": "^1.0.7"
   },
   
-  "resolutions": {
-    "animejs": "false"
-  },
-  
   
   "devDependencies": {
     "postcss": "^8",
