@@ -93,6 +93,8 @@ export default function Page() {
 
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
+  const [copyButtonText, setCopyButtonText] = useState('Copy URL');
+
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -203,6 +205,12 @@ export default function Page() {
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(widgetUrl);
+
+    setCopyButtonText('Copied!');
+
+    setTimeout(() => {
+      setCopyButtonText('Copy URL');
+    }, 1000); 
   };
 
   return (
@@ -276,7 +284,7 @@ export default function Page() {
            onClick={handleCopyUrl}
            className="ml-2 px-4 py-2 bg-green-500 text-white rounded-md"
          >
-           Copy URL
+           {copyButtonText}
          </button>
        </div>
        <p className="mt-2 text-sm text-gray-600">
