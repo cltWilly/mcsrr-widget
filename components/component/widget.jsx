@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-
 export function Widget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount }) {
 
   const rankIcons = {
@@ -19,20 +18,19 @@ export function Widget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, wi
     "Netherite 1": "/netherite.png",
   };
 
-  // make playerrank uppercase
- // playerRank = playerRank.toUpperCase();
+  const defaultIcon = "/default.png";
 
- function calWinRate(winCount, lossCount, drawCount) {
-  let totalGames = winCount + lossCount + drawCount;
-  let winRate = (winCount / totalGames) * 100;
-  return winRate.toFixed(0);
-}
+  function calWinRate(winCount, lossCount, drawCount) {
+    let totalGames = winCount + lossCount + drawCount;
+    let winRate = (winCount / totalGames) * 100;
+    return winRate.toFixed(0);
+  }
   const winRate = calWinRate(winCount, lossCount, drawCount);
 
- function countMatches(winCount, lossCount, drawCount) {
-  let totalGames = winCount + lossCount + drawCount;
-  return totalGames;
- }
+  function countMatches(winCount, lossCount, drawCount) {
+    let totalGames = winCount + lossCount + drawCount;
+    return totalGames;
+  }
   const totalGames = countMatches(winCount, lossCount, drawCount);
 
   function normalizePlusMinusElo(eloPlusMinus) {
@@ -44,7 +42,7 @@ export function Widget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, wi
 
   eloPlusMinus = normalizePlusMinusElo(eloPlusMinus);
 
-  const rankIcon = rankIcons[playerRank];
+  const rankIcon = rankIcons[playerRank] || defaultIcon;
 
   const [countdown, setCountdown] = useState(120);
 
@@ -58,7 +56,6 @@ export function Widget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, wi
 
   return (
     <div className="bg-[#171e1f] text-white p-4 rounded-md w-full max-w-xs relative">
-      {/* <div className="text-sm font-bold mb-2">Ranked</div> */}
       <div className="flex items-center space-x-4">
         <img
           src={rankIcon}
@@ -82,7 +79,7 @@ export function Widget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, wi
         </div>
       </div>
       <div className="absolute bottom-1 left-2 text-xs text-gray-400">
-      {countdown}s
+        {countdown}s
       </div>
     </div>
   );
