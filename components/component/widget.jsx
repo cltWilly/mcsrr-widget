@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 
-export function Widget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount }) {
+export function Widget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount }) {
 
   const rankIcons = {
     "Iron 1": "/iron.png",
@@ -73,7 +73,7 @@ export function Widget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, wi
         </div>
         <div className="ml-auto text-right">
           <div className="font-bold text-sm">
-            <span className="text-green-500">{winCount}W</span> <span className="text-red-500">{lossCount}L</span>
+            <span className="text-green-500">{winCount}W</span> <span className="text-red-500">{lossCount}L</span> <span className="text-gray-400">{drawCount}D</span>
           </div>
           <div className="text-sm">{winRate}% WR</div>
           <div className="text-sm text-gray-400">

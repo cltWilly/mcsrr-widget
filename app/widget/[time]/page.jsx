@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Widget } from "@/components/component/widget";
+import { set } from "animejs";
 
 async function fetchInitPlayer(playerName) {
   const res = await fetch(`https://mcsrranked.com/api/users/${playerName}`);
@@ -64,6 +65,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
   let allMatches = [];
   let winCount = 0;
   let lossCount = 0;
+  let drawsCount = 0;
 
   while (true) {
     const matches = await fetchPlayerMatches(playerUUID, page);
@@ -72,6 +74,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
     const { wins, losses, draws } = getWinLoss(matches, playerUUID, startTimestamp);
     winCount += wins;
     lossCount += losses;
+    drawsCount += draws;
 
     if (matches.length < 50 || matches[matches.length - 1].date <= startTimestamp) {
       break;
@@ -80,7 +83,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
     page++;
   }
 
-  return { allMatches, winCount, lossCount };
+  return { allMatches, winCount, lossCount, drawsCount};
 }
 
 function WidgetPage({ params }) {
@@ -101,6 +104,7 @@ function WidgetPage({ params }) {
   const [playerRank, setPlayerRank] = useState(null);
   const [winCount, setWinCount] = useState(null);
   const [lossCount, setLossCount] = useState(null);
+  const [drawCount, setDrawCount] = useState(null);
   const [matches, setMatches] = useState(null);
 
   const ranksTable = {
@@ -146,10 +150,11 @@ function WidgetPage({ params }) {
         setPlayerUUID(data.uuid);
         setStartElo(data.eloRate);
 
-        fetchAllMatches(data.uuid, initialTimestamp).then(({ allMatches, winCount, lossCount }) => {
+        fetchAllMatches(data.uuid, initialTimestamp).then(({ allMatches, winCount, lossCount, drawsCount }) => {
           setMatches(allMatches);
           setWinCount(winCount);
           setLossCount(lossCount);
+          setDrawCount(drawsCount);
 
           setEloPlusMinus(getEloPlusMinus(allMatches, data.uuid, initialTimestamp));
           setCurrentElo(allMatches[0].players.find(player => player.uuid === data.uuid).eloRate);
@@ -158,13 +163,15 @@ function WidgetPage({ params }) {
         interval = setInterval(() => {
           console.log("fetching new win loss data");
           console.log("current timestamp: " + initialTimestamp);
-          fetchAllMatches(data.uuid, initialTimestamp).then(({ allMatches, winCount, lossCount }) => {
+          fetchAllMatches(data.uuid, initialTimestamp).then(({ allMatches, winCount, lossCount, drawsCount }) => {
             setMatches(allMatches);
             setWinCount(winCount);
             setLossCount(lossCount);
+            setDrawCount(drawsCount);
 
             console.log("win count: " + winCount);
             console.log("loss count: " + lossCount);
+            console.log("draw count: " + drawsCount);
 
             setEloPlusMinus(getEloPlusMinus(allMatches, data.uuid, initialTimestamp));
             setCurrentElo(allMatches[0].players.find(player => player.uuid === data.uuid).eloRate);
@@ -188,7 +195,7 @@ function WidgetPage({ params }) {
   return (
     <div className="relative min-h-screen">
       <div className="absolute top-0 left-0">
-        <Widget uuid={playerUUID} elo={currentElo} eloPlusMinus={eloPlusMinus} playerRank={playerRank} startTimestamp={initialTimestamp} winCount={winCount} lossCount={lossCount} />
+        <Widget uuid={playerUUID} elo={currentElo} eloPlusMinus={eloPlusMinus} playerRank={playerRank} startTimestamp={initialTimestamp} winCount={winCount} lossCount={lossCount} drawCount={drawCount} />
       </div>
     </div>
   );

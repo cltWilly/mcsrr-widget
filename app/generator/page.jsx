@@ -23,6 +23,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
   let allMatches = [];
   let winCount = 0;
   let lossCount = 0;
+  let drawCount = 0;
 
   while (true) {
     const matches = await fetchPlayerMatches(playerUUID, page);
@@ -31,6 +32,8 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
     const { wins, losses, draws } = getWinLoss(matches, playerUUID, startTimestamp);
     winCount += wins;
     lossCount += losses;
+    drawCount += draws;
+
 
     if (matches.length < 50 || matches[matches.length - 1].date <= startTimestamp) {
       break;
@@ -38,7 +41,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
     page++;
   }
 
-  return { allMatches, winCount, lossCount };
+  return { allMatches, winCount, lossCount, drawCount };
 }
 
 function getCurrentTimestamp() {
@@ -90,6 +93,8 @@ export default function Page() {
 
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
+  const [copyButtonText, setCopyButtonText] = useState('Copy URL');
+
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -115,7 +120,7 @@ export default function Page() {
     const startTimestamp = timestampOption === "now" ? getCurrentTimestamp() : new Date(selectedTimestamp).getTime() / 1000;
 
     // Fetch all player matches
-    const { allMatches, winCount, lossCount } = await fetchAllMatches(playerUUID, startTimestamp);
+    const { allMatches, winCount, lossCount, drawCount } = await fetchAllMatches(playerUUID, startTimestamp);
 
     // Calculate win rate
     const totalGames = winCount + lossCount;
@@ -184,6 +189,7 @@ export default function Page() {
       eloPlusMinus: eloPlusMinus,
       winCount: winCount,
       lossCount: lossCount,
+      drawCount: drawCount,
       winRate,
       totalGames,
     });
@@ -199,6 +205,12 @@ export default function Page() {
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(widgetUrl);
+
+    setCopyButtonText('Copied!');
+
+    setTimeout(() => {
+      setCopyButtonText('Copy URL');
+    }, 1000); 
   };
 
   return (
@@ -253,32 +265,32 @@ export default function Page() {
       >
         {isUpdating ? "Generating..." : "Generate Preview"}
       </button>
-
-      <div className="mt-8">
+  
+      <div className="mt-8 widget-container">
         <h2 className="text-xl font-bold mb-4">Widget Preview</h2>
         <Widget {...previewData} />
       </div>
       {widgetUrl && (
-       <div className="mt-4">
-       <h3 className="text-lg font-bold mb-2">Widget URL</h3>
-       <div className="flex items-center">
-         <input
-           type="text"
-           value={widgetUrl}
-           readOnly
-           className="p-2 w-1/2 border border-gray-300 rounded-md bg-gray-900 text-white"
-         />
-         <button
-           onClick={handleCopyUrl}
-           className="ml-2 px-4 py-2 bg-green-500 text-white rounded-md"
-         >
-           Copy URL
-         </button>
-       </div>
-       <p className="mt-2 text-sm text-gray-600">
-         Copy this link and paste it into a browser source. It is recommended to use width of <strong>300px</strong> and height of <strong>100px</strong>.
-       </p>
-     </div>
+        <div className="mt-4">
+          <h3 className="text-lg font-bold mb-2">Widget URL</h3>
+          <div className="flex items-center">
+            <input
+              type="text"
+              value={widgetUrl}
+              readOnly
+              className="p-2 w-1/2 border border-gray-300 rounded-md bg-gray-900 text-white"
+            />
+            <button
+              onClick={handleCopyUrl}
+              className="ml-2 px-4 py-2 bg-green-500 text-white rounded-md"
+            >
+              {copyButtonText}
+            </button>
+          </div>
+          <p className="mt-2 text-sm text-gray-600">
+            Copy this link and paste it into a browser source. It is recommended to use width of <strong>300px</strong> and height of <strong>100px</strong>.
+          </p>
+        </div>
       )}
     </div>
   );

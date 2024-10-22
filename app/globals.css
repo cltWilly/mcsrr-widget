@@ -40,3 +40,7 @@
     @apply font-heading;
   }
 }
+
+.widget-container {
+  width: 300px;
+}
