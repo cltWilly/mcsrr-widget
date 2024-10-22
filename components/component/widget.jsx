@@ -22,18 +22,18 @@ export function Widget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, wi
   // make playerrank uppercase
  // playerRank = playerRank.toUpperCase();
 
- function calWinRate(winCount, lossCount) {
-  let totalGames = winCount + lossCount;
+ function calWinRate(winCount, lossCount, drawCount) {
+  let totalGames = winCount + lossCount + drawCount;
   let winRate = (winCount / totalGames) * 100;
   return winRate.toFixed(0);
 }
-  const winRate = calWinRate(winCount, lossCount);
+  const winRate = calWinRate(winCount, lossCount, drawCount);
 
- function countMatches(winCount, lossCount) {
-  let totalGames = winCount + lossCount;
+ function countMatches(winCount, lossCount, drawCount) {
+  let totalGames = winCount + lossCount + drawCount;
   return totalGames;
  }
-  const totalGames = countMatches(winCount, lossCount);
+  const totalGames = countMatches(winCount, lossCount, drawCount);
 
   function normalizePlusMinusElo(eloPlusMinus) {
     if (eloPlusMinus > 0) {
