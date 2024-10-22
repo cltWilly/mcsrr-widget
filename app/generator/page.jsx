@@ -23,6 +23,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
   let allMatches = [];
   let winCount = 0;
   let lossCount = 0;
+  let drawCount = 0;
 
   while (true) {
     const matches = await fetchPlayerMatches(playerUUID, page);
@@ -31,6 +32,8 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
     const { wins, losses, draws } = getWinLoss(matches, playerUUID, startTimestamp);
     winCount += wins;
     lossCount += losses;
+    drawCount += draws;
+
 
     if (matches.length < 50 || matches[matches.length - 1].date <= startTimestamp) {
       break;
@@ -38,7 +41,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
     page++;
   }
 
-  return { allMatches, winCount, lossCount };
+  return { allMatches, winCount, lossCount, drawCount };
 }
 
 function getCurrentTimestamp() {
@@ -115,7 +118,7 @@ export default function Page() {
     const startTimestamp = timestampOption === "now" ? getCurrentTimestamp() : new Date(selectedTimestamp).getTime() / 1000;
 
     // Fetch all player matches
-    const { allMatches, winCount, lossCount } = await fetchAllMatches(playerUUID, startTimestamp);
+    const { allMatches, winCount, lossCount, drawCount } = await fetchAllMatches(playerUUID, startTimestamp);
 
     // Calculate win rate
     const totalGames = winCount + lossCount;
@@ -184,6 +187,7 @@ export default function Page() {
       eloPlusMinus: eloPlusMinus,
       winCount: winCount,
       lossCount: lossCount,
+      drawCount: drawCount,
       winRate,
       totalGames,
     });
