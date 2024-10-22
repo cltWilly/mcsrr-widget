@@ -222,7 +222,7 @@ export default function Page() {
           type="text"
           value={playerName}
           onChange={handlePlayerNameChange}
-          className="mt-1 block w-1/2 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+          className="mt-1 block w-1/4 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
         />
       </div>
       <div className="mb-4">
@@ -254,7 +254,7 @@ export default function Page() {
             type="datetime-local"
             value={selectedTimestamp}
             onChange={handleTimestampChange}
-            className="mt-1 block w-1/2 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+            className="mt-1 block w-1/4 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
           />
         )}
       </div>
@@ -278,7 +278,7 @@ export default function Page() {
               type="text"
               value={widgetUrl}
               readOnly
-              className="p-2 w-1/2 border border-gray-300 rounded-md bg-gray-900 text-white"
+              className="p-2 w-1/4 border border-gray-300 rounded-md bg-gray-900 text-white"
             />
             <button
               onClick={handleCopyUrl}
