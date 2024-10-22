@@ -28,7 +28,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
     const matches = await fetchPlayerMatches(playerUUID, page);
     allMatches = allMatches.concat(matches);
 
-    const { wins, losses } = getWinLoss(matches, playerUUID, startTimestamp);
+    const { wins, losses, draws } = getWinLoss(matches, playerUUID, startTimestamp);
     winCount += wins;
     lossCount += losses;
 
@@ -45,22 +45,24 @@ function getCurrentTimestamp() {
   const date = Math.floor(Date.now() / 1000);
   return date;
 }
-
 function getWinLoss(matches, playerUUID, startTimestamp) {
   let wins = 0;
   let losses = 0;
+  let draws = 0;
 
   matches.forEach(match => {
     if (match.date > startTimestamp) {
       if (match.result.uuid === playerUUID) {
         wins++;
+      } else if (match.result.uuid === null) {
+        draws++;
       } else {
         losses++;
       }
     }
   });
 
-  return { wins, losses };
+  return { wins, losses, draws };
 }
 
 function getEloPlusMinus(matches, playerUUID, startTimestamp) {
