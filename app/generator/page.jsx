@@ -3,25 +3,47 @@
 import { useState } from "react";
 import { Widget } from "@/components/component/widget";
 
+// Fetch player data
 async function fetchInitPlayer(playerName) {
   const res = await fetch(`https://mcsrranked.com/api/users/${playerName}`);
   const result = await res.json();
-  console.log(result);
   return result.data;
 }
 
-async function fetchPlayerMatches(playerUUID) {
-  const res = await fetch(`https://mcsrranked.com/api/users/${playerUUID}/matches?type=2&excludedecay=false&count=50`);
+// Fetch player matches with pagination support
+async function fetchPlayerMatches(playerUUID, page = 1) {
+  const res = await fetch(`https://mcsrranked.com/api/users/${playerUUID}/matches?type=2&excludedecay=false&count=50&page=${page}`);
   const result = await res.json();
-  console.log(result);
   return result.data;
+}
+
+// Function to fetch all matches with pagination
+async function fetchAllMatches(playerUUID, startTimestamp) {
+  let page = 0;
+  let allMatches = [];
+  let winCount = 0;
+  let lossCount = 0;
+
+  while (true) {
+    const matches = await fetchPlayerMatches(playerUUID, page);
+    allMatches = allMatches.concat(matches);
+
+    const { wins, losses } = getWinLoss(matches, playerUUID, startTimestamp);
+    winCount += wins;
+    lossCount += losses;
+
+    if (matches.length < 50 || matches[matches.length - 1].date <= startTimestamp) {
+      break;
+    }
+    page++;
+  }
+
+  return { allMatches, winCount, lossCount };
 }
 
 function getCurrentTimestamp() {
   const date = Math.floor(Date.now() / 1000);
-  // adjust the date +2 hours
-  console.log(date - 2 * 60 * 60);
-  return date;
+  return date - 2 * 60 * 60; // adjust the date by -2 hours
 }
 
 function getWinLoss(matches, playerUUID, startTimestamp) {
@@ -42,21 +64,20 @@ function getWinLoss(matches, playerUUID, startTimestamp) {
 }
 
 function getEloPlusMinus(matches, playerUUID, startTimestamp) {
-    let eloPlusMinus = 0;
+  let eloPlusMinus = 0;
 
-    matches.forEach(match => {
-      if (match.date > startTimestamp) {
-        match.changes.forEach(change => {
-          if (change.uuid === playerUUID) {
-            eloPlusMinus += change.change;
-          }
-        });
-      }
-    });
-  
-    return eloPlusMinus;
-  }
+  matches.forEach(match => {
+    if (match.date > startTimestamp) {
+      match.changes.forEach(change => {
+        if (change.uuid === playerUUID) {
+          eloPlusMinus += change.change;
+        }
+      });
+    }
+  });
 
+  return eloPlusMinus;
+}
 
 export default function Page() {
   const [playerName, setPlayerName] = useState("");
@@ -64,6 +85,9 @@ export default function Page() {
   const [selectedTimestamp, setSelectedTimestamp] = useState("");
   const [previewData, setPreviewData] = useState({});
   const [widgetUrl, setWidgetUrl] = useState("");
+
+  // Track whether data is being updated
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -78,77 +102,77 @@ export default function Page() {
   };
 
   const handleGeneratePreview = async () => {
+    setIsUpdating(true); // Set loading state
+
     // Fetch player data
     const playerData = await fetchInitPlayer(playerName);
     const playerUUID = playerData.uuid;
     const startElo = playerData.eloRate;
 
-    // Fetch player matches
-    const matches = await fetchPlayerMatches(playerUUID);
+    // Set timestamp
     const startTimestamp = timestampOption === "now" ? getCurrentTimestamp() : new Date(selectedTimestamp).getTime() / 1000;
-    const { wins, losses } = getWinLoss(matches, playerUUID, startTimestamp);
+
+    // Fetch all player matches
+    const { allMatches, winCount, lossCount } = await fetchAllMatches(playerUUID, startTimestamp);
 
     // Calculate win rate
-    const totalGames = wins + losses;
-    const winRate = totalGames > 0 ? ((wins / totalGames) * 100).toFixed(1) : 0;
+    const totalGames = winCount + lossCount;
+    const winRate = totalGames > 0 ? ((winCount / totalGames) * 100).toFixed(1) : 0;
 
-    // Calculate elo plus minus
-    const eloPlusMinus = getEloPlusMinus(matches, playerUUID, startTimestamp);
+    // Calculate elo plus/minus
+    const eloPlusMinus = getEloPlusMinus(allMatches, playerUUID, startTimestamp);
 
     const ranksTable = {
-        "0-400": "Coal 1",
-        "401-500": "Coal 2",
-        "501-600": "Coal 3",
-        "601-700": "Iron 1",
-        "701-800": "Iron 2",
-        "801-900": "Iron 3",
-        "901-1000": "Gold 1",
-        "1001-1100": "Gold 2",
-        "1101-1200": "Gold 3",
-        "1201-1300": "Emerald 1",
-        "1301-1400": "Emerald 2",
-        "1401-1500": "Emerald 3",
-        "1501-1650": "Diamond 1",
-        "1651-1800": "Diamond 2",
-        "1801-2000": "Diamond 3",
-        "2001+": "Netherite 1",
-      };
+      "0-400": "Coal 1",
+      "401-500": "Coal 2",
+      "501-600": "Coal 3",
+      "601-700": "Iron 1",
+      "701-800": "Iron 2",
+      "801-900": "Iron 3",
+      "901-1000": "Gold 1",
+      "1001-1100": "Gold 2",
+      "1101-1200": "Gold 3",
+      "1201-1300": "Emerald 1",
+      "1301-1400": "Emerald 2",
+      "1401-1500": "Emerald 3",
+      "1501-1650": "Diamond 1",
+      "1651-1800": "Diamond 2",
+      "1801-2000": "Diamond 3",
+      "2001+": "Netherite 1",
+    };
 
     const rankIcons = {
-        "Iron 1": "/iron.png",
-        "Iron 2": "/iron.png",
-        "Iron 3": "/iron.png",
-        "Gold 1": "/gold.png",
-        "Gold 2": "/gold.png",
-        "Gold 3": "/gold.png",
-        "Emerald 1": "/emerald.png",
-        "Emerald 2": "/emerald.png",
-        "Emerald 3": "/emerald.png",
-        "Diamond 1": "/diamond.png",
-        "Diamond 2": "/diamond.png",
-        "Diamond 3": "/diamond.png",
-        "Netherite 1": "/netherite.png",
-        };
+      "Iron 1": "/iron.png",
+      "Iron 2": "/iron.png",
+      "Iron 3": "/iron.png",
+      "Gold 1": "/gold.png",
+      "Gold 2": "/gold.png",
+      "Gold 3": "/gold.png",
+      "Emerald 1": "/emerald.png",
+      "Emerald 2": "/emerald.png",
+      "Emerald 3": "/emerald.png",
+      "Diamond 1": "/diamond.png",
+      "Diamond 2": "/diamond.png",
+      "Diamond 3": "/diamond.png",
+      "Netherite 1": "/netherite.png",
+    };
 
     function getRank(elo) {
-        console.log(elo);
-    
-        if (elo > 2001) {
-            return "Netherite 1";
+      if (elo > 2001) {
+        return "Netherite 1";
+      }
+
+      for (const range in ranksTable) {
+        const [min, max] = range.split('-').map(Number);
+        if (elo >= min && elo <= max) {
+          return ranksTable[range];
         }
-    
-        for (const range in ranksTable) {
-            const [min, max] = range.split('-').map(Number);
-            if (elo >= min && elo <= max) {
-            return ranksTable[range];
-            }
-        }
-        return "Unranked";
+      }
+      return "Unranked";
     }
 
     const rankIcon = rankIcons[getRank(startElo)];
     const playerRank = getRank(startElo);
-
 
     // Update preview data
     setPreviewData({
@@ -156,21 +180,23 @@ export default function Page() {
       playerRank: playerRank,
       elo: startElo,
       eloPlusMinus: eloPlusMinus,
-      winCount: wins,
-      lossCount: losses,
+      winCount: winCount,
+      lossCount: lossCount,
       winRate,
       totalGames,
     });
+
     // Generate widget URL
     const baseUrl = window.location.origin;
     const timestamp = timestampOption === "now" ? "now" : selectedTimestamp;
     const url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?player=${encodeURIComponent(playerName)}`;
     setWidgetUrl(url);
+
+    setIsUpdating(false); // Reset loading state
   };
 
   const handleCopyUrl = () => {
     navigator.clipboard.writeText(widgetUrl);
-    alert("URL copied to clipboard!");
   };
 
   return (
@@ -220,10 +246,12 @@ export default function Page() {
       </div>
       <button
         onClick={handleGeneratePreview}
-        className="px-4 py-2 bg-blue-500 text-white rounded-md"
+        className="mb-4 bg-blue-500 text-white font-bold py-2 px-4 rounded"
+        disabled={isUpdating} // Disable button when updating
       >
-        Generate Preview
+        {isUpdating ? "Generating..." : "Generate Preview"}
       </button>
+
       <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Widget Preview</h2>
         <Widget {...previewData} />

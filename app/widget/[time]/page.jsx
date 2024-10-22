@@ -11,18 +11,16 @@ async function fetchInitPlayer(playerName) {
   return result.data;
 }
 
-async function fetchPlayerMatches(playerUUID) {
-  const res = await fetch(`https://mcsrranked.com/api/users/${playerUUID}/matches?type=2&excludedecay=false&count=50`);
+async function fetchPlayerMatches(playerUUID, page = 0) {
+  const res = await fetch(`https://mcsrranked.com/api/users/${playerUUID}/matches?type=2&excludedecay=false&count=50&page=${page}`);
   const result = await res.json();
   console.log(result);
   return result.data;
 }
 
 function convertDateToTimestamp(date) {
-    // convert date to timestamp 2024-10-12T00%3A41 -> 
-    const decodedDate = decodeURIComponent(date);
-    // Convert the decoded date string to a Unix timestamp
-    return Math.floor(new Date(decodedDate).getTime() / 1000);
+  const decodedDate = decodeURIComponent(date);
+  return Math.floor(new Date(decodedDate).getTime() / 1000);
 }
 
 function getWinLoss(matches, playerUUID, startTimestamp) {
@@ -60,10 +58,34 @@ function getEloPlusMinus(matches, playerUUID, startTimestamp) {
   return eloPlusMinus;
 }
 
+async function fetchAllMatches(playerUUID, startTimestamp) {
+  let page = 0;
+  let allMatches = [];
+  let winCount = 0;
+  let lossCount = 0;
+
+  while (true) {
+    const matches = await fetchPlayerMatches(playerUUID, page);
+    allMatches = allMatches.concat(matches);
+
+    const { wins, losses } = getWinLoss(matches, playerUUID, startTimestamp);
+    winCount += wins;
+    lossCount += losses;
+
+    if (matches.length < 50 || matches[matches.length - 1].date <= startTimestamp) {
+      break;
+    }
+
+    page++;
+  }
+
+  return { allMatches, winCount, lossCount };
+}
+
 function WidgetPage({ params }) {
   const searchParams = useSearchParams();
-  const player = searchParams.get('player'); 
-  const timestamp = params.time; // Extract timestamp from params
+  const player = searchParams.get('player');
+  const timestamp = params.time;
 
   console.log("timestamp: " + timestamp);
 
@@ -123,40 +145,38 @@ function WidgetPage({ params }) {
         setPlayerUUID(data.uuid);
         setStartElo(data.eloRate);
 
-        fetchPlayerMatches(data.uuid).then((matches) => {
-          console.log(initialTimestamp);
-          const { wins, losses } = getWinLoss(matches, data.uuid, initialTimestamp);
-          setWinCount(wins);
-          setLossCount(losses);
+        fetchAllMatches(data.uuid, initialTimestamp).then(({ allMatches, winCount, lossCount }) => {
+          setMatches(allMatches);
+          setWinCount(winCount);
+          setLossCount(lossCount);
+
+          setEloPlusMinus(getEloPlusMinus(allMatches, data.uuid, initialTimestamp));
+          setCurrentElo(allMatches[0].players.find(player => player.uuid === data.uuid).eloRate);
         });
 
         interval = setInterval(() => {
           console.log("fetching new win loss data");
           console.log("current timestamp: " + initialTimestamp);
-          fetchPlayerMatches(data.uuid).then((matches) => {
-            const { wins, losses } = getWinLoss(matches, data.uuid, initialTimestamp);
-            setWinCount(wins);
-            setLossCount(losses);
+          fetchAllMatches(data.uuid, initialTimestamp).then(({ allMatches, winCount, lossCount }) => {
+            setMatches(allMatches);
+            setWinCount(winCount);
+            setLossCount(lossCount);
 
-            console.log("win count: " + wins);
-            console.log("loss count: " + losses);
+            console.log("win count: " + winCount);
+            console.log("loss count: " + lossCount);
 
-            // set eloPlusMinus to the (+/-) elo change from statTimestamp to furure
-            setEloPlusMinus(getEloPlusMinus(matches, data.uuid, initialTimestamp));
-            // update currentElo
-            setCurrentElo(matches[0].players.find(player => player.uuid === data.uuid).eloRate);
+            setEloPlusMinus(getEloPlusMinus(allMatches, data.uuid, initialTimestamp));
+            setCurrentElo(allMatches[0].players.find(player => player.uuid === data.uuid).eloRate);
           });
         }, 2 * 60 * 1000); // 2 minutes
 
         console.log(data);
 
-        // if currentElo is null, set it to startElo
         if (currentElo === null) {
           setCurrentElo(data.eloRate);
           setEloPlusMinus(0);
         }
 
-        // set playerRank
         setPlayerRank(getRank(data.eloRate));
       });
 
@@ -167,8 +187,7 @@ function WidgetPage({ params }) {
   return (
     <div className="relative min-h-screen">
       <div className="absolute top-0 left-0">
-        <Widget uuid={playerUUID} elo={currentElo} eloPlusMinus={eloPlusMinus} playerRank={playerRank} startTimestamp={initialTimestamp} winCount={winCount} lossCount={lossCount} /> 
-        {/* <a>playerName: {player}</a> */}
+        <Widget uuid={playerUUID} elo={currentElo} eloPlusMinus={eloPlusMinus} playerRank={playerRank} startTimestamp={initialTimestamp} winCount={winCount} lossCount={lossCount} />
       </div>
     </div>
   );
