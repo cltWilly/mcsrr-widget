@@ -217,7 +217,7 @@ export default function Page() {
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Widget Generator</h1>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Player Name</label>
+        <label className="block text-sm font-medium font-bold">Player Name</label>
         <input
           type="text"
           value={playerName}
@@ -226,7 +226,7 @@ export default function Page() {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Timestamp</label>
+        <label className="block text-sm font-medium font-bold">Timestamp</label>
         <div className="mt-1">
           <label className="inline-flex items-center">
             <input
