@@ -44,3 +44,7 @@
 .widget-container {
   width: 300px;
 }
+
+input {
+  color-scheme: dark;
+}
