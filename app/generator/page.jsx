@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Widget } from "@/components/component/widget";
+import { DefaultWidget, OnlySmallBoxWidget } from "@/components/component/widget";
 
 // Fetch player data
 async function fetchInitPlayer(playerName) {
@@ -34,7 +34,6 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
     lossCount += losses;
     drawCount += draws;
 
-
     if (matches.length < 50 || matches[matches.length - 1].date <= startTimestamp) {
       break;
     }
@@ -48,6 +47,7 @@ function getCurrentTimestamp() {
   const date = Math.floor(Date.now() / 1000);
   return date;
 }
+
 function getWinLoss(matches, playerUUID, startTimestamp) {
   let wins = 0;
   let losses = 0;
@@ -87,6 +87,7 @@ function getEloPlusMinus(matches, playerUUID, startTimestamp) {
 export default function Page() {
   const [playerName, setPlayerName] = useState("");
   const [timestampOption, setTimestampOption] = useState("now");
+  const [widgetTypeOption, setWidgetTypeOption] = useState("1");
   const [selectedTimestamp, setSelectedTimestamp] = useState("");
   const [previewData, setPreviewData] = useState({});
   const [widgetUrl, setWidgetUrl] = useState("");
@@ -94,7 +95,6 @@ export default function Page() {
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState('Copy URL');
-
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -106,6 +106,10 @@ export default function Page() {
 
   const handleTimestampChange = (e) => {
     setSelectedTimestamp(e.target.value);
+  };
+
+  const handleWidgetTypeChange = (e) => {
+    setWidgetTypeOption(e.target.value);
   };
 
   const handleGeneratePreview = async () => {
@@ -197,7 +201,7 @@ export default function Page() {
     // Generate widget URL
     const baseUrl = window.location.origin;
     const timestamp = timestampOption === "now" ? "now" : selectedTimestamp;
-    const url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?player=${encodeURIComponent(playerName)}`;
+    const url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?widgetType=${encodeURIComponent(widgetTypeOption)}&player=${encodeURIComponent(playerName)}`;
     setWidgetUrl(url);
 
     setIsUpdating(false); // Reset loading state
@@ -217,7 +221,7 @@ export default function Page() {
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Widget Generator</h1>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Player Name</label>
+        <label className="block text-sm font-medium font-bold">Player Name</label>
         <input
           type="text"
           value={playerName}
@@ -226,7 +230,7 @@ export default function Page() {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Timestamp</label>
+        <label className="block text-sm font-medium font-bold">Timestamp</label>
         <div className="mt-1">
           <label className="inline-flex items-center">
             <input
@@ -258,6 +262,17 @@ export default function Page() {
           />
         )}
       </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium font-bold">Widget Type</label>
+        <select
+          value={widgetTypeOption}
+          onChange={handleWidgetTypeChange}
+          className="mt-1 block w-1/2 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+        >
+          <option value="1">Default Widget</option>
+          <option value="2">Small box Widget</option>
+        </select>
+      </div>
       <button
         onClick={handleGeneratePreview}
         className="mb-4 bg-blue-500 text-white font-bold py-2 px-4 rounded"
@@ -266,9 +281,16 @@ export default function Page() {
         {isUpdating ? "Generating..." : "Generate Preview"}
       </button>
   
-      <div className="mt-8 widget-container">
+      <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Widget Preview</h2>
-        <Widget {...previewData} />
+        {widgetTypeOption === '1' ? (
+          <DefaultWidget {...previewData} />
+        ) : (
+          <OnlySmallBoxWidget {...previewData} />
+        )}
+        <p className="mt-2 text-sm text-yellow-600">
+          Note: The width of the preview widget may <strong>NOT</strong>  exactly match the actual widget.
+        </p>
       </div>
       {widgetUrl && (
         <div className="mt-4">

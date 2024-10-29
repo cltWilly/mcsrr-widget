@@ -2,8 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Widget } from "@/components/component/widget";
-import { set } from "animejs";
+import { DefaultWidget, OnlySmallBoxWidget } from "@/components/component/widget";
 
 async function fetchInitPlayer(playerName) {
   const res = await fetch(`https://mcsrranked.com/api/users/${playerName}`);
@@ -89,6 +88,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
 function WidgetPage({ params }) {
   const searchParams = useSearchParams();
   const player = searchParams.get('player');
+  const widgetType = searchParams.get('widgetType');
   const timestamp = params.time;
 
   console.log("timestamp: " + timestamp);
@@ -195,7 +195,31 @@ function WidgetPage({ params }) {
   return (
     <div className="relative min-h-screen">
       <div className="absolute top-0 left-0">
-        <Widget uuid={playerUUID} elo={currentElo} eloPlusMinus={eloPlusMinus} playerRank={playerRank} startTimestamp={initialTimestamp} winCount={winCount} lossCount={lossCount} drawCount={drawCount} />
+        {widgetType === '1' ? (
+          <DefaultWidget
+            uuid={playerUUID}
+            elo={currentElo}
+            eloPlusMinus={eloPlusMinus}
+            playerRank={playerRank}
+            startTimestamp={initialTimestamp}
+            winCount={winCount}
+            lossCount={lossCount}
+            drawCount={drawCount}
+          />
+        ) : widgetType === '2' ? (
+          <OnlySmallBoxWidget
+            uuid={playerUUID}
+            elo={currentElo}
+            eloPlusMinus={eloPlusMinus}
+            playerRank={playerRank}
+            startTimestamp={initialTimestamp}
+            winCount={winCount}
+            lossCount={lossCount}
+            drawCount={drawCount}
+          />
+        ) : (
+          <div>widgetType is missing</div>
+        )}
       </div>
     </div>
   );
