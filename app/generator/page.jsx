@@ -283,14 +283,17 @@ export default function Page() {
   
       <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Widget Preview</h2>
-        {widgetTypeOption === '1' ? (
-          <DefaultWidget {...previewData} />
-        ) : (
-          <OnlySmallBoxWidget {...previewData} />
+        {/* <p className="mt-2 text-sm text-yellow-600 mb-2">
+          Note: The width of the preview widget may not exactly match the actual widget.
+        </p> */}
+        {widgetUrl && (
+          <iframe
+            src={widgetUrl}
+            className="w-full rounded-md"
+            style={{ height: '6.0rem' }}
+            title="Widget Preview"
+          ></iframe>
         )}
-        <p className="mt-2 text-sm text-yellow-600">
-          Note: The width of the preview widget may <strong>NOT</strong>  exactly match the actual widget.
-        </p>
       </div>
       {widgetUrl && (
         <div className="mt-4">
