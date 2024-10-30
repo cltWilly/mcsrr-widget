@@ -267,7 +267,7 @@ export default function Page() {
         <select
           value={widgetTypeOption}
           onChange={handleWidgetTypeChange}
-          className="mt-1 block w-1/2 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+          className="mt-1 block w-1/4 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
         >
           <option value="1">Default Widget</option>
           <option value="2">Small box Widget</option>
