@@ -47,6 +47,7 @@ export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimest
       </div>
     </div>
   );
+}
 
 export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount })  {
 
