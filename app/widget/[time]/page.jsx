@@ -82,7 +82,7 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
     page++;
   }
 
-  return { allMatches, winCount, lossCount, drawsCount};
+  return { allMatches, winCount, lossCount, drawsCount };
 }
 
 function WidgetPage({ params }) {
@@ -191,6 +191,13 @@ function WidgetPage({ params }) {
       return () => clearInterval(interval); // Clear interval on component unmount
     }
   }, [player]);
+
+  // Recalculate player rank whenever currentElo changes
+  useEffect(() => {
+    if (currentElo !== null) {
+      setPlayerRank(getRank(currentElo));
+    }
+  }, [currentElo]);
 
   return (
     <div className="relative min-h-screen">
