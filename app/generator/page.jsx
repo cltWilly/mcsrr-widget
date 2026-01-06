@@ -22,6 +22,9 @@ export default function Page() {
   const [widgetLayout, setWidgetLayout] = useState(null);
   const [canvasWidth, setCanvasWidth] = useState(300);
   const [canvasHeight, setCanvasHeight] = useState(100);
+  const [graphType, setGraphType] = useState("winLossHistory");
+  const [graphWidth, setGraphWidth] = useState(320);
+  const [graphHeight, setGraphHeight] = useState(96);
 
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
@@ -166,6 +169,12 @@ export default function Page() {
       url += `&width=${canvasWidth}&height=${canvasHeight}`;
     }
     
+    // Add graph configuration for graph widget
+    if (widgetTypeOption === "4") {
+      url += `&graphType=${encodeURIComponent(graphType)}`;
+      url += `&graphWidth=${graphWidth}&graphHeight=${graphHeight}`;
+    }
+    
     setWidgetUrl(url);
 
     setIsUpdating(false); // Reset loading state
@@ -242,8 +251,97 @@ export default function Page() {
           <option value="1">Default Widget</option>
           <option value="2">Small box Widget</option>
           <option value="3">Customizable Widget (Drag & Drop)</option>
+          <option value="4">Graph Widget</option>
         </select>
       </div>
+      {widgetTypeOption === "4" && (
+        <>
+          <div className="mb-4">
+            <label className="block text-sm font-medium font-bold mb-2">Graph Type</label>
+            <select
+              value={graphType}
+              onChange={(e) => setGraphType(e.target.value)}
+              className="mt-1 block w-1/4 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+            >
+              <option value="winLossHistory">Win/Loss History</option>
+              <option value="eloProgression">ELO Progression</option>
+              <option value="winRateOverTime">Win Rate Over Time</option>
+            </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium font-bold mb-2">Graph Size</label>
+            <div className="flex gap-4 items-center">
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Width (px)</label>
+                <input
+                  type="number"
+                  value={graphWidth}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || val === '-') {
+                      setGraphWidth(100);
+                    } else {
+                      const num = parseInt(val);
+                      if (!isNaN(num)) {
+                        setGraphWidth(num);
+                      }
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const num = parseInt(e.target.value);
+                    if (isNaN(num) || num < 100) {
+                      setGraphWidth(100);
+                    } else if (num > 800) {
+                      setGraphWidth(800);
+                    }
+                  }}
+                  className="block w-24 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+                  min="100"
+                  max="800"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Height (px)</label>
+                <input
+                  type="number"
+                  value={graphHeight}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || val === '-') {
+                      setGraphHeight(50);
+                    } else {
+                      const num = parseInt(val);
+                      if (!isNaN(num)) {
+                        setGraphHeight(num);
+                      }
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const num = parseInt(e.target.value);
+                    if (isNaN(num) || num < 50) {
+                      setGraphHeight(50);
+                    } else if (num > 400) {
+                      setGraphHeight(400);
+                    }
+                  }}
+                  className="block w-24 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+                  min="50"
+                  max="400"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setGraphWidth(320);
+                  setGraphHeight(96);
+                }}
+                className="mt-4 px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md"
+              >
+                Reset Size
+              </button>
+            </div>
+          </div>
+        </>
+      )}
       {widgetTypeOption === "3" && (
         <>
           <div className="mb-4">
@@ -354,8 +452,8 @@ export default function Page() {
             src={widgetUrl}
             className="rounded-md"
             style={{ 
-              width: widgetTypeOption === "3" ? `${canvasWidth}px` : '100%',
-              height: widgetTypeOption === "3" ? `${canvasHeight}px` : '6.0rem',
+              width: widgetTypeOption === "3" ? `${canvasWidth}px` : widgetTypeOption === "4" ? `${graphWidth}px` : '100%',
+              height: widgetTypeOption === "3" ? `${canvasHeight}px` : widgetTypeOption === "4" ? `${graphHeight + 40}px` : '6.0rem',
               overflow: 'hidden' 
             }}
             title="Widget Preview"

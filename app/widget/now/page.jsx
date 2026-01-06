@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { CustomizableWidget } from "@/components/customizableWidget";
+import { GraphWidget } from "@/components/graphWidget";
 
 async function fetchInitPlayer(playerName) {
   const res = await fetch(`https://mcsrranked.com/api/users/${playerName}`);
@@ -124,6 +125,9 @@ function WidgetPage() {
   const layoutParam = searchParams.get('layout');
   const canvasWidth = parseInt(searchParams.get('width')) || 300;
   const canvasHeight = parseInt(searchParams.get('height')) || 100;
+  const graphType = searchParams.get('graphType') || 'winLossHistory';
+  const graphWidth = parseInt(searchParams.get('graphWidth')) || 320;
+  const graphHeight = parseInt(searchParams.get('graphHeight')) || 96;
   
   // Parse layout configuration
   let layout = null;
@@ -299,6 +303,15 @@ function WidgetPage() {
             canvasWidth={canvasWidth}
             canvasHeight={canvasHeight}
             averageTime={averageTime}
+          />
+        ) : widgetType === '4' ? (
+          <GraphWidget
+            matches={matches || []}
+            playerUUID={playerUUID}
+            startTimestamp={initialTimestamp}
+            graphType={graphType}
+            graphWidth={graphWidth}
+            graphHeight={graphHeight}
           />
         ) : (
           <div>widgetType is missing</div>
