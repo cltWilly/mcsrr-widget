@@ -1,88 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { DefaultWidget, OnlySmallBoxWidget } from "@/components/component/widget";
-
-// Fetch player data
-async function fetchInitPlayer(playerName) {
-  const res = await fetch(`https://mcsrranked.com/api/users/${playerName}`);
-  const result = await res.json();
-  return result.data;
-}
-
-// Fetch player matches with pagination support
-async function fetchPlayerMatches(playerUUID, page = 1) {
-  const res = await fetch(`https://mcsrranked.com/api/users/${playerUUID}/matches?type=2&excludedecay=false&count=50&page=${page}`);
-  const result = await res.json();
-  return result.data;
-}
-
-// Function to fetch all matches with pagination
-async function fetchAllMatches(playerUUID, startTimestamp) {
-  let page = 0;
-  let allMatches = [];
-  let winCount = 0;
-  let lossCount = 0;
-  let drawCount = 0;
-
-  while (true) {
-    const matches = await fetchPlayerMatches(playerUUID, page);
-    allMatches = allMatches.concat(matches);
-
-    const { wins, losses, draws } = getWinLoss(matches, playerUUID, startTimestamp);
-    winCount += wins;
-    lossCount += losses;
-    drawCount += draws;
-
-    if (matches.length < 50 || matches[matches.length - 1].date <= startTimestamp) {
-      break;
-    }
-    page++;
-  }
-
-  return { allMatches, winCount, lossCount, drawCount };
-}
-
-function getCurrentTimestamp() {
-  const date = Math.floor(Date.now() / 1000);
-  return date;
-}
-
-function getWinLoss(matches, playerUUID, startTimestamp) {
-  let wins = 0;
-  let losses = 0;
-  let draws = 0;
-
-  matches.forEach(match => {
-    if (match.date > startTimestamp) {
-      if (match.result.uuid === playerUUID) {
-        wins++;
-      } else if (match.result.uuid === null) {
-        draws++;
-      } else {
-        losses++;
-      }
-    }
-  });
-
-  return { wins, losses, draws };
-}
-
-function getEloPlusMinus(matches, playerUUID, startTimestamp) {
-  let eloPlusMinus = 0;
-
-  matches.forEach(match => {
-    if (match.date > startTimestamp) {
-      match.changes.forEach(change => {
-        if (change.uuid === playerUUID) {
-          eloPlusMinus += change.change;
-        }
-      });
-    }
-  });
-
-  return eloPlusMinus;
-}
+import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
+import { DragDropWidgetEditor } from "@/components/customizableWidget";
+import { toast, Toaster } from "sonner";
+import {
+  fetchInitPlayer,
+  fetchAllMatches,
+  getCurrentTimestamp,
+  getEloPlusMinus
+} from "@/lib/generatorUtils";
+import { calculateAverageTime, formatTime } from "@/lib/widgetUtils";
 
 export default function Page() {
   const [playerName, setPlayerName] = useState("");
@@ -91,6 +19,9 @@ export default function Page() {
   const [selectedTimestamp, setSelectedTimestamp] = useState("");
   const [previewData, setPreviewData] = useState({});
   const [widgetUrl, setWidgetUrl] = useState("");
+  const [widgetLayout, setWidgetLayout] = useState(null);
+  const [canvasWidth, setCanvasWidth] = useState(300);
+  const [canvasHeight, setCanvasHeight] = useState(100);
 
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
@@ -113,12 +44,33 @@ export default function Page() {
   };
 
   const handleGeneratePreview = async () => {
+    // Validate player name is not empty
+    if (!playerName || playerName.trim() === "") {
+      toast.error("Please enter a player name");
+      return;
+    }
+
+    // Validate custom timestamp is set if custom option is selected
+    if (timestampOption === "custom" && (!selectedTimestamp || selectedTimestamp.trim() === "")) {
+      toast.error("Please select a custom timestamp");
+      return;
+    }
+
     setIsUpdating(true); // Set loading state
 
-    // Fetch player data
-    const playerData = await fetchInitPlayer(playerName);
-    const playerUUID = playerData.uuid;
-    const startElo = playerData.eloRate;
+    try {
+      // Fetch player data
+      const playerData = await fetchInitPlayer(playerName);
+      
+      // Check if player was found
+      if (!playerData || !playerData.uuid) {
+        toast.error("Player not found. Please check the player name and try again.");
+        setIsUpdating(false);
+        return;
+      }
+
+      const playerUUID = playerData.uuid;
+      const startElo = playerData.eloRate;
 
     // Set timestamp
     const startTimestamp = timestampOption === "now" ? getCurrentTimestamp() : new Date(selectedTimestamp).getTime() / 1000;
@@ -132,6 +84,10 @@ export default function Page() {
 
     // Calculate elo plus/minus
     const eloPlusMinus = getEloPlusMinus(allMatches, playerUUID, startTimestamp);
+
+    // Calculate average completion time
+    const averageTimeMs = calculateAverageTime(allMatches, playerUUID, startTimestamp);
+    const averageTime = formatTime(averageTimeMs);
 
     const ranksTable = {
       "0-400": "Coal 1",
@@ -196,15 +152,28 @@ export default function Page() {
       drawCount: drawCount,
       winRate,
       totalGames,
+      averageTime,
     });
 
     // Generate widget URL
     const baseUrl = window.location.origin;
     const timestamp = timestampOption === "now" ? "now" : selectedTimestamp;
-    const url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?widgetType=${encodeURIComponent(widgetTypeOption)}&player=${encodeURIComponent(playerName)}`;
+    let url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?widgetType=${encodeURIComponent(widgetTypeOption)}&player=${encodeURIComponent(playerName)}`;
+    
+    // Add layout configuration for customizable widget
+    if (widgetTypeOption === "3" && widgetLayout) {
+      url += `&layout=${encodeURIComponent(JSON.stringify(widgetLayout))}`;
+      url += `&width=${canvasWidth}&height=${canvasHeight}`;
+    }
+    
     setWidgetUrl(url);
 
     setIsUpdating(false); // Reset loading state
+    } catch (error) {
+      console.error("Error generating preview:", error);
+      toast.error("An error occurred while generating the preview. Please try again.");
+      setIsUpdating(false);
+    }
   };
 
   const handleCopyUrl = () => {
@@ -219,6 +188,7 @@ export default function Page() {
 
   return (
     <div className="p-8">
+      <Toaster position="top-center" richColors />
       <h1 className="text-2xl font-bold mb-4">Widget Generator</h1>
       <div className="mb-4">
         <label className="block text-sm font-medium font-bold">Player Name</label>
@@ -271,14 +241,66 @@ export default function Page() {
         >
           <option value="1">Default Widget</option>
           <option value="2">Small box Widget</option>
+          <option value="3">Customizable Widget (Drag & Drop)</option>
         </select>
       </div>
+      {widgetTypeOption === "3" && (
+        <>
+          <div className="mb-4">
+            <label className="block text-sm font-medium font-bold mb-2">Canvas Size</label>
+            <div className="flex gap-4 items-center">
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Width (px)</label>
+                <input
+                  type="number"
+                  value={canvasWidth}
+                  onChange={(e) => setCanvasWidth(Math.max(100, Math.min(800, parseInt(e.target.value) || 300)))}
+                  className="block w-24 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+                  min="100"
+                  max="800"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Height (px)</label>
+                <input
+                  type="number"
+                  value={canvasHeight}
+                  onChange={(e) => setCanvasHeight(Math.max(50, Math.min(400, parseInt(e.target.value) || 100)))}
+                  className="block w-24 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+                  min="50"
+                  max="400"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setCanvasWidth(300);
+                  setCanvasHeight(100);
+                }}
+                className="mt-4 px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md"
+              >
+                Reset Size
+              </button>
+            </div>
+          </div>
+          <div className="mb-4 max-w-2xl">
+            <DragDropWidgetEditor 
+              onLayoutChange={setWidgetLayout} 
+              initialLayout={widgetLayout}
+              canvasWidth={canvasWidth}
+              canvasHeight={canvasHeight}
+            />
+          </div>
+        </>
+      )}
       <button
         onClick={handleGeneratePreview}
         className="mb-4 bg-blue-500 text-white font-bold py-2 px-4 rounded"
         disabled={isUpdating} // Disable button when updating
       >
-        {isUpdating ? "Generating..." : "Generate Preview"}
+        {isUpdating 
+          ? (widgetTypeOption === "3" && widgetLayout && widgetLayout.length > 0 && widgetUrl ? "Updating..." : "Generating...") 
+          : (widgetTypeOption === "3" && widgetLayout && widgetLayout.length > 0 && widgetUrl ? "Update Widget" : "Generate Widget")
+        }
       </button>
   
       <div className="mt-8">
@@ -289,9 +311,14 @@ export default function Page() {
         {widgetUrl && (
           <iframe
             src={widgetUrl}
-            className="w-full rounded-md"
-            style={{ height: '6.0rem' }}
+            className="rounded-md"
+            style={{ 
+              width: widgetTypeOption === "3" ? `${canvasWidth}px` : '100%',
+              height: widgetTypeOption === "3" ? `${canvasHeight}px` : '6.0rem',
+              overflow: 'hidden' 
+            }}
             title="Widget Preview"
+            scrolling="no"
           ></iframe>
         )}
       </div>
