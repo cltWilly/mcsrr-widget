@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { CustomizableWidget } from "@/components/customizableWidget";
@@ -146,6 +146,8 @@ function WidgetPage({ params }) {
 
   console.log("initialTimestamp: " + initialTimestamp);
 
+  const didFetchRef = useRef(false);
+
   const [playerRank, setPlayerRank] = useState(null);
   const [winCount, setWinCount] = useState(null);
   const [lossCount, setLossCount] = useState(null);
@@ -189,10 +191,13 @@ function WidgetPage({ params }) {
   }
 
   useEffect(() => {
-    if (player) {
-      let interval;
+    if (!player || didFetchRef.current) {
+      return;
+    }
+    didFetchRef.current = true;
+    let interval;
 
-      fetchInitPlayer(player).then((data) => {
+    fetchInitPlayer(player).then((data) => {
         setPlayerUUID(data.uuid);
         setStartElo(data.eloRate);
 
@@ -242,8 +247,7 @@ function WidgetPage({ params }) {
         setPlayerRank(getRank(data.eloRate));
       });
 
-      return () => clearInterval(interval); // Clear interval on component unmount
-    }
+  return () => clearInterval(interval); // Clear interval on component unmount
   }, [player]);
 
   // Recalculate player rank whenever currentElo changes
