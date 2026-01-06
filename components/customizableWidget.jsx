@@ -480,9 +480,9 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
       </div>
       <p className="text-gray-400 text-xs mb-3">Drag features from the palette to the canvas and position them</p>
       
-      <div className="grid grid-cols-2 gap-3">
+      <div className="flex gap-3">
         {/* Feature Palette */}
-        <div>
+        <div className="flex-shrink-0" style={{ width: '200px' }}>
           <h4 className="text-white text-xs font-semibold mb-2">Available Features</h4>
           <div className="bg-gray-700 p-2 rounded-md space-y-1.5 max-h-[220px] overflow-y-auto">
             {AVAILABLE_FEATURES.map((feature) => (
@@ -497,7 +497,7 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
         </div>
 
         {/* Canvas */}
-        <div>
+        <div className="flex-1 min-w-0">
           <div className="flex justify-between items-center mb-1">
             <h4 className="text-white text-xs font-semibold">Canvas ({canvasWidth}x{canvasHeight}px)</h4>
             <button
@@ -565,7 +565,10 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
             )}
           </div>
           <p className="text-gray-400 text-xs mt-2">
-            💡 Drag to canvas to add • Click and drag to reposition • Click × to remove • Hold Shift for grid snap
+            💡 Drag to canvas to add
+             • Click and drag to reposition 
+             • Click × to remove 
+             • Hold Shift for grid snap
           </p>
           <button
             onClick={() => setShowRemoveButtons(!showRemoveButtons)}

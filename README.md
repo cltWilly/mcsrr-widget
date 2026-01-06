@@ -18,7 +18,7 @@ A modern, customizable widget for [OBS](https://obsproject.com/) that displays r
 
 ## 🚀 Quick Start
 
-1. Visit the [generator page](/generator)
+1. Visit the [generator page]({domain}/generator)
 2. Enter your MCSR Ranked username
 3. Choose your widget type:
    - **Default** - Classic layout with all stats

@@ -254,7 +254,25 @@ export default function Page() {
                 <input
                   type="number"
                   value={canvasWidth}
-                  onChange={(e) => setCanvasWidth(Math.max(100, Math.min(800, parseInt(e.target.value) || 300)))}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || val === '-') {
+                      setCanvasWidth(100);
+                    } else {
+                      const num = parseInt(val);
+                      if (!isNaN(num)) {
+                        setCanvasWidth(num);
+                      }
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const num = parseInt(e.target.value);
+                    if (isNaN(num) || num < 100) {
+                      setCanvasWidth(100);
+                    } else if (num > 800) {
+                      setCanvasWidth(800);
+                    }
+                  }}
                   className="block w-24 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
                   min="100"
                   max="800"
@@ -265,7 +283,25 @@ export default function Page() {
                 <input
                   type="number"
                   value={canvasHeight}
-                  onChange={(e) => setCanvasHeight(Math.max(50, Math.min(400, parseInt(e.target.value) || 100)))}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || val === '-') {
+                      setCanvasHeight(50);
+                    } else {
+                      const num = parseInt(val);
+                      if (!isNaN(num)) {
+                        setCanvasHeight(num);
+                      }
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const num = parseInt(e.target.value);
+                    if (isNaN(num) || num < 50) {
+                      setCanvasHeight(50);
+                    } else if (num > 400) {
+                      setCanvasHeight(400);
+                    }
+                  }}
                   className="block w-24 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
                   min="50"
                   max="400"
@@ -282,7 +318,12 @@ export default function Page() {
               </button>
             </div>
           </div>
-          <div className="mb-4 max-w-2xl">
+          <div 
+            className="mb-4"
+            style={{ 
+              maxWidth: canvasWidth > 300 ? `${canvasWidth + 236}px` : '535px'
+            }}
+          >
             <DragDropWidgetEditor 
               onLayoutChange={setWidgetLayout} 
               initialLayout={widgetLayout}
