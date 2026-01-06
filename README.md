@@ -1,3 +1,15 @@
+# 🚫 DEPRECATED 🚫
+
+This project is no longer maintained.
+
+I originally enjoyed building this and had good intentions for it, but the API it relies on has changed, and I no longer have the ambition to keep it updated. I'm also not fully satisfied with how it was used in practice.
+
+The Vercel app will be deleted and is no longer functional.
+
+You're welcome to fork and use the code if it's helpful for you, but please keep credit to this original project.
+
+Thanks to everyone who used the widget, and I apologize for any issues it may have caused.
+
 # mcsr-ranked-widget
 ## About
 This is mcsr-ranked widget for [OBS](https://obsproject.com/) that shows the player rankings of the [mcsr ranked](https://mcsrranked.com/). Such as his rank name, elo, elo difference, played matches and win/loss ratio.
