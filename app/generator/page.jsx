@@ -22,6 +22,8 @@ export default function Page() {
   const [widgetLayout, setWidgetLayout] = useState(null);
   const [canvasWidth, setCanvasWidth] = useState(300);
   const [canvasHeight, setCanvasHeight] = useState(100);
+  const [appliedCanvasWidth, setAppliedCanvasWidth] = useState(300);
+  const [appliedCanvasHeight, setAppliedCanvasHeight] = useState(100);
   const [graphType, setGraphType] = useState("winLossHistory");
   const [graphWidth, setGraphWidth] = useState(320);
   const [graphHeight, setGraphHeight] = useState(96);
@@ -174,6 +176,10 @@ export default function Page() {
       url += `&graphType=${encodeURIComponent(graphType)}`;
       url += `&graphWidth=${graphWidth}&graphHeight=${graphHeight}`;
     }
+    
+    // Apply canvas size changes
+    setAppliedCanvasWidth(canvasWidth);
+    setAppliedCanvasHeight(canvasHeight);
     
     setWidgetUrl(url);
 
@@ -453,8 +459,8 @@ export default function Page() {
             src={widgetUrl}
             className="rounded-md"
             style={{ 
-              width: widgetTypeOption === "3" ? `${canvasWidth}px` : widgetTypeOption === "4" ? `${graphWidth}px` : '100%',
-              height: widgetTypeOption === "3" ? `${canvasHeight}px` : widgetTypeOption === "4" ? `${graphHeight + 40}px` : '6.0rem',
+              width: widgetTypeOption === "3" ? `${appliedCanvasWidth}px` : widgetTypeOption === "4" ? `${graphWidth}px` : '100%',
+              height: widgetTypeOption === "3" ? `${appliedCanvasHeight}px` : widgetTypeOption === "4" ? `${graphHeight + 40}px` : '6.0rem',
               overflow: 'hidden' 
             }}
             title="Widget Preview"

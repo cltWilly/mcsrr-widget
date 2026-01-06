@@ -201,9 +201,11 @@ function CanvasElement({ element, onMove, onRemove, isSelected, onSelect, canvas
       style={{
         left: `${element.x}px`,
         top: `${element.y}px`,
-        width: `${element.width}px`,
-        height: `${element.height}px`,
+        width: `${element.width * (element.scale || 1)}px`,
+        height: `${element.height * (element.scale || 1)}px`,
         userSelect: 'none',
+        transform: `scale(${element.scale || 1})`,
+        transformOrigin: 'top left',
       }}
     >
       {renderContent()}
@@ -302,8 +304,10 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
           style={{
             left: `${element.x}px`,
             top: `${element.y}px`,
-            width: `${element.width}px`,
-            height: `${element.height}px`,
+            width: `${element.width * (element.scale || 1)}px`,
+            height: `${element.height * (element.scale || 1)}px`,
+            transform: `scale(${element.scale || 1})`,
+            transformOrigin: 'top left',
           }}
         >
           {renderElement(element)}
@@ -390,6 +394,7 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
         height: feature.height,
         type: feature.type,
         color: feature.defaultColor,
+        scale: 1,
       }]);
     }
     
@@ -425,6 +430,21 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
   const handleColorChange = (id, color) => {
     setCanvasElements(canvasElements.map(el =>
       el.id === id ? { ...el, color } : el
+    ));
+  };
+
+  const handleSizeChange = (id, dimension, value) => {
+    const numValue = parseInt(value) || 0;
+    setCanvasElements(canvasElements.map(el =>
+      el.id === id ? { ...el, [dimension]: Math.max(10, Math.min(dimension === 'width' ? canvasWidth : canvasHeight, numValue)) } : el
+    ));
+  };
+
+  const handleScaleChange = (id, scale) => {
+    const numValue = parseFloat(scale) || 1;
+    const clampedScale = Math.max(0.25, Math.min(5, numValue));
+    setCanvasElements(canvasElements.map(el =>
+      el.id === id ? { ...el, scale: clampedScale } : el
     ));
   };
 
@@ -601,6 +621,41 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
                   className="flex-1 bg-gray-600 text-white text-xs px-2 py-1 rounded"
                   placeholder="#FFFFFF"
                 />
+              </div>
+            </div>
+          )}
+          
+          {/* Size Controls for selected element */}
+          {selectedElement && canvasElements.find(el => el.id === selectedElement) && (
+            <div className="mt-3 bg-gray-700 p-2 rounded-md">
+              <label className="text-white text-xs font-semibold block mb-1">
+                Scale: {canvasElements.find(el => el.id === selectedElement)?.label}
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min="0.25"
+                  max="5"
+                  step="0.05"
+                  value={canvasElements.find(el => el.id === selectedElement)?.scale || 1}
+                  onChange={(e) => handleScaleChange(selectedElement, e.target.value)}
+                  className="flex-1"
+                />
+                <input
+                  type="number"
+                  min="0.25"
+                  max="5"
+                  step="0.05"
+                  value={canvasElements.find(el => el.id === selectedElement)?.scale || 1}
+                  onChange={(e) => handleScaleChange(selectedElement, e.target.value)}
+                  className="w-16 bg-gray-600 text-white text-xs px-2 py-1 rounded text-center"
+                />
+                <span className="text-gray-300 text-xs">×</span>
+              </div>
+              <div className="flex justify-between text-xs text-gray-400 mt-1">
+                {/* <span>0.25×</span>
+                <span>1×</span>
+                <span>5×</span> */}
               </div>
             </div>
           )}
