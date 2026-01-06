@@ -237,6 +237,7 @@ export default function Page() {
             type="datetime-local"
             value={selectedTimestamp}
             onChange={handleTimestampChange}
+            max={new Date().toISOString().slice(0, 16)}
             className="mt-1 block w-1/4 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
           />
         )}
