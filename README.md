@@ -117,10 +117,6 @@ npm start
 
 Built with [Next.js 14](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/)
 
-## 📝 Known Issues
-
-- Large match histories may take longer to load on initial widget generation
-
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
