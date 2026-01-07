@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { calWinRate, countMatches, normalizePlusMinusElo, rankIcons } from "@/lib/widgetUtils";
 
-
 export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount }) {
 
   const winRate = calWinRate(winCount, lossCount, drawCount);
@@ -21,7 +20,6 @@ export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimest
 
   return (
     <div className="bg-[#171e1f] text-white p-4 rounded-md w-full max-w-xs relative">
-      {/* <div className="text-sm font-bold mb-2">Ranked</div> */}
       <div className="flex items-center space-x-4">
         <img
           src={rankIcon}
@@ -45,13 +43,11 @@ export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimest
         </div>
       </div>
       <div className="absolute bottom-1 left-2 text-xs text-gray-400">
-      {countdown}s
+        {countdown}s
       </div>
     </div>
   );
 }
-
-
 
 export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount })  {
 

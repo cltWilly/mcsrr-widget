@@ -1,34 +1,130 @@
-# mcsr-ranked-widget
-## About
-This is mcsr-ranked widget for [OBS](https://obsproject.com/) that shows the player rankings of the [mcsr ranked](https://mcsrranked.com/). Such as his rank name, elo, elo difference, played matches and win/loss ratio.
-The widget shows all these stats based on startTime and updates every 2 minutes (so if you dont see any changes, just wait a bit).
+# 🎮 MCSR Ranked Widget
+
+> **Project Status:** ✅ Active - This project has been revived and is actively maintained!
+
+A modern, customizable widget for [OBS](https://obsproject.com/) that displays real-time player statistics from [MCSR Ranked](https://mcsrranked.com/). Track your rank, ELO, match history, and performance metrics with a fully customizable drag-and-drop interface.
 
 ![Widget Example](https://i.imgur.com/KtEXrnP.png)
 
-## Attention (UPDATE)
-The widget is now able to show much more win/loss. Before 50 was max. Now the currently tested maxium is **866 matches** at once (theoretically it should be anble to fetch more).
+## ✨ Features
 
-## Usage
-1. Go to /generator and set all the settings you want.
-2. Click on "Generate" and copy the generated URL.
-3. Add a new browser source in OBS and paste the URL. (Recommended width: 300px, height: 100px)
+- 📊 **Real-time Stats** - ELO rating, rank, wins/losses/draws, win rate, and more
+- 🎨 **Fully Customizable** - Drag-and-drop interface with custom colors and positioning
+- 📏 **Snap-to-Grid** - Hold Shift while dragging for precise alignment
+- ⏱️ **Average Completion Time** - Track your average speedrun time from won matches
+- 🖼️ **Player Avatars** - Display Minecraft player heads using mc-heads.net API
+- 🔄 **Auto-Updates** - Statistics refresh every 2 minutes automatically
+- 📱 **Responsive Sizing** - Customize widget dimensions to fit your stream layout
 
-## Endpoints
-Defualt domain is `https://mcsrr-widget.vercel.app`.
-- `/` - Contains the documentation.
-- `/generator` - Contains the generator for the widget.
-- `/widget` - Contains the widget itself.
+## 🚀 Quick Start
 
-There are some endpoints that are used for the widget to set time:
-- `/widget/now` - This widget will set startTime to the current time. So it will show data from now to the future.
-- `/widget/[time]` - This widget will set startTime to the given time. So it will show data from the given time to the future.
+1. Visit the [generator page]({domain}/generator)
+2. Enter your MCSR Ranked username
+3. Choose your widget type:
+  - **Default** - Classic layout with all stats
+  - **Small Box** - Compact version for minimal overlays
+  - **Custom** - Fully customizable drag-and-drop layout
+  - **Graph** - Graph widget showing historical win/loss/elo trends
+4. Configure your settings (timestamp, colors, positioning)
+5. Click **Generate Widget** and copy the URL
+6. Add as a **Browser Source** in OBS with the generated URL
 
-All widget endpoints are using "player" query parameter to set the player name. If the player name is not found, it will show an error message.
+**Recommended dimensions:** 300px × 100px (adjustable for custom widgets)
 
-## Examples
-- `/widget/now?player=7rowl` - This will show the widget for 7rowl from now to the future.
-- `/widget/2021-10-10T00:00:00Z?player=7rowl` - This will show the widget for 7rowl from 2021-10-10 to the future.
+## 🎨 Custom Widget Features
+
+The custom widget type offers advanced customization:
+
+- **Drag & Drop** - Position elements anywhere on the canvas
+- **Color Customization** - Click any text element to change its color
+- **Grid Snapping** - Hold Shift while dragging for 10px grid alignment
+- **Element Library** - Choose from 12+ available features:
+  - Rank Icon & Player Head
+  - Player Rank & ELO Rating
+  - ELO Change (+/-)
+  - Wins, Losses, Draws
+  - Win Rate %
+  - Total Matches
+  - Average Completion Time
+  - Countdown Timer
+
+## 📡 API Endpoints
+
+Base URL: not deployed yet
+
+### Widget Endpoints
+
+- `/widget/now?player=USERNAME` - Track stats from current time forward
+- `/widget/[timestamp]?player=USERNAME` - Track stats from specific date/time
+  - Example: `/widget/2024-01-01T00:00:00Z?player=7rowl`
+
+### Query Parameters
+
+- `player` - **(required)** MCSR Ranked username
+- `widgetType` - Widget style: `1` (default), `2` (small), `3` (custom), `4` (graph)
+- `layout` - Custom widget layout configuration (JSON)
+- `width` - Custom widget width in pixels (100-800)
+- `height` - Custom widget height in pixels (50-400)
+
+- `font` - Optional CSS font-family string to override the default font for text elements (example: `Inter, Arial, sans-serif`). If `layout` JSON includes per-element `font` fields, those take precedence over this global `font`.
 
 
-## Know Issues
-- If mcsr-ranked api is down, the widget will show an error message. and will not reset inself (so you need to refresh the browser source).
+### Layout Configuration JSON example
+
+```json
+[
+  {
+    "id": "playerRank",
+    "label": "Player Rank",
+    "x": 21,
+    "y": 17.5,
+    "width": 100,
+    "height": 24,
+    "type": "text",
+    "color": "#FFFFFF",
+    "scale": 1
+  },
+  {
+    "id": "elo",
+    "label": "ELO Rating",
+    "x": 170,
+    "y": 50.5,
+    "width": 80,
+    "height": 20,
+    "type": "text",
+    "color": "#FFFFFF",
+    "scale": 1
+  }
+  ...
+]
+```
+
+## 🔧 Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
+Built with [Next.js 14](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/)
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
+## 📄 License
+
+This project is open source. If you use or fork this code, please provide credit to the original project.
+
+---
+
+**Note:** This widget is not officially affiliated with MCSR Ranked.

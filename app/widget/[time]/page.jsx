@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { DefaultWidget, OnlySmallBoxWidget } from "@/components/component/widget";
+import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
+import { CustomizableWidget } from "@/components/customizableWidget";
+import { GraphWidget } from "@/components/graphWidget";
 
 async function fetchInitPlayer(playerName) {
   const res = await fetch(`https://mcsrranked.com/api/users/${playerName}`);
@@ -59,6 +61,32 @@ function getEloPlusMinus(matches, playerUUID, startTimestamp) {
   return eloPlusMinus;
 }
 
+function calculateAverageTime(matches, playerUUID, startTimestamp) {
+  const wonMatches = matches.filter(match => 
+    match.date > startTimestamp && 
+    match.result && 
+    match.result.uuid === playerUUID && 
+    match.result.time
+  );
+
+  if (wonMatches.length === 0) return null;
+
+  const totalTime = wonMatches.reduce((sum, match) => sum + match.result.time, 0);
+  const averageTimeMs = totalTime / wonMatches.length;
+  
+  return averageTimeMs;
+}
+
+function formatTime(milliseconds) {
+  if (!milliseconds) return 'N/A';
+  
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
 async function fetchAllMatches(playerUUID, startTimestamp) {
   let page = 0;
   let allMatches = [];
@@ -82,18 +110,35 @@ async function fetchAllMatches(playerUUID, startTimestamp) {
     page++;
   }
 
-  return { allMatches, winCount, lossCount, drawsCount};
+  return { allMatches, winCount, lossCount, drawsCount };
 }
 
 function WidgetPage({ params }) {
   const searchParams = useSearchParams();
   const player = searchParams.get('player');
   const widgetType = searchParams.get('widgetType');
+  const layoutParam = searchParams.get('layout');
+  const canvasWidth = parseInt(searchParams.get('width')) || 300;
+  const canvasHeight = parseInt(searchParams.get('height')) || 100;
+  const graphType = searchParams.get('graphType') || 'winLossHistory';
+  const graphWidth = parseInt(searchParams.get('graphWidth')) || 320;
+  const graphHeight = parseInt(searchParams.get('graphHeight')) || 96;
   const timestamp = params.time;
+  
+  // Parse layout configuration
+  let layout = null;
+  if (layoutParam) {
+    try {
+      layout = JSON.parse(decodeURIComponent(layoutParam));
+    } catch (e) {
+      console.error('Failed to parse layout:', e);
+    }
+  }
 
   console.log("timestamp: " + timestamp);
 
   const [playerUUID, setPlayerUUID] = useState(null);
+  const [playerName, setPlayerName] = useState(player);
   const [startElo, setStartElo] = useState(null);
   const [currentElo, setCurrentElo] = useState(null);
   const [eloPlusMinus, setEloPlusMinus] = useState(null);
@@ -101,11 +146,14 @@ function WidgetPage({ params }) {
 
   console.log("initialTimestamp: " + initialTimestamp);
 
+  const didFetchRef = useRef(false);
+
   const [playerRank, setPlayerRank] = useState(null);
   const [winCount, setWinCount] = useState(null);
   const [lossCount, setLossCount] = useState(null);
   const [drawCount, setDrawCount] = useState(null);
   const [matches, setMatches] = useState(null);
+  const [averageTime, setAverageTime] = useState(null);
 
   const ranksTable = {
     "0-400": "Coal 1",
@@ -143,10 +191,13 @@ function WidgetPage({ params }) {
   }
 
   useEffect(() => {
-    if (player) {
-      let interval;
+    if (!player || didFetchRef.current) {
+      return;
+    }
+    didFetchRef.current = true;
+    let interval;
 
-      fetchInitPlayer(player).then((data) => {
+    fetchInitPlayer(player).then((data) => {
         setPlayerUUID(data.uuid);
         setStartElo(data.eloRate);
 
@@ -158,6 +209,10 @@ function WidgetPage({ params }) {
 
           setEloPlusMinus(getEloPlusMinus(allMatches, data.uuid, initialTimestamp));
           setCurrentElo(allMatches[0].players.find(player => player.uuid === data.uuid).eloRate);
+          
+          // Calculate average time
+          const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
+          setAverageTime(formatTime(avgTimeMs));
         });
 
         interval = setInterval(() => {
@@ -175,6 +230,10 @@ function WidgetPage({ params }) {
 
             setEloPlusMinus(getEloPlusMinus(allMatches, data.uuid, initialTimestamp));
             setCurrentElo(allMatches[0].players.find(player => player.uuid === data.uuid).eloRate);
+            
+            // Update average time
+            const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
+            setAverageTime(formatTime(avgTimeMs));
           });
         }, 2 * 60 * 1000); // 2 minutes
 
@@ -188,9 +247,15 @@ function WidgetPage({ params }) {
         setPlayerRank(getRank(data.eloRate));
       });
 
-      return () => clearInterval(interval); // Clear interval on component unmount
-    }
+  return () => clearInterval(interval); // Clear interval on component unmount
   }, [player]);
+
+  // Recalculate player rank whenever currentElo changes
+  useEffect(() => {
+    if (currentElo !== null) {
+      setPlayerRank(getRank(currentElo));
+    }
+  }, [currentElo]);
 
   return (
     <div className="relative min-h-screen">
@@ -216,6 +281,31 @@ function WidgetPage({ params }) {
             winCount={winCount}
             lossCount={lossCount}
             drawCount={drawCount}
+          />
+        ) : widgetType === '3' ? (
+          <CustomizableWidget
+            uuid={playerUUID}
+            elo={currentElo}
+            eloPlusMinus={eloPlusMinus}
+            playerRank={playerRank}
+            startTimestamp={initialTimestamp}
+            winCount={winCount}
+            lossCount={lossCount}
+            drawCount={drawCount}
+            layout={layout}
+            playerName={playerName}
+            canvasWidth={canvasWidth}
+            canvasHeight={canvasHeight}
+            averageTime={averageTime}
+          />
+        ) : widgetType === '4' ? (
+          <GraphWidget
+            matches={matches || []}
+            playerUUID={playerUUID}
+            startTimestamp={initialTimestamp}
+            graphType={graphType}
+            graphWidth={graphWidth}
+            graphHeight={graphHeight}
           />
         ) : (
           <div>widgetType is missing</div>
