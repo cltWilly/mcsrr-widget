@@ -27,6 +27,8 @@ export default function Page() {
   const [graphType, setGraphType] = useState("winLossHistory");
   const [graphWidth, setGraphWidth] = useState(320);
   const [graphHeight, setGraphHeight] = useState(96);
+  const [appliedGraphWidth, setAppliedGraphWidth] = useState(320);
+  const [appliedGraphHeight, setAppliedGraphHeight] = useState(96);
 
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
@@ -177,9 +179,11 @@ export default function Page() {
       url += `&graphWidth=${graphWidth}&graphHeight=${graphHeight}`;
     }
     
-    // Apply canvas size changes
+    // Apply canvas and graph size changes (only when Generate/Update pressed)
     setAppliedCanvasWidth(canvasWidth);
     setAppliedCanvasHeight(canvasHeight);
+    setAppliedGraphWidth(graphWidth);
+    setAppliedGraphHeight(graphHeight);
     
     setWidgetUrl(url);
 
@@ -205,13 +209,15 @@ export default function Page() {
     <div className="p-8">
       <Toaster position="top-center" richColors />
       <h1 className="text-2xl font-bold mb-4">Widget Generator</h1>
+      <div className="flex flex-col lg:flex-row gap-8">
+        <div className="lg:w-1/2 w-full pl-6 md:pl-12">
       <div className="mb-4">
         <label className="block text-sm font-medium font-bold">Player Name</label>
         <input
           type="text"
           value={playerName}
           onChange={handlePlayerNameChange}
-          className="mt-1 block w-1/4 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+          className="mt-1 block w-full md:w-1/2 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
         />
       </div>
       <div className="mb-4">
@@ -244,7 +250,7 @@ export default function Page() {
             value={selectedTimestamp}
             onChange={handleTimestampChange}
             max={new Date().toISOString().slice(0, 16)}
-            className="mt-1 block w-1/4 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+            className="mt-1 block w-full md:w-1/2 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
           />
         )}
       </div>
@@ -253,7 +259,7 @@ export default function Page() {
         <select
           value={widgetTypeOption}
           onChange={handleWidgetTypeChange}
-          className="mt-1 block w-1/4 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+          className="mt-1 block w-full md:w-1/2 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
         >
           <option value="1">Default Widget</option>
           <option value="2">Small box Widget</option>
@@ -353,7 +359,7 @@ export default function Page() {
       )}
       <button
         onClick={handleGeneratePreview}
-        className="mb-4 bg-blue-500 text-white font-bold py-2 px-4 rounded"
+        className="mb-4 bg-blue-500 text-white font-bold py-2 px-4 rounded w-full md:w-auto"
         disabled={isUpdating} // Disable button when updating
       >
         {isUpdating 
@@ -361,50 +367,55 @@ export default function Page() {
           : (widgetTypeOption === "3" && widgetLayout && widgetLayout.length > 0 && widgetUrl ? "Update Widget" : "Generate Widget")
         }
       </button>
+      </div>
+      <div className="lg:w-1/2 w-full pr-6 md:pr-12">
   
       <div className="mt-8">
         {widgetUrl && (
-        <h2 className="text-xl font-bold mb-4">Widget Preview</h2>
-        )}
-        {/* <p className="mt-2 text-sm text-yellow-600 mb-2">
-          Note: The width of the preview widget may not exactly match the actual widget.
-        </p> */}
-        {widgetUrl && (
-          <iframe
-            src={widgetUrl}
-            className="rounded-md"
-            style={{ 
-              width: widgetTypeOption === "3" ? `${appliedCanvasWidth}px` : widgetTypeOption === "4" ? `${graphWidth}px` : '100%',
-              height: widgetTypeOption === "3" ? `${appliedCanvasHeight}px` : widgetTypeOption === "4" ? `${graphHeight + 40}px` : '6.0rem',
-              overflow: 'hidden' 
-            }}
-            title="Widget Preview"
-            scrolling="no"
-          ></iframe>
+          <>
+            <h2 className="text-xl font-bold mb-4">Widget Preview</h2>
+            <div className="mb-4 flex justify-start">
+              {widgetUrl && (
+                <iframe
+                  src={widgetUrl}
+                  className="rounded-md"
+                    style={{ 
+                    width: widgetTypeOption === "3" ? `${appliedCanvasWidth}px` : widgetTypeOption === "4" ? `${appliedGraphWidth}px` : '100%',
+                    height: widgetTypeOption === "3" ? `${appliedCanvasHeight}px` : widgetTypeOption === "4" ? `${appliedGraphHeight + 40}px` : '6.0rem',
+                    overflow: 'hidden' 
+                  }}
+                  title="Widget Preview"
+                  scrolling="no"
+                ></iframe>
+              )}
+            </div>
+            {widgetUrl && (
+              <div className="mt-4">
+                <h3 className="text-lg font-bold mb-2">Widget URL</h3>
+                <div className="flex items-center flex-nowrap">
+                  <input
+                    type="text"
+                    value={widgetUrl}
+                    readOnly
+                    className="p-2 h-10 w-full border border-gray-300 rounded-md bg-gray-900 text-white"
+                  />
+                  <button
+                    onClick={handleCopyUrl}
+                    className="ml-2 px-4 bg-green-500 text-white rounded-md h-10 flex items-center justify-center whitespace-nowrap min-w-max"
+                  >
+                    {copyButtonText}
+                  </button>
+                </div>
+                <p className="mt-2 text-sm text-gray-600">
+                  Copy this link and paste it into a browser source. It is recommended to use width of <strong>300px</strong> and height of <strong>100px</strong>.
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
-      {widgetUrl && (
-        <div className="mt-4">
-          <h3 className="text-lg font-bold mb-2">Widget URL</h3>
-          <div className="flex items-center">
-            <input
-              type="text"
-              value={widgetUrl}
-              readOnly
-              className="p-2 w-1/4 border border-gray-300 rounded-md bg-gray-900 text-white"
-            />
-            <button
-              onClick={handleCopyUrl}
-              className="ml-2 px-4 py-2 bg-green-500 text-white rounded-md"
-            >
-              {copyButtonText}
-            </button>
-          </div>
-          <p className="mt-2 text-sm text-gray-600">
-            Copy this link and paste it into a browser source. It is recommended to use width of <strong>300px</strong> and height of <strong>100px</strong>.
-          </p>
-        </div>
-      )}
+      </div>
+      </div>
     </div>
   );
 }
