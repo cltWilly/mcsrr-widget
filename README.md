@@ -99,11 +99,6 @@ Base URL: not deployed yet
 ]
 ```
 
-### Other Pages
-
-- `/` - Documentation homepage
-- `/generator` - Interactive widget generator
-
 ## 🔧 Development
 
 ```bash
