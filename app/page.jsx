@@ -205,6 +205,10 @@ export default function Page() {
     }, 1000); 
   };
 
+  // Recommend sizes based on selected widget and applied dimensions
+  const recommendedWidth = widgetTypeOption === "3" ? appliedCanvasWidth : widgetTypeOption === "4" ? appliedGraphWidth : 300;
+  const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? appliedGraphHeight : 100;
+
   return (
     <div className="p-8">
       <Toaster position="top-center" richColors />
@@ -407,7 +411,7 @@ export default function Page() {
                   </button>
                 </div>
                 <p className="mt-2 text-sm text-gray-600">
-                  Copy this link and paste it into a browser source. It is recommended to use width of <strong>300px</strong> and height of <strong>100px</strong>.
+                  Copy this link and paste it into a browser source. Recommended size: <strong>{recommendedWidth}px</strong> width and <strong>{recommendedHeight}px</strong> height.
                 </p>
               </div>
             )}
