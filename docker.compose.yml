@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      image: test:latest
     container_name: ${COMPOSE_PROJECT_NAME}
     environment:
       - NODE_ENV=production
