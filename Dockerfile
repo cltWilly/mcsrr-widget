@@ -6,7 +6,7 @@ ENV NEXT_TELEMETRY_DISABLED=0
 
 FROM base AS deps
 COPY package.json package-lock.json* yarn.lock* ./
-RUN npm ci --silent --no-audit --prefer-offline
+RUN npm ci --no-audit
 
 FROM base AS builder
 COPY . .
