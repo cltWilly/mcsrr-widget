@@ -65,6 +65,37 @@ Base URL: not deployed yet
 - `width` - Custom widget width in pixels (100-800)
 - `height` - Custom widget height in pixels (50-400)
 
+
+### Layout Configuration JSON example
+
+```json
+[
+  {
+    "id": "playerRank",
+    "label": "Player Rank",
+    "x": 21,
+    "y": 17.5,
+    "width": 100,
+    "height": 24,
+    "type": "text",
+    "color": "#FFFFFF",
+    "scale": 1
+  },
+  {
+    "id": "elo",
+    "label": "ELO Rating",
+    "x": 170,
+    "y": 50.5,
+    "width": 80,
+    "height": 20,
+    "type": "text",
+    "color": "#FFFFFF",
+    "scale": 1
+  }
+  ...
+]
+```
+
 ### Other Pages
 
 - `/` - Documentation homepage
