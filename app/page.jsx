@@ -210,7 +210,7 @@ export default function Page() {
       <Toaster position="top-center" richColors />
       <h1 className="text-2xl font-bold mb-4">Widget Generator</h1>
       <div className="flex flex-col lg:flex-row gap-8">
-        <div className="lg:w-1/2 w-full pl-6 md:pl-12">
+        <div className="lg:w-1/2 w-full">
       <div className="mb-4">
         <label className="block text-sm font-medium font-bold">Player Name</label>
         <input
@@ -368,7 +368,7 @@ export default function Page() {
         }
       </button>
       </div>
-      <div className="lg:w-1/2 w-full pr-6 md:pr-12">
+      <div className="lg:w-1/2 w-full">
   
       <div className="mt-8">
         {widgetUrl && (
