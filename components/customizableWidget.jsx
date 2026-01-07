@@ -221,6 +221,10 @@ function CanvasElement({ element, onMove, onRemove, isSelected, onSelect, canvas
       {renderContent()}
       {showRemoveButton && (
         <button
+          onMouseDown={(e) => {
+            // Prevent parent onMouseDown from selecting the element
+            e.stopPropagation();
+          }}
           onClick={(e) => {
             e.stopPropagation();
             onRemove(element.id);
