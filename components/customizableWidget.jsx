@@ -42,6 +42,16 @@ const AVAILABLE_FEATURES = [
   { id: 'averageTime', label: 'Average Time', width: 100, height: 20, type: 'text', defaultColor: '#60A5FA' },
 ];
 
+// Available font families for text elements
+const AVAILABLE_FONTS = [
+  'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
+  'Roboto, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial',
+  '"Press Start 2P", "Courier New", monospace',
+  '"Minecraft", "Press Start 2P", monospace',
+  'Georgia, serif',
+  'Courier New, Courier, monospace'
+];
+
 function DraggableFeature({ feature, isPlaced, onDragStart }) {
   const handleDragStart = (e) => {
     e.dataTransfer.effectAllowed = 'copy';
@@ -167,27 +177,27 @@ function CanvasElement({ element, onMove, onRemove, isSelected, onSelect, canvas
           />
         );
       case 'playerRank':
-        return <div className="font-bold text-sm" style={{ color: element.color || '#FFFFFF' }}>{SAMPLE_DATA.playerRank}</div>;
+        return <div className="font-bold text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.playerRank}</div>;
       case 'elo':
-        return <div className="text-sm" style={{ color: element.color || '#FFFFFF' }}>{SAMPLE_DATA.elo} ELO</div>;
+        return <div className="text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.elo} ELO</div>;
       case 'eloPlusMinus':
-        return <div className="text-sm" style={{ color: element.color || '#9CA3AF' }}>({SAMPLE_DATA.eloPlusMinus})</div>;
+        return <div className="text-sm" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>({SAMPLE_DATA.eloPlusMinus})</div>;
       case 'wins':
-        return <div className="font-bold text-sm" style={{ color: element.color || '#10B981' }}>{SAMPLE_DATA.wins}W</div>;
+        return <div className="font-bold text-sm" style={{ color: element.color || '#10B981', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.wins}W</div>;
       case 'losses':
-        return <div className="font-bold text-sm" style={{ color: element.color || '#EF4444' }}>{SAMPLE_DATA.losses}L</div>;
+        return <div className="font-bold text-sm" style={{ color: element.color || '#EF4444', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.losses}L</div>;
       case 'draws':
-        return <div className="font-bold text-sm" style={{ color: element.color || '#9CA3AF' }}>{SAMPLE_DATA.draws}D</div>;
+        return <div className="font-bold text-sm" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.draws}D</div>;
       case 'winRate':
-        return <div className="text-sm" style={{ color: element.color || '#FFFFFF' }}>{SAMPLE_DATA.winRate}% WR</div>;
+        return <div className="text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.winRate}% WR</div>;
       case 'totalMatches':
-        return <div className="text-sm" style={{ color: element.color || '#9CA3AF' }}>{SAMPLE_DATA.totalMatches} MATCHES</div>;
+        return <div className="text-sm" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.totalMatches} MATCHES</div>;
       case 'countdown':
-        return <div className="text-xs" style={{ color: element.color || '#9CA3AF' }}>{SAMPLE_DATA.countdown}s</div>;
+        return <div className="text-xs" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.countdown}s</div>;
       case 'averageTime':
-        return <div className="text-sm" style={{ color: element.color || '#60A5FA' }}>Avg: {SAMPLE_DATA.averageTime}</div>;
+        return <div className="text-sm" style={{ color: element.color || '#60A5FA', fontFamily: element.font || AVAILABLE_FONTS[0] }}>Avg: {SAMPLE_DATA.averageTime}</div>;
       default:
-        return <div className="text-xs" style={{ color: element.color || '#FFFFFF' }}>{element.label}</div>;
+        return <div className="text-xs" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{element.label}</div>;
     }
   };
 
@@ -271,25 +281,25 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
           />
         );
       case 'playerRank':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF' }}>{playerRank}</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{playerRank}</div>;
       case 'elo':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF' }}>{elo} ELO</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{elo} ELO</div>;
       case 'eloPlusMinus':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF' }}>({eloPlusMinus})</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>({eloPlusMinus})</div>;
       case 'wins':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#10B981' }}>{winCount}W</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#10B981', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{winCount}W</div>;
       case 'losses':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#EF4444' }}>{lossCount}L</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#EF4444', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{lossCount}L</div>;
       case 'draws':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF' }}>{drawCount}D</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{drawCount}D</div>;
       case 'winRate':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF' }}>{winRate}% WR</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{winRate}% WR</div>;
       case 'totalMatches':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF' }}>{totalGames} {totalGames === 1 ? 'MATCH' : 'MATCHES'}</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{totalGames} {totalGames === 1 ? 'MATCH' : 'MATCHES'}</div>;
       case 'countdown':
-        return <div className="text-xs whitespace-nowrap" style={{ color: element.color || '#9CA3AF' }}>{countdown}s</div>;
+        return <div className="text-xs whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{countdown}s</div>;
       case 'averageTime':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#60A5FA' }}>Avg: {averageTime || 'N/A'}</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#60A5FA', fontFamily: element.font || AVAILABLE_FONTS[0] }}>Avg: {averageTime || 'N/A'}</div>;
       default:
         return null;
     }
@@ -394,6 +404,8 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
         height: feature.height,
         type: feature.type,
         color: feature.defaultColor,
+        // default font for text elements
+        font: feature.type === 'text' ? AVAILABLE_FONTS[0] : undefined,
         scale: 1,
       }]);
     }
@@ -420,6 +432,12 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
     if (selectedElement === id) {
       setSelectedElement(null);
     }
+  };
+
+  const handleFontChange = (id, font) => {
+    setCanvasElements(canvasElements.map(el =>
+      el.id === id ? { ...el, font } : el
+    ));
   };
 
   const handleClearCanvas = () => {
@@ -469,27 +487,27 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
           />
         );
       case 'playerRank':
-        return <div className="font-bold text-sm" style={{ color: feature.defaultColor }}>{SAMPLE_DATA.playerRank}</div>;
+        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.playerRank}</div>;
       case 'elo':
-        return <div className="text-sm" style={{ color: feature.defaultColor }}>{SAMPLE_DATA.elo} ELO</div>;
+        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.elo} ELO</div>;
       case 'eloPlusMinus':
-        return <div className="text-sm" style={{ color: feature.defaultColor }}>({SAMPLE_DATA.eloPlusMinus})</div>;
+        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>({SAMPLE_DATA.eloPlusMinus})</div>;
       case 'wins':
-        return <div className="font-bold text-sm" style={{ color: feature.defaultColor }}>{SAMPLE_DATA.wins}W</div>;
+        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.wins}W</div>;
       case 'losses':
-        return <div className="font-bold text-sm" style={{ color: feature.defaultColor }}>{SAMPLE_DATA.losses}L</div>;
+        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.losses}L</div>;
       case 'draws':
-        return <div className="font-bold text-sm" style={{ color: feature.defaultColor }}>{SAMPLE_DATA.draws}D</div>;
+        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.draws}D</div>;
       case 'winRate':
-        return <div className="text-sm" style={{ color: feature.defaultColor }}>{SAMPLE_DATA.winRate}% WR</div>;
+        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.winRate}% WR</div>;
       case 'totalMatches':
-        return <div className="text-sm" style={{ color: feature.defaultColor }}>{SAMPLE_DATA.totalMatches} MATCHES</div>;
+        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.totalMatches} MATCHES</div>;
       case 'countdown':
-        return <div className="text-xs" style={{ color: feature.defaultColor }}>{SAMPLE_DATA.countdown}s</div>;
+        return <div className="text-xs" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.countdown}s</div>;
       case 'averageTime':
-        return <div className="text-sm" style={{ color: feature.defaultColor }}>Avg: {SAMPLE_DATA.averageTime}</div>;
+        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>Avg: {SAMPLE_DATA.averageTime}</div>;
       default:
-        return <div className="text-xs" style={{ color: feature.defaultColor || '#FFFFFF' }}>{feature.label}</div>;
+        return <div className="text-xs" style={{ color: feature.defaultColor || '#FFFFFF', fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{feature.label}</div>;
     }
   };
 
@@ -621,6 +639,22 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
                   className="flex-1 bg-gray-600 text-white text-xs px-2 py-1 rounded"
                   placeholder="#FFFFFF"
                 />
+              </div>
+              {/* Font selector */}
+              <div className="mt-2">
+                <label className="text-white text-xs font-semibold block mb-1">Font</label>
+                <select
+                  value={canvasElements.find(el => el.id === selectedElement)?.font || AVAILABLE_FONTS[0]}
+                  onChange={(e) => handleFontChange(selectedElement, e.target.value)}
+                  className="w-full bg-gray-600 text-white text-xs px-2 py-1 rounded"
+                >
+                  <option value={AVAILABLE_FONTS[0]}>Sans (Inter)</option>
+                  <option value={AVAILABLE_FONTS[1]}>Roboto</option>
+                  <option value={AVAILABLE_FONTS[2]}>Retro</option>
+                  <option value={AVAILABLE_FONTS[3]}>Minecraft</option>
+                  <option value={AVAILABLE_FONTS[4]}>Serif</option>
+                  <option value={AVAILABLE_FONTS[5]}>Monospace</option>
+                </select>
               </div>
             </div>
           )}
