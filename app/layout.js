@@ -14,7 +14,12 @@ const geistMono = localFont({
 
 export const metadata = {
   title: "mcsr-ranked Widget",
-  description: "A widget to display your ranked stats"
+  description: "A widget to display your ranked stats",
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({ children }) {
