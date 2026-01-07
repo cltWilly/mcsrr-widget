@@ -2,55 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { calWinRate, countMatches, normalizePlusMinusElo, rankIcons } from "@/lib/widgetUtils";
-
-// Snap position to grid based on existing elements
-function snapToGrid(x, y, gridSize = 10) {
-  return {
-    x: Math.round(x / gridSize) * gridSize,
-    y: Math.round(y / gridSize) * gridSize,
-  };
-}
-
-// Sample data for preview
-const SAMPLE_DATA = {
-  playerRank: 'Diamond 1',
-  elo: 1650,
-  eloPlusMinus: '+25',
-  wins: 15,
-  losses: 8,
-  draws: 2,
-  winRate: '65.2',
-  totalMatches: 25,
-  countdown: 120,
-  rankIcon: '/diamond.png',
-  averageTime: '12:34'
-};
-
-// Available widget features
-const AVAILABLE_FEATURES = [
-  { id: 'rankIcon', label: 'Rank Icon', width: 40, height: 40, type: 'image', defaultColor: '#FFFFFF' },
-  { id: 'playerHead', label: 'Player Head', width: 40, height: 40, type: 'image', defaultColor: '#FFFFFF' },
-  { id: 'playerRank', label: 'Player Rank', width: 100, height: 24, type: 'text', defaultColor: '#FFFFFF' },
-  { id: 'elo', label: 'ELO Rating', width: 80, height: 20, type: 'text', defaultColor: '#FFFFFF' },
-  { id: 'eloPlusMinus', label: 'ELO +/-', width: 60, height: 20, type: 'text', defaultColor: '#9CA3AF' },
-  { id: 'wins', label: 'Wins', width: 50, height: 20, type: 'text', defaultColor: '#10B981' },
-  { id: 'losses', label: 'Losses', width: 50, height: 20, type: 'text', defaultColor: '#EF4444' },
-  { id: 'draws', label: 'Draws', width: 50, height: 20, type: 'text', defaultColor: '#9CA3AF' },
-  { id: 'winRate', label: 'Win Rate %', width: 80, height: 20, type: 'text', defaultColor: '#FFFFFF' },
-  { id: 'totalMatches', label: 'Total Matches', width: 120, height: 20, type: 'text', defaultColor: '#9CA3AF' },
-  { id: 'countdown', label: 'Countdown Timer', width: 60, height: 20, type: 'text', defaultColor: '#9CA3AF' },
-  { id: 'averageTime', label: 'Average Time', width: 100, height: 20, type: 'text', defaultColor: '#60A5FA' },
-];
-
-// Available font families for text elements
-const AVAILABLE_FONTS = [
-  'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-  'Roboto, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial',
-  '"Press Start 2P", "Courier New", monospace',
-  '"Minecraft", "Press Start 2P", monospace',
-  'Georgia, serif',
-  'Courier New, Courier, monospace'
-];
+import { snapToGrid, SAMPLE_DATA, AVAILABLE_FEATURES, AVAILABLE_FONTS } from "@/lib/customWidgetHelpers";
+import { AnimatedNumber, AnimatedPercentage } from "./AnimatedNumber";
 
 function DraggableFeature({ feature, isPlaced, onDragStart }) {
   const handleDragStart = (e) => {
@@ -287,19 +240,19 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
       case 'playerRank':
         return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{playerRank}</div>;
       case 'elo':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{elo} ELO</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={elo} /> ELO</div>;
       case 'eloPlusMinus':
         return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>({eloPlusMinus})</div>;
       case 'wins':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#10B981', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{winCount}W</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#10B981', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={winCount} />W</div>;
       case 'losses':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#EF4444', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{lossCount}L</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#EF4444', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={lossCount} />L</div>;
       case 'draws':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{drawCount}D</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={drawCount} />D</div>;
       case 'winRate':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{winRate}% WR</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedPercentage value={parseFloat(winRate)} />% WR</div>;
       case 'totalMatches':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{totalGames} {totalGames === 1 ? 'MATCH' : 'MATCHES'}</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={totalGames} /> {totalGames === 1 ? 'MATCH' : 'MATCHES'}</div>;
       case 'countdown':
         return <div className="text-xs whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{countdown}s</div>;
       case 'averageTime':

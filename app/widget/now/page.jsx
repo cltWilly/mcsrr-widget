@@ -152,6 +152,7 @@ function WidgetPage() {
   const [drawCount, setDrawCount] = useState(null);
   const [matches, setMatches] = useState(null);
   const [averageTime, setAverageTime] = useState(null);
+  const [apiError, setApiError] = useState(null);
 
   const ranksTable = {
     "0-400": "Coal 1",
@@ -195,13 +196,25 @@ function WidgetPage() {
       let interval;
 
       fetchInitPlayer(player).then((data) => {
+        if (!data) {
+          setApiError('MCSR Ranked API is currently unavailable. Please try again later.');
+          return;
+        }
+        
+        setApiError(null);
         setPlayerUUID(data.uuid);
         setStartElo(data.eloRate);
         const initialTimestamp = getCurrentTimestamp();
         setInitialTimestamp(initialTimestamp);
 
         // Fetch all matches across pages using the new function
-        fetchAllMatches(data.uuid, initialTimestamp).then(({ allMatches, winCount, lossCount, drawsCount }) => {
+        fetchAllMatches(data.uuid, initialTimestamp).then((result) => {
+          if (!result) {
+            setApiError('Failed to fetch match data. API may be down for maintenance.');
+            return;
+          }
+          
+          const { allMatches, winCount, lossCount, drawsCount } = result;
           setMatches(allMatches);
           setWinCount(winCount);
           setLossCount(lossCount);
@@ -209,35 +222,41 @@ function WidgetPage() {
 
           // Calculate Elo change and set current Elo based on the matches
           setEloPlusMinus(getEloPlusMinus(allMatches, data.uuid, initialTimestamp));
-          setCurrentElo(allMatches[0].players.find(player => player.uuid === data.uuid).eloRate);
+          setCurrentElo(allMatches[0]?.players.find(player => player.uuid === data.uuid)?.eloRate || data.eloRate);
           
           // Calculate average time
           const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
           setAverageTime(formatTime(avgTimeMs));
         });
 
-        interval = setInterval(() => {
+        interval = setInterval(async () => {
           console.log("fetching new win/loss data");
           console.log("current timestamp: " + initialTimestamp);
 
           // Refetch matches every 2 minutes
-          fetchAllMatches(data.uuid, initialTimestamp).then(({ allMatches, winCount, lossCount, drawsCount }) => {
-            setMatches(allMatches);
-            setWinCount(winCount);
-            setLossCount(lossCount);
-            setDrawCount(drawsCount);
+          const result = await fetchAllMatches(data.uuid, initialTimestamp);
+          if (!result) {
+            setApiError('Failed to refresh match data. API may be down.');
+            return;
+          }
+          
+          setApiError(null);
+          const { allMatches, winCount, lossCount, drawsCount } = result;
+          setMatches(allMatches);
+          setWinCount(winCount);
+          setLossCount(lossCount);
+          setDrawCount(drawsCount);
 
-            console.log("win count: " + winCount);
-            console.log("loss count: " + lossCount);
-            console.log("draw count: " + drawsCount);
+          console.log("win count: " + winCount);
+          console.log("loss count: " + lossCount);
+          console.log("draw count: " + drawsCount);
 
-            setEloPlusMinus(getEloPlusMinus(allMatches, data.uuid, initialTimestamp));
-            setCurrentElo(allMatches[0].players.find(player => player.uuid === data.uuid).eloRate);
-            
-            // Update average time
-            const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
-            setAverageTime(formatTime(avgTimeMs));
-          });
+          setEloPlusMinus(getEloPlusMinus(allMatches, data.uuid, initialTimestamp));
+          setCurrentElo(allMatches[0]?.players.find(player => player.uuid === data.uuid)?.eloRate || currentElo);
+          
+          // Update average time
+          const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
+          setAverageTime(formatTime(avgTimeMs));
         }, 2 * 60 * 1000); // 2 minutes
 
         console.log(data);
@@ -266,7 +285,16 @@ function WidgetPage() {
   return (
     <div className="relative min-h-screen">
       <div className="absolute top-0 left-0">
-      {widgetType === '1' ? (
+      {apiError ? (
+        <div className="bg-[#171e1f] text-white rounded-md p-6 shadow-lg border-2 border-red-500" style={{ width: widgetType === '3' ? `${canvasWidth}px` : widgetType === '4' ? `${graphWidth}px` : '300px', minHeight: widgetType === '3' ? `${canvasHeight}px` : widgetType === '4' ? `${graphHeight}px` : '100px' }}>
+          <div className="flex flex-col items-center justify-center h-full text-center">
+            <div className="text-4xl mb-3">⚠️</div>
+            <div className="text-red-400 font-bold text-lg mb-2">API Error</div>
+            <div className="text-gray-300 text-sm leading-relaxed">{apiError}</div>
+            <div className="mt-4 text-xs text-gray-500">Retrying automatically...</div>
+          </div>
+        </div>
+      ) : widgetType === '1' ? (
           <DefaultWidget
             uuid={playerUUID}
             elo={currentElo}

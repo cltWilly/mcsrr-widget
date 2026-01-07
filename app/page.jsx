@@ -83,7 +83,16 @@ export default function Page() {
     const startTimestamp = timestampOption === "now" ? getCurrentTimestamp() : new Date(selectedTimestamp).getTime() / 1000;
 
     // Fetch all player matches
-    const { allMatches, winCount, lossCount, drawCount } = await fetchAllMatches(playerUUID, startTimestamp);
+    const matchesResult = await fetchAllMatches(playerUUID, startTimestamp);
+    
+    // Check if API call failed
+    if (!matchesResult) {
+      toast.error("MCSR Ranked API is currently unavailable. Please try again later.");
+      setIsUpdating(false);
+      return;
+    }
+    
+    const { allMatches, winCount, lossCount, drawCount } = matchesResult;
 
     // Calculate win rate
     const totalGames = winCount + lossCount;
@@ -357,6 +366,10 @@ export default function Page() {
               initialLayout={widgetLayout}
               canvasWidth={canvasWidth}
               canvasHeight={canvasHeight}
+              onCanvasSizeChange={(width, height) => {
+                setCanvasWidth(width);
+                setCanvasHeight(height);
+              }}
             />
           </div>
         </>
