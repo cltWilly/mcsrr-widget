@@ -21,9 +21,10 @@ A modern, customizable widget for [OBS](https://obsproject.com/) that displays r
 1. Visit the [generator page]({domain}/generator)
 2. Enter your MCSR Ranked username
 3. Choose your widget type:
-   - **Default** - Classic layout with all stats
-   - **Small Box** - Compact version for minimal overlays
-   - **Custom** - Fully customizable drag-and-drop layout
+  - **Default** - Classic layout with all stats
+  - **Small Box** - Compact version for minimal overlays
+  - **Custom** - Fully customizable drag-and-drop layout
+  - **Graph** - Graph widget showing historical win/loss/elo trends
 4. Configure your settings (timestamp, colors, positioning)
 5. Click **Generate Widget** and copy the URL
 6. Add as a **Browser Source** in OBS with the generated URL
@@ -60,7 +61,7 @@ Base URL: not deployed yet
 ### Query Parameters
 
 - `player` - **(required)** MCSR Ranked username
-- `widgetType` - Widget style: `1` (default), `2` (small), `3` (custom)
+- `widgetType` - Widget style: `1` (default), `2` (small), `3` (custom), `4` (graph)
 - `layout` - Custom widget layout configuration (JSON)
 - `width` - Custom widget width in pixels (100-800)
 - `height` - Custom widget height in pixels (50-400)
