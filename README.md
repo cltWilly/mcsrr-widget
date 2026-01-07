@@ -66,6 +66,8 @@ Base URL: not deployed yet
 - `width` - Custom widget width in pixels (100-800)
 - `height` - Custom widget height in pixels (50-400)
 
+- `font` - Optional CSS font-family string to override the default font for text elements (example: `Inter, Arial, sans-serif`). If `layout` JSON includes per-element `font` fields, those take precedence over this global `font`.
+
 
 ### Layout Configuration JSON example
 
