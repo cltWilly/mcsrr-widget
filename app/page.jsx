@@ -33,6 +33,7 @@ export default function Page() {
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState('Copy URL');
+  const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -47,7 +48,8 @@ export default function Page() {
   };
 
   const handleWidgetTypeChange = (e) => {
-    setWidgetTypeOption(e.target.value);
+    const newType = e.target.value;
+    setWidgetTypeOption(newType);
   };
 
   const handleGeneratePreview = async () => {
@@ -221,9 +223,10 @@ export default function Page() {
   return (
     <div className="p-8">
       <Toaster position="top-center" richColors />
-      <h1 className="text-2xl font-bold mb-4">Widget Generator</h1>
-      <div className="flex flex-col lg:flex-row gap-8">
+      <h1 className="text-2xl font-bold mb-6">Widget Generator</h1>
+      <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
         <div className="lg:w-1/2 w-full">
+          <h2 className="text-xl font-bold mb-4">Configuration</h2>
       <div className="mb-4">
         <label className="block text-sm font-medium font-bold">Player Name</label>
         <input
@@ -282,97 +285,19 @@ export default function Page() {
       </div>
      
       {widgetTypeOption === "3" && (
-        <>
-          <div className="mb-4">
-            <label className="block text-sm font-medium font-bold mb-2">Canvas Size</label>
-            <div className="flex gap-4 items-center">
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Width (px)</label>
-                <input
-                  type="number"
-                  value={canvasWidth}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val === '' || val === '-') {
-                      setCanvasWidth(100);
-                    } else {
-                      const num = parseInt(val);
-                      if (!isNaN(num)) {
-                        setCanvasWidth(num);
-                      }
-                    }
-                  }}
-                  onBlur={(e) => {
-                    const num = parseInt(e.target.value);
-                    if (isNaN(num) || num < 100) {
-                      setCanvasWidth(100);
-                    } else if (num > 800) {
-                      setCanvasWidth(800);
-                    }
-                  }}
-                  className="block w-24 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
-                  min="100"
-                  max="800"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-400 mb-1">Height (px)</label>
-                <input
-                  type="number"
-                  value={canvasHeight}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val === '' || val === '-') {
-                      setCanvasHeight(50);
-                    } else {
-                      const num = parseInt(val);
-                      if (!isNaN(num)) {
-                        setCanvasHeight(num);
-                      }
-                    }
-                  }}
-                  onBlur={(e) => {
-                    const num = parseInt(e.target.value);
-                    if (isNaN(num) || num < 50) {
-                      setCanvasHeight(50);
-                    } else if (num > 400) {
-                      setCanvasHeight(400);
-                    }
-                  }}
-                  className="block w-24 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
-                  min="50"
-                  max="400"
-                />
-              </div>
-              <button
-                onClick={() => {
-                  setCanvasWidth(300);
-                  setCanvasHeight(100);
-                }}
-                className="mt-4 px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md"
-              >
-                Reset Size
-              </button>
-            </div>
-          </div>
-          <div 
-            className="mb-4"
-            style={{ 
-              maxWidth: canvasWidth > 300 ? `${canvasWidth + 236}px` : '535px'
-            }}
+        <div className="mb-4">
+          <button
+            onClick={() => setIsEditorModalOpen(true)}
+            className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded w-full md:w-auto"
           >
-            <DragDropWidgetEditor 
-              onLayoutChange={setWidgetLayout} 
-              initialLayout={widgetLayout}
-              canvasWidth={canvasWidth}
-              canvasHeight={canvasHeight}
-              onCanvasSizeChange={(width, height) => {
-                setCanvasWidth(width);
-                setCanvasHeight(height);
-              }}
-            />
-          </div>
-        </>
+            Open Widget Editor
+          </button>
+          {widgetLayout && widgetLayout.length > 0 && (
+            <p className="mt-2 text-sm text-green-400">
+              ✓ Layout configured ({widgetLayout.length} elements)
+            </p>
+          )}
+        </div>
       )}
       <button
         onClick={handleGeneratePreview}
@@ -385,9 +310,9 @@ export default function Page() {
         }
       </button>
       </div>
-      <div className="lg:w-1/2 w-full">
+      <div className="lg:w-1/2 w-full lg:sticky lg:top-8 lg:self-start">
   
-      <div className="mt-8">
+      <div className="lg:mt-0 mt-8">
         {widgetUrl && (
           <>
             <h2 className="text-xl font-bold mb-4">Widget Preview</h2>
@@ -433,6 +358,117 @@ export default function Page() {
       </div>
       </div>
       </div>
+
+      {/* Custom Widget Editor Modal */}
+      {isEditorModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setIsEditorModalOpen(false)}>
+          <div className="bg-gray-800 rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-white">Customize Widget Layout</h2>
+              <button
+                onClick={() => setIsEditorModalOpen(false)}
+                className="text-gray-400 hover:text-white text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+            <div className="p-6">
+              <div className="mb-4">
+                <label className="block text-sm font-medium font-bold mb-2 text-white">Canvas Size</label>
+                <div className="flex gap-4 items-center">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Width (px)</label>
+                    <input
+                      type="number"
+                      value={canvasWidth}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '' || val === '-') {
+                          setCanvasWidth(100);
+                        } else {
+                          const num = parseInt(val);
+                          if (!isNaN(num)) {
+                            setCanvasWidth(num);
+                          }
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const num = parseInt(e.target.value);
+                        if (isNaN(num) || num < 100) {
+                          setCanvasWidth(100);
+                        } else if (num > 800) {
+                          setCanvasWidth(800);
+                        }
+                      }}
+                      className="block w-24 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+                      min="100"
+                      max="800"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Height (px)</label>
+                    <input
+                      type="number"
+                      value={canvasHeight}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '' || val === '-') {
+                          setCanvasHeight(50);
+                        } else {
+                          const num = parseInt(val);
+                          if (!isNaN(num)) {
+                            setCanvasHeight(num);
+                          }
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const num = parseInt(e.target.value);
+                        if (isNaN(num) || num < 50) {
+                          setCanvasHeight(50);
+                        } else if (num > 400) {
+                          setCanvasHeight(400);
+                        }
+                      }}
+                      className="block w-24 p-2 border border-gray-300 rounded-md bg-gray-900 text-white"
+                      min="50"
+                      max="400"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      setCanvasWidth(300);
+                      setCanvasHeight(100);
+                    }}
+                    className="mt-4 px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md"
+                  >
+                    Reset Size
+                  </button>
+                </div>
+              </div>
+              <div className="mb-4">
+                <DragDropWidgetEditor 
+                  onLayoutChange={setWidgetLayout} 
+                  initialLayout={widgetLayout}
+                  canvasWidth={canvasWidth}
+                  canvasHeight={canvasHeight}
+                  onCanvasSizeChange={(width, height) => {
+                    setCanvasWidth(width);
+                    setCanvasHeight(height);
+                  }}
+                />
+              </div>
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setIsEditorModalOpen(false)}
+                  className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

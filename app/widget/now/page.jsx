@@ -5,118 +5,13 @@ import { useSearchParams } from "next/navigation";
 import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { CustomizableWidget } from "@/components/customizableWidget";
 import { GraphWidget } from "@/components/graphWidget";
-
-async function fetchInitPlayer(playerName) {
-  const res = await fetch(`https://mcsrranked.com/api/users/${playerName}`);
-  const result = await res.json();
-  console.log(result);
-  return result.data;
-}
-
-// Update this function to accept 'page' parameter
-async function fetchPlayerMatches(playerUUID, page = 0) {
-  const res = await fetch(`https://mcsrranked.com/api/users/${playerUUID}/matches?type=2&excludedecay=false&count=50&page=${page}`);
-  const result = await res.json();
-  console.log(result);
-  return result.data;
-}
-
-function getCurrentTimestamp() {
-  const date = Math.floor(Date.now() / 1000);
-  // adjust the date +2 hours
-  console.log(date - 2 * 60 * 60);
-  return date;
-}
-
-function getWinLoss(matches, playerUUID, startTimestamp) {
-  let wins = 0;
-  let losses = 0;
-  let draws = 0;
-
-  matches.forEach(match => {
-    if (match.date > startTimestamp) {
-      if (match.result.uuid === playerUUID) {
-        wins++;
-      } else if (match.result.uuid === null) {
-        draws++;
-      } else {
-        losses++;
-      }
-    }
-  });
-
-  return { wins, losses, draws };
-}
-
-function getEloPlusMinus(matches, playerUUID, startTimestamp) {
-  let eloPlusMinus = 0;
-
-  matches.forEach(match => {
-    if (match.date > startTimestamp) {
-      match.changes.forEach(change => {
-        if (change.uuid === playerUUID) {
-          eloPlusMinus += change.change;
-        }
-      });
-    }
-  });
-
-  return eloPlusMinus;
-}
-
-function calculateAverageTime(matches, playerUUID, startTimestamp) {
-  const wonMatches = matches.filter(match => 
-    match.date > startTimestamp && 
-    match.result && 
-    match.result.uuid === playerUUID && 
-    match.result.time
-  );
-
-  if (wonMatches.length === 0) return null;
-
-  const totalTime = wonMatches.reduce((sum, match) => sum + match.result.time, 0);
-  const averageTimeMs = totalTime / wonMatches.length;
-  
-  return averageTimeMs;
-}
-
-function formatTime(milliseconds) {
-  if (!milliseconds) return 'N/A';
-  
-  const totalSeconds = Math.floor(milliseconds / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
-
-// Add a function to fetch all matches across pages
-async function fetchAllMatches(playerUUID, startTimestamp) {
-  let page = 0;
-  let allMatches = [];
-  let winCount = 0;
-  let lossCount = 0;
-  let drawsCount = 0;
-
-  while (true) {
-    const matches = await fetchPlayerMatches(playerUUID, page);
-    allMatches = allMatches.concat(matches);
-
-    const { wins, losses, draws } = getWinLoss(matches, playerUUID, startTimestamp);
-    winCount += wins;
-    lossCount += losses;
-    drawsCount += draws;
-
-    // If fewer than 50 matches are returned, or the last match's date is older than the start timestamp, stop fetching
-    if (matches.length < 50 || matches[matches.length - 1].date <= startTimestamp) {
-      break;
-    }
-
-    page++;
-  }
-
-  return { allMatches, winCount, lossCount, drawsCount };
-}
+import { 
+  fetchInitPlayer, 
+  fetchAllMatches, 
+  getCurrentTimestamp, 
+  getEloPlusMinus 
+} from "@/lib/generatorUtils";
+import { calculateAverageTime, formatTime } from "@/lib/widgetUtils";
 
 function WidgetPage() {
   const searchParams = useSearchParams();
