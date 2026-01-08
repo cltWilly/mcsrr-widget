@@ -5,13 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { CustomizableWidget } from "@/components/customizableWidget";
 import { GraphWidget } from "@/components/graphWidget";
+import { CarouselWidget } from "@/components/carouselWidget";
 import { 
   fetchInitPlayer, 
   fetchAllMatches, 
   getCurrentTimestamp, 
   getEloPlusMinus 
 } from "@/lib/generatorUtils";
-import { calculateAverageTime, formatTime } from "@/lib/widgetUtils";
+import { calculateAverageTime, formatTime, rankIcons, ranksTable,  calWinRate } from "@/lib/widgetUtils";
 
 function WidgetPage() {
   const searchParams = useSearchParams();
@@ -27,6 +28,10 @@ function WidgetPage() {
   const bgColor = searchParams.get('bgColor') || "#171e1f";
   const showTimer = searchParams.get('showTimer') === 'false' ? false : true;
   const fontFamily = searchParams.get('fontFamily') || 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial';
+  const carouselWidgetsParam = searchParams.get('carouselWidgets');
+  const carouselWidgets = carouselWidgetsParam ? carouselWidgetsParam.split(',') : ["1", "4"];
+  const transitionDuration = parseInt(searchParams.get('transitionDuration')) || 5;
+  const showProgressIndicator = searchParams.get('showProgressIndicator') === 'false' ? false : true;
   
   // Parse layout configuration
   let layout = null;
@@ -52,26 +57,6 @@ function WidgetPage() {
   const [matches, setMatches] = useState(null);
   const [averageTime, setAverageTime] = useState(null);
   const [apiError, setApiError] = useState(null);
-
-  const ranksTable = {
-    "0-400": "Coal 1",
-    "401-500": "Coal 2",
-    "501-600": "Coal 3",
-    "601-700": "Iron 1",
-    "701-800": "Iron 2",
-    "801-900": "Iron 3",
-    "901-1000": "Gold 1",
-    "1001-1100": "Gold 2",
-    "1101-1200": "Gold 3",
-    "1201-1300": "Emerald 1",
-    "1301-1400": "Emerald 2",
-    "1401-1500": "Emerald 3",
-    "1501-1650": "Diamond 1",
-    "1651-1800": "Diamond 2",
-    "1801-2000": "Diamond 3",
-    "2001+": "Netherite 1",
-  };
-
 
 
   function getRank(elo) {
@@ -248,6 +233,30 @@ function WidgetPage() {
             bgColor={bgColor}
             fontFamily={fontFamily}
             showTimer={showTimer}
+          />
+        ) : widgetType === '5' ? (
+          <CarouselWidget
+            carouselWidgets={carouselWidgets}
+            transitionDuration={transitionDuration}
+            playerUUID={playerUUID}
+            startTimestamp={initialTimestamp}
+            graphType={graphType}
+            playerData={{
+              rankIcon: rankIcons[playerRank],
+              playerRank: playerRank,
+              elo: currentElo,
+              eloPlusMinus: eloPlusMinus,
+              winCount: winCount,
+              lossCount: lossCount,
+              drawCount: drawCount,
+              winRate: calWinRate(winCount, lossCount, drawCount),
+              matches: matches || []
+            }}
+            opacity={opacity}
+            bgColor={bgColor}
+            showTimer={showTimer}
+            fontFamily={fontFamily}
+            showProgressIndicator={showProgressIndicator}
           />
         ) : (
           <div>widgetType is missing</div>

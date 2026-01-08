@@ -35,6 +35,11 @@ export default function Page() {
   const [bgColor, setBgColor] = useState("#171e1f");
   const [showTimer, setShowTimer] = useState(true);
   const [fontFamily, setFontFamily] = useState(AVAILABLE_FONTS[0]);
+  
+  // Carousel widget configuration
+  const [carouselWidgets, setCarouselWidgets] = useState(["1", "4"]); // Default: Default + Graph
+  const [transitionDuration, setTransitionDuration] = useState(5); // seconds
+  const [showProgressIndicator, setShowProgressIndicator] = useState(true);
 
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
@@ -71,7 +76,7 @@ export default function Page() {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight]);
+  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight, carouselWidgets, transitionDuration, showProgressIndicator]);
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -238,6 +243,13 @@ export default function Page() {
       url += `&graphWidth=${graphWidth}&graphHeight=${graphHeight}`;
     }
     
+    // Add carousel configuration
+    if (widgetTypeOption === "5") {
+      url += `&carouselWidgets=${encodeURIComponent(carouselWidgets.join(','))}`;
+      url += `&transitionDuration=${transitionDuration}`;
+      url += `&showProgressIndicator=${showProgressIndicator}`;
+    }
+    
     // Apply canvas and graph size changes (only when Generate/Update pressed)
     setAppliedCanvasWidth(canvasWidth);
     setAppliedCanvasHeight(canvasHeight);
@@ -270,8 +282,8 @@ export default function Page() {
   };
 
   // Recommend sizes based on selected widget and applied dimensions
-  const recommendedWidth = widgetTypeOption === "3" ? appliedCanvasWidth : widgetTypeOption === "4" ? 320 : widgetTypeOption === "2" ? 130 : 300;
-  const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? 136 : widgetTypeOption === "2" ? 96 : 100;
+  const recommendedWidth = widgetTypeOption === "3" ? appliedCanvasWidth : widgetTypeOption === "4" ? 320 : widgetTypeOption === "2" ? 130 : widgetTypeOption === "5" ? 320 : 300;
+  const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? 136 : widgetTypeOption === "2" ? 96 : widgetTypeOption === "5" ? 176 : 100;
 
   return (
     <div className="p-8">
@@ -367,6 +379,7 @@ export default function Page() {
           <option value="2">Small box Widget</option>
           <option value="3">Customizable Widget (Drag & Drop)</option>
           <option value="4">Graph Widget</option>
+          <option value="5">Carousel (Multiple Widgets)</option>
         </select>
       </div>
       
@@ -477,6 +490,67 @@ export default function Page() {
           )}
         </div>
       )}
+      
+      {widgetTypeOption === "5" && (
+        <div className="mb-4 p-4 border border-gray-600 rounded-md w-full md:w-1/2">
+          <h3 className="text-lg font-bold mb-3">Carousel Configuration</h3>
+          <div className="mb-4">
+            <label className="block text-sm font-medium font-bold mb-2">Select Widgets to Display</label>
+            <div className="space-y-2">
+              {[
+                { value: "1", label: "Default Widget" },
+                { value: "2", label: "Small Box Widget" },
+                { value: "4", label: "Graph Widget" }
+              ].map(widget => (
+                <label key={widget.value} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={carouselWidgets.includes(widget.value)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setCarouselWidgets([...carouselWidgets, widget.value]);
+                      } else {
+                        setCarouselWidgets(carouselWidgets.filter(w => w !== widget.value));
+                      }
+                    }}
+                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                  />
+                  <span className="text-sm">{widget.label}</span>
+                </label>
+              ))}
+            </div>
+            {carouselWidgets.length < 2 && (
+              <p className="mt-2 text-sm text-yellow-400">⚠ Select at least 2 widgets for carousel</p>
+            )}
+          </div>
+          <div className="mb-2">
+            <label className="block text-sm font-medium font-bold mb-2">Transition Duration</label>
+            <div className="flex items-center gap-4">
+              <input
+                type="range"
+                min="3"
+                max="15"
+                value={transitionDuration}
+                onChange={(e) => setTransitionDuration(parseInt(e.target.value))}
+                className="flex-1 max-w-xs"
+              />
+              <span className="text-white text-sm w-16">{transitionDuration}s</span>
+            </div>
+            <p className="mt-1 text-xs text-gray-400">Time each widget displays before transitioning</p>
+          </div>
+          <div>
+            <label className="flex items-center space-x-2 text-sm">
+              <input
+                type="checkbox"
+                checked={showProgressIndicator}
+                onChange={(e) => setShowProgressIndicator(e.target.checked)}
+                className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+              />
+              <span>Show Progress Indicator</span>
+            </label>
+          </div>
+        </div>
+      )}
       {/* Generate Widget button - commented out for auto-preview */}
       {/* <button
         onClick={handleGeneratePreview}
@@ -504,8 +578,8 @@ export default function Page() {
                   src={widgetUrl}
                   className="rounded-md"
                     style={{ 
-                    width: widgetTypeOption === "3" ? `${appliedCanvasWidth}px` : widgetTypeOption === "4" ? `${appliedGraphWidth}px` : '100%',
-                    height: widgetTypeOption === "3" ? `${appliedCanvasHeight}px` : widgetTypeOption === "4" ? `${appliedGraphHeight + 40}px` : '6.0rem',
+                    width: widgetTypeOption === "3" ? `${appliedCanvasWidth}px` : widgetTypeOption === "4" ? `${appliedGraphWidth}px` : widgetTypeOption === "5" ? '320px' : '100%',
+                    height: widgetTypeOption === "3" ? `${appliedCanvasHeight}px` : widgetTypeOption === "4" ? `${appliedGraphHeight + 40}px` : widgetTypeOption === "5" ? '176px' : '6.0rem',
                     overflow: 'hidden' 
                   }}
                   title="Widget Preview"
