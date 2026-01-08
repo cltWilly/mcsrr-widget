@@ -142,6 +142,15 @@ Built with [Next.js 14](https://nextjs.org/) and [Tailwind CSS](https://tailwind
 
 Have a feature request? [Open an issue](https://github.com/cltWilly/mcsrr-widget/issues)!
 
+## 🎥 Streamers Using This Widget
+
+These awesome streamers are using the MCSR Ranked Widget on their streams:
+
+<!-- Add your name here if you're using this widget! Submit a PR or open an issue -->
+- *Ups, currently no streamers listed!*
+
+Using this widget on your stream? I'd love to feature you! Just open an issue or submit a pull request with your channel name and link.
+
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
