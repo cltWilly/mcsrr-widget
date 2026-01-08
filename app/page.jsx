@@ -375,23 +375,23 @@ export default function Page() {
                 </select>
               </div>
             )}
+            
+            {(widgetTypeOption === "1" || widgetTypeOption === "4") && (
+              <div>
+                <label className="flex items-center space-x-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={showTimer}
+                    onChange={(e) => setShowTimer(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                  />
+                  <span>Show Timer</span>
+                </label>
+              </div>
+            )}
           </div>
         )}
       </div>
-     
-      {(widgetTypeOption === "1" || widgetTypeOption === "4") && (
-        <div className="mb-4">
-          <label className="flex items-center space-x-2 text-sm">
-            <input
-              type="checkbox"
-              checked={showTimer}
-              onChange={(e) => setShowTimer(e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
-            />
-            <span>Show Timer</span>
-          </label>
-        </div>
-      )}
      
       {widgetTypeOption === "3" && (
         <div className="mb-4">
