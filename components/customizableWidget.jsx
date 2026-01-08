@@ -191,7 +191,7 @@ function CanvasElement({ element, onMove, onRemove, isSelected, onSelect, canvas
   );
 }
 
-export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, layout, playerName, canvasWidth = 300, canvasHeight = 100, averageTime }) {
+export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, layout, playerName, canvasWidth = 300, canvasHeight = 100, averageTime, bgColor = "#171e1f" }) {
   const winRate = calWinRate(winCount, lossCount, drawCount);
   const totalGames = countMatches(winCount, lossCount, drawCount);
   eloPlusMinus = normalizePlusMinusElo(eloPlusMinus);
@@ -210,7 +210,7 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
   // If no layout provided, show default
   if (!layout || layout.length === 0) {
     return (
-      <div className="bg-[#171e1f] text-white rounded-md relative overflow-hidden flex items-center justify-center" style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}>
+      <div className="text-white rounded-md relative overflow-hidden flex items-center justify-center" style={{ backgroundColor: bgColor, width: `${canvasWidth}px`, height: `${canvasHeight}px` }}>
         <div className="text-gray-500 text-sm">No layout configured</div>
       </div>
     );
@@ -263,7 +263,7 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
   };
 
   return (
-    <div className="bg-[#171e1f] text-white rounded-md relative overflow-hidden" style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}>
+    <div className="text-white rounded-md relative overflow-hidden" style={{ backgroundColor: bgColor, width: `${canvasWidth}px`, height: `${canvasHeight}px` }}>
       {layout.map((element) => (
         <div
           key={element.id}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { DragDropWidgetEditor } from "@/components/customizableWidget";
 import { toast, Toaster } from "sonner";
@@ -10,7 +11,8 @@ import {
   getCurrentTimestamp,
   getEloPlusMinus
 } from "@/lib/generatorUtils";
-import { calculateAverageTime, formatTime } from "@/lib/widgetUtils";
+import { calculateAverageTime, formatTime, getRank } from "@/lib/widgetUtils";
+import { AVAILABLE_FONTS } from "@/lib/customWidgetHelpers";
 
 export default function Page() {
   const [playerName, setPlayerName] = useState("");
@@ -29,11 +31,16 @@ export default function Page() {
   const [graphHeight, setGraphHeight] = useState(96);
   const [appliedGraphWidth, setAppliedGraphWidth] = useState(320);
   const [appliedGraphHeight, setAppliedGraphHeight] = useState(96);
+  const [opacity, setOpacity] = useState(100);
+  const [bgColor, setBgColor] = useState("#171e1f");
+  const [showTimer, setShowTimer] = useState(true);
+  const [fontFamily, setFontFamily] = useState(AVAILABLE_FONTS[0]);
 
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState('Copy URL');
   const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
+  const [isStyleSettingsOpen, setIsStyleSettingsOpen] = useState(false);
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -176,7 +183,17 @@ export default function Page() {
     // Generate widget URL
     const baseUrl = window.location.origin;
     const timestamp = timestampOption === "now" ? "now" : selectedTimestamp;
-    let url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?widgetType=${encodeURIComponent(widgetTypeOption)}&player=${encodeURIComponent(playerName)}`;
+    let url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?widgetType=${encodeURIComponent(widgetTypeOption)}&player=${encodeURIComponent(playerName)}&opacity=${opacity}&bgColor=${encodeURIComponent(bgColor)}`;
+    
+    // Add showTimer parameter for default widget and graph widget
+    if (widgetTypeOption === "1" || widgetTypeOption === "4") {
+      url += `&showTimer=${showTimer}`;
+    }
+    
+    // Add fontFamily parameter for widgets 1, 2, and 4
+    if (widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4") {
+      url += `&fontFamily=${encodeURIComponent(fontFamily)}`;
+    }
     
     // Add layout configuration for customizable widget
     if (widgetTypeOption === "3" && widgetLayout) {
@@ -283,6 +300,98 @@ export default function Page() {
           <option value="4">Graph Widget</option>
         </select>
       </div>
+      
+      {/* Style Settings Collapsible Section */}
+      <div className="mb-4 border border-gray-600 rounded-md w-full md:w-1/2">
+        <button
+          onClick={() => setIsStyleSettingsOpen(!isStyleSettingsOpen)}
+          className="w-full px-4 py-3 bg-gray-800 hover:bg-gray-750 text-white font-medium rounded-md flex items-center justify-between transition-colors"
+        >
+          <span>Style Settings</span>
+          {isStyleSettingsOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+        </button>
+        
+        {isStyleSettingsOpen && (
+          <div className="p-4 space-y-4">
+            <div>
+              <label className="block text-sm font-medium font-bold mb-2">Widget Opacity</label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={opacity}
+                  onChange={(e) => setOpacity(parseInt(e.target.value))}
+                  className="flex-1 max-w-xs"
+                />
+                <span className="text-white text-sm w-12">{opacity}%</span>
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium font-bold mb-2">Background Color</label>
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="color"
+                  value={bgColor}
+                  onChange={(e) => setBgColor(e.target.value)}
+                  className="h-10 w-20 rounded cursor-pointer"
+                />
+                <input
+                  type="text"
+                  value={bgColor}
+                  onChange={(e) => setBgColor(e.target.value)}
+                  placeholder="#171e1f"
+                  className="w-32 p-2 border border-gray-300 rounded-md bg-gray-900 text-white text-sm"
+                />
+                <button
+                  onClick={() => setBgColor("transparent")}
+                  className="px-2 py-2 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded-md whitespace-nowrap"
+                >
+                  Transparent
+                </button>
+                <button
+                  onClick={() => setBgColor("#171e1f")}
+                  className="px-2 py-2 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded-md whitespace-nowrap"
+                >
+                  Default
+                </button>
+              </div>
+            </div>
+            
+            {(widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4") && (
+              <div>
+                <label className="block text-sm font-medium mb-2">Font Family</label>
+                <select
+                  value={fontFamily}
+                  onChange={(e) => setFontFamily(e.target.value)}
+                  className="mt-1 block w-full max-w-sm p-2 border border-gray-300 rounded-md bg-gray-900 text-white text-sm"
+                >
+                  {AVAILABLE_FONTS.map((font, index) => (
+                    <option key={index} value={font} style={{ fontFamily: font }}>
+                      {font.split(',')[0].replace(/[\"']/g, '')}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+     
+      {(widgetTypeOption === "1" || widgetTypeOption === "4") && (
+        <div className="mb-4">
+          <label className="flex items-center space-x-2 text-sm">
+            <input
+              type="checkbox"
+              checked={showTimer}
+              onChange={(e) => setShowTimer(e.target.checked)}
+              className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+            />
+            <span>Show Timer</span>
+          </label>
+        </div>
+      )}
      
       {widgetTypeOption === "3" && (
         <div className="mb-4">

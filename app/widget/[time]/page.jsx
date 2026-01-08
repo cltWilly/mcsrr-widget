@@ -27,6 +27,10 @@ function WidgetPage({ params }) {
   const graphType = searchParams.get('graphType') || 'winLossHistory';
   const graphWidth = parseInt(searchParams.get('graphWidth')) || 320;
   const graphHeight = parseInt(searchParams.get('graphHeight')) || 96;
+  const opacity = parseInt(searchParams.get('opacity')) || 100;
+  const bgColor = searchParams.get('bgColor') || "#171e1f";
+  const showTimer = searchParams.get('showTimer') === 'false' ? false : true;
+  const fontFamily = searchParams.get('fontFamily') || 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial';
   const timestamp = params.time;
   
   // Parse layout configuration
@@ -182,7 +186,7 @@ function WidgetPage({ params }) {
   }, [currentElo]);
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen" style={{ opacity: opacity / 100 }}>
       <div className="absolute top-0 left-0">
         {apiError ? (
           <div className="bg-[#171e1f] text-white rounded-md p-6 shadow-lg border-2 border-red-500" style={{ width: widgetType === '3' ? `${canvasWidth}px` : widgetType === '4' ? `${graphWidth}px` : '300px', minHeight: widgetType === '3' ? `${canvasHeight}px` : widgetType === '4' ? `${graphHeight}px` : '100px' }}>
@@ -203,6 +207,9 @@ function WidgetPage({ params }) {
             winCount={winCount}
             lossCount={lossCount}
             drawCount={drawCount}
+            bgColor={bgColor}
+            showTimer={showTimer}
+            fontFamily={fontFamily}
           />
         ) : widgetType === '2' ? (
           <OnlySmallBoxWidget
@@ -214,6 +221,8 @@ function WidgetPage({ params }) {
             winCount={winCount}
             lossCount={lossCount}
             drawCount={drawCount}
+            bgColor={bgColor}
+            fontFamily={fontFamily}
           />
         ) : widgetType === '3' ? (
           <CustomizableWidget
@@ -230,6 +239,7 @@ function WidgetPage({ params }) {
             canvasWidth={canvasWidth}
             canvasHeight={canvasHeight}
             averageTime={averageTime}
+            bgColor={bgColor}
           />
         ) : widgetType === '4' ? (
           <GraphWidget
@@ -239,6 +249,9 @@ function WidgetPage({ params }) {
             graphType={graphType}
             graphWidth={graphWidth}
             graphHeight={graphHeight}
+            bgColor={bgColor}
+            fontFamily={fontFamily}
+            showTimer={showTimer}
           />
         ) : (
           <div>widgetType is missing</div>
