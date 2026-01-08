@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Github } from "lucide-react";
 import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { DragDropWidgetEditor } from "@/components/customizableWidget";
 import { toast, Toaster } from "sonner";
@@ -234,13 +234,29 @@ export default function Page() {
   };
 
   // Recommend sizes based on selected widget and applied dimensions
-  const recommendedWidth = widgetTypeOption === "3" ? appliedCanvasWidth : widgetTypeOption === "4" ? appliedGraphWidth : 300;
-  const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? appliedGraphHeight : 100;
+  const recommendedWidth = widgetTypeOption === "3" ? appliedCanvasWidth : widgetTypeOption === "4" ? 320 : widgetTypeOption === "2" ? 130 : 300;
+  const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? 136 : widgetTypeOption === "2" ? 96 : 100;
 
   return (
     <div className="p-8">
+      <div className="mb-6 p-3 bg-blue-900/20 border border-blue-700/30 rounded-md">
+        <p className="text-sm text-blue-300">
+          <span className="font-semibold">Note:</span> This generator is currently in development. UI improvements and additional functionality will be added in future updates.
+        </p>
+      </div>
       <Toaster position="top-center" richColors />
-      <h1 className="text-2xl font-bold mb-6">Widget Generator</h1>
+      <div className="flex items-center gap-4 mb-6">
+        <h1 className="text-2xl font-bold">Widget Generator</h1>
+        <a
+          href="https://github.com/cltWilly/mcsrr-widget"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+        >
+          <Github className="h-6 w-6" />
+          <span className="text-sm">GitHub</span>
+        </a>
+      </div>
       <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
         <div className="lg:w-1/2 w-full">
           <h2 className="text-xl font-bold mb-4">Configuration</h2>
