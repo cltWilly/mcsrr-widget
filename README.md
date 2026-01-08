@@ -119,7 +119,7 @@ npm start
 
 Built with [Next.js 14](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/)
 
-## 🗺️ Roadmap
+## Roadmap
 
 ### Current Features
 - ✅ Core widget functionality

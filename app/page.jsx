@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, ChevronRight, Github } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ChevronDown, ChevronRight, Github, Loader2 } from "lucide-react";
 import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { DragDropWidgetEditor } from "@/components/customizableWidget";
 import { toast, Toaster } from "sonner";
@@ -41,6 +41,37 @@ export default function Page() {
   const [copyButtonText, setCopyButtonText] = useState('Copy URL');
   const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
   const [isStyleSettingsOpen, setIsStyleSettingsOpen] = useState(false);
+
+  // Debounce timer ref
+  const debounceTimerRef = useRef(null);
+
+  // Auto-update preview with debounce when config changes
+  useEffect(() => {
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Only auto-update if player name is set and we're not in the middle of an update
+    if (playerName && playerName.trim() !== "" && !isUpdating) {
+      // For custom timestamp, also check if it's set
+      if (timestampOption === "custom" && (!selectedTimestamp || selectedTimestamp.trim() === "")) {
+        return;
+      }
+
+      // Set a debounce timer (500ms delay)
+      debounceTimerRef.current = setTimeout(() => {
+        handleGeneratePreview();
+      }, 500);
+    }
+
+    // Cleanup function
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight]);
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -215,11 +246,16 @@ export default function Page() {
     
     setWidgetUrl(url);
 
-    setIsUpdating(false); // Reset loading state
+    // Keep loader visible for at least 800ms for better user feedback
+    setTimeout(() => {
+      setIsUpdating(false);
+    }, 500);
     } catch (error) {
       console.error("Error generating preview:", error);
       toast.error("An error occurred while generating the preview. Please try again.");
-      setIsUpdating(false);
+      setTimeout(() => {
+        setIsUpdating(false);
+      }, 500);
     }
   };
 
@@ -432,7 +468,8 @@ export default function Page() {
           )}
         </div>
       )}
-      <button
+      {/* Generate Widget button - commented out for auto-preview */}
+      {/* <button
         onClick={handleGeneratePreview}
         className="mb-4 bg-blue-500 text-white font-bold py-2 px-4 rounded w-full md:w-auto"
         disabled={isUpdating} // Disable button when updating
@@ -441,14 +478,17 @@ export default function Page() {
           ? (widgetTypeOption === "3" && widgetLayout && widgetLayout.length > 0 && widgetUrl ? "Updating..." : "Generating...") 
           : (widgetTypeOption === "3" && widgetLayout && widgetLayout.length > 0 && widgetUrl ? "Update Widget" : "Generate Widget")
         }
-      </button>
+      </button> */}
       </div>
       <div className="lg:w-1/2 w-full lg:sticky lg:top-8 lg:self-start">
   
       <div className="lg:mt-0 mt-8">
         {widgetUrl && (
           <>
-            <h2 className="text-xl font-bold mb-4">Widget Preview</h2>
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+              Widget Preview
+              {isUpdating && <Loader2 className="h-5 w-5 animate-spin text-blue-500" />}
+            </h2>
             <div className="mb-4 flex justify-start">
               {widgetUrl && (
                 <iframe
