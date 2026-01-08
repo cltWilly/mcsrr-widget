@@ -4,7 +4,9 @@
 
 A modern, customizable widget for [OBS](https://obsproject.com/) that displays real-time player statistics from [MCSR Ranked](https://mcsrranked.com/). Track your rank, ELO, match history, and performance metrics with a fully customizable drag-and-drop interface.
 
-![Widget Example](https://i.imgur.com/KtEXrnP.png)
+![Default Widget Example](./images/defaultWidget.jpg)
+![Small Widget Example](./images/smallWidget.jpg)
+![Graph Widget Example](./images/winLossGraphWidget.jpg)
 
 ## ✨ Features
 
@@ -18,7 +20,7 @@ A modern, customizable widget for [OBS](https://obsproject.com/) that displays r
 
 ## 🚀 Quick Start
 
-1. Visit the [generator page]({domain}/generator)
+1. Visit the [Widget Generator Page](https://mcsrr-widget.cltw.dev)
 2. Enter your MCSR Ranked username
 3. Choose your widget type:
   - **Default** - Classic layout with all stats
@@ -50,7 +52,7 @@ The custom widget type offers advanced customization:
 
 ## 📡 API Endpoints
 
-Base URL: not deployed yet
+Base URL: `https://mcsrr-widget.cltw.dev`
 
 ### Widget Endpoints
 
@@ -116,6 +118,38 @@ npm start
 ```
 
 Built with [Next.js 14](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/)
+
+## 🗺️ Roadmap
+
+### Current Features
+- ✅ Core widget functionality
+- ✅ Real-time stat tracking
+- ✅ Multiple widget types (Default, Small, Custom, Graph)
+- ✅ Drag-and-drop custom widget editor (need improvements :D)
+- ✅ Background color and opacity customization
+- ✅ Font family selection
+- ✅ Timer toggle option
+- ✅ Historical data from custom timestamps
+
+### Planned Features
+- Animated transitions between multiple widgets, multiple widget support
+- UI/UX improvements for the generator interface
+- Additional graph types and visualizations
+- More widget themes and presets
+- Mobile-responsive widget editor
+- Templates for custom widgets (pre-made layouts)
+- Show/hide elements based on conditions (like show win rate only if above 50%)
+
+Have a feature request? [Open an issue](https://github.com/cltWilly/mcsrr-widget/issues)!
+
+## 🎥 Streamers Using This Widget
+
+These awesome streamers are using the MCSR Ranked Widget on their streams:
+
+<!-- Add your name here if you're using this widget! Submit a PR or open an issue -->
+- *Ups, currently no streamers listed!*
+
+Using this widget on your stream? I'd love to feature you! Just open an issue or submit a pull request with your channel name and link.
 
 ## 🤝 Contributing
 

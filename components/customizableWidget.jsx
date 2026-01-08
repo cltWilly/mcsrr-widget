@@ -191,7 +191,7 @@ function CanvasElement({ element, onMove, onRemove, isSelected, onSelect, canvas
   );
 }
 
-export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, layout, playerName, canvasWidth = 300, canvasHeight = 100, averageTime }) {
+export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, layout, playerName, canvasWidth = 300, canvasHeight = 100, averageTime, bgColor = "#171e1f" }) {
   const winRate = calWinRate(winCount, lossCount, drawCount);
   const totalGames = countMatches(winCount, lossCount, drawCount);
   eloPlusMinus = normalizePlusMinusElo(eloPlusMinus);
@@ -210,7 +210,7 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
   // If no layout provided, show default
   if (!layout || layout.length === 0) {
     return (
-      <div className="bg-[#171e1f] text-white rounded-md relative overflow-hidden flex items-center justify-center" style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}>
+      <div className="text-white rounded-md relative overflow-hidden flex items-center justify-center" style={{ backgroundColor: bgColor, width: `${canvasWidth}px`, height: `${canvasHeight}px` }}>
         <div className="text-gray-500 text-sm">No layout configured</div>
       </div>
     );
@@ -263,7 +263,7 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
   };
 
   return (
-    <div className="bg-[#171e1f] text-white rounded-md relative overflow-hidden" style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}>
+    <div className="text-white rounded-md relative overflow-hidden" style={{ backgroundColor: bgColor, width: `${canvasWidth}px`, height: `${canvasHeight}px` }}>
       {layout.map((element) => (
         <div
           key={element.id}
@@ -478,7 +478,17 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
       <div className="flex gap-3">
         {/* Feature Palette */}
         <div className="flex-shrink-0" style={{ width: '200px' }}>
-          <h4 className="text-white text-xs font-semibold mb-2">Available Features</h4>
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="text-white text-xs font-semibold">Available Features</h4>
+            {canvasElements.length > 0 && (
+              <button
+                onClick={handleClearCanvas}
+                className="text-xs bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
+              >
+                Clear All
+              </button>
+            )}
+          </div>
           <div className="bg-gray-700 p-2 rounded-md space-y-1.5 max-h-[220px] overflow-y-auto">
             {AVAILABLE_FEATURES.map((feature) => (
               <DraggableFeature
@@ -493,23 +503,18 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
 
         {/* Canvas */}
         <div className="flex-1 min-w-0">
-          <div className="flex justify-between items-center mb-1">
+          <div className="mb-1">
             <h4 className="text-white text-xs font-semibold">Canvas ({canvasWidth}x{canvasHeight}px)</h4>
-            <button
-              onClick={handleClearCanvas}
-              className="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-            >
-              Clear All
-            </button>
           </div>
-          <div
-            id="widget-canvas"
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onDragLeave={handleDragLeave}
-            onClick={() => setSelectedElement(null)}
-            className="bg-[#171e1f] rounded-md relative border-2 border-dashed border-gray-600 overflow-hidden"
-            style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}
+          <div className="relative">
+            <div
+              id="widget-canvas"
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              onDragLeave={handleDragLeave}
+              onClick={() => setSelectedElement(null)}
+              className="bg-[#171e1f] rounded-md relative border-2 border-dashed border-gray-600 overflow-hidden"
+              style={{ width: `${canvasWidth}px`, height: `${canvasHeight}px` }}
           >
             {/* Grid lines when Shift is held */}
             {isShiftHeld && (
@@ -558,6 +563,7 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
                 Drag features here
               </div>
             )}
+          </div>
           </div>
           <p className="text-gray-400 text-xs mt-2">
             💡 Drag to canvas to add

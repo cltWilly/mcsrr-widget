@@ -8,7 +8,10 @@ export function GraphWidget({
   startTimestamp,
   graphType = "winLossHistory",
   graphWidth = 320,
-  graphHeight = 96 
+  graphHeight = 96,
+  bgColor = "#171e1f",
+  fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
+  showTimer = true
 }) {
   const canvasRef = useRef(null);
   const [countdown, setCountdown] = useState(120);
@@ -74,8 +77,10 @@ export function GraphWidget({
 
   return (
     <div 
-      className="bg-[#171e1f] text-white rounded-md relative" 
+      className="text-white rounded-md relative" 
       style={{ 
+        backgroundColor: bgColor,
+        fontFamily: fontFamily,
         width: graphWidth, 
         height: graphHeight + 40
       }}
@@ -93,9 +98,11 @@ export function GraphWidget({
           className="w-full"
         />
       </div>
-      <div className="absolute bottom-1 left-2 text-xs text-gray-400">
-        {countdown}s
-      </div>
+      {showTimer && (
+        <div className="absolute bottom-1 left-2 text-xs text-gray-400">
+          {countdown}s
+        </div>
+      )}
       <div className="absolute bottom-1 right-2 text-xs text-gray-400">
         {matchCount} matches
       </div>

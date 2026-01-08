@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { calWinRate, countMatches, normalizePlusMinusElo, rankIcons } from "@/lib/widgetUtils";
 import { AnimatedNumber, AnimatedPercentage } from "./AnimatedNumber";
 
-export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount }) {
+export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, bgColor = "#171e1f", showTimer = true, fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial' }) {
 
   const winRate = calWinRate(winCount, lossCount, drawCount);
   const totalGames = countMatches(winCount, lossCount, drawCount);
@@ -51,7 +51,7 @@ export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimest
   }, []);
 
   return (
-    <div className="bg-[#171e1f] text-white p-4 rounded-md w-full max-w-xs relative">
+    <div className="text-white p-4 rounded-md w-full max-w-xs relative" style={{ backgroundColor: bgColor, fontFamily: fontFamily }}>
       <div className="flex items-center space-x-4">
         <img
           src={rankIcon}
@@ -78,9 +78,11 @@ export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimest
           </div>
         </div>
       </div>
-      <div className="absolute bottom-1 left-2 text-xs text-gray-400">
-        {countdown}s
-      </div>
+      {showTimer && (
+        <div className="absolute bottom-1 left-2 text-xs text-gray-400">
+          {countdown}s
+        </div>
+      )}
       {/* Debug controls */}
       {/* <div className="absolute top-1 right-1">
         <button
@@ -117,7 +119,7 @@ export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimest
   );
 }
 
-export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount })  {
+export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, bgColor = "#171e1f", fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial' })  {
 
   const winRate = calWinRate(winCount, lossCount, drawCount);
   const totalGames = countMatches(winCount, lossCount, drawCount);
@@ -162,7 +164,7 @@ export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startT
 
 
   return (
-    <div className="bg-[#171e1f] text-white p-2 rounded-md w-full max-w-xs relative">
+    <div className="text-white p-2 rounded-md w-full max-w-xs relative" style={{ backgroundColor: bgColor, fontFamily: fontFamily }}>
       <div className="flex flex-col items-center justify-center h-full mb-0">
         <div className="font-bold text-xl mb-0.5"> 
           <span className="text-green-500"><AnimatedNumber value={displayWins} />W</span>{" "}
@@ -175,7 +177,7 @@ export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startT
         </div>
       </div>
       {/* Debug controls */}
-      <div className="absolute top-1 right-1">
+      {/* <div className="absolute top-1 right-1">
         <button
           onClick={() => setDebugMode(!debugMode)}
           className="text-xs px-1 py-0.5 bg-gray-700 hover:bg-gray-600 rounded text-gray-300"
@@ -183,7 +185,7 @@ export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startT
         >
           🐛
         </button>
-      </div>
+      </div> */}
       {debugMode && (
         <div className="absolute -bottom-10 left-0 right-0 flex gap-1 justify-center">
           <button
