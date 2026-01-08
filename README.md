@@ -119,6 +119,29 @@ npm start
 
 Built with [Next.js 14](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/)
 
+## 🗺️ Roadmap
+
+### Current Features
+- ✅ Core widget functionality
+- ✅ Real-time stat tracking
+- ✅ Multiple widget types (Default, Small, Custom, Graph)
+- ✅ Drag-and-drop custom widget editor (need improvements :D)
+- ✅ Background color and opacity customization
+- ✅ Font family selection
+- ✅ Timer toggle option
+- ✅ Historical data from custom timestamps
+
+### Planned Features
+- Animated transitions between multiple widgets, multiple widget support
+- UI/UX improvements for the generator interface
+- Additional graph types and visualizations
+- More widget themes and presets
+- Mobile-responsive widget editor
+- Templates for custom widgets (pre-made layouts)
+- Show/hide elements based on conditions (like show win rate only if above 50%)
+
+Have a feature request? [Open an issue](https://github.com/cltWilly/mcsrr-widget/issues)!
+
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.

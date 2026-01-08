@@ -241,7 +241,15 @@ export default function Page() {
     <div className="p-8">
       <div className="mb-6 p-3 bg-blue-900/20 border border-blue-700/30 rounded-md">
         <p className="text-sm text-blue-300">
-          <span className="font-semibold">Note:</span> This generator is currently in development. UI improvements and additional functionality will be added in future updates.
+          <span className="font-semibold">Note:</span> This generator is currently in development. UI improvements and additional functionality will be added in future updates. See roadmap on{" "}
+          <a
+            href="https://github.com/cltWilly/mcsrr-widget/tree/master?tab=readme-ov-file#-roadmap"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-white"
+          >
+            GitHub
+          </a>.
         </p>
       </div>
       <Toaster position="top-center" richColors />
