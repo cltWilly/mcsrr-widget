@@ -175,7 +175,7 @@ export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startT
         </div>
       </div>
       {/* Debug controls */}
-      <div className="absolute top-1 right-1">
+      {/* <div className="absolute top-1 right-1">
         <button
           onClick={() => setDebugMode(!debugMode)}
           className="text-xs px-1 py-0.5 bg-gray-700 hover:bg-gray-600 rounded text-gray-300"
@@ -183,7 +183,7 @@ export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startT
         >
           🐛
         </button>
-      </div>
+      </div> */}
       {debugMode && (
         <div className="absolute -bottom-10 left-0 right-0 flex gap-1 justify-center">
           <button
