@@ -5,12 +5,13 @@ import { useSearchParams } from "next/navigation";
 import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { CustomizableWidget } from "@/components/customizableWidget";
 import { GraphWidget } from "@/components/graphWidget";
+import { CarouselWidget } from "@/components/carouselWidget";
 import { 
   fetchInitPlayer, 
   fetchAllMatches, 
   getEloPlusMinus 
 } from "@/lib/generatorUtils";
-import { calculateAverageTime, formatTime } from "@/lib/widgetUtils";
+import { calculateAverageTime, formatTime, calWinRate, rankIcons } from "@/lib/widgetUtils";
 
 function convertDateToTimestamp(date) {
   const decodedDate = decodeURIComponent(date);
@@ -31,6 +32,10 @@ function WidgetPage({ params }) {
   const bgColor = searchParams.get('bgColor') || "#171e1f";
   const showTimer = searchParams.get('showTimer') === 'false' ? false : true;
   const fontFamily = searchParams.get('fontFamily') || 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial';
+  const carouselWidgetsParam = searchParams.get('carouselWidgets');
+  const carouselWidgets = carouselWidgetsParam ? carouselWidgetsParam.split(',') : ["1", "4"];
+  const transitionDuration = parseInt(searchParams.get('transitionDuration')) || 5;
+  const showProgressIndicator = searchParams.get('showProgressIndicator') === 'false' ? false : true;
   const timestamp = params.time;
   
   // Parse layout configuration
@@ -81,6 +86,22 @@ function WidgetPage({ params }) {
     "1651-1800": "Diamond 2",
     "1801-2000": "Diamond 3",
     "2001+": "Netherite 1",
+  };
+
+  const rankIcons = {
+    "Iron 1": "/iron.png",
+    "Iron 2": "/iron.png",
+    "Iron 3": "/iron.png",
+    "Gold 1": "/gold.png",
+    "Gold 2": "/gold.png",
+    "Gold 3": "/gold.png",
+    "Emerald 1": "/emerald.png",
+    "Emerald 2": "/emerald.png",
+    "Emerald 3": "/emerald.png",
+    "Diamond 1": "/diamond.png",
+    "Diamond 2": "/diamond.png",
+    "Diamond 3": "/diamond.png",
+    "Netherite 1": "/netherite.png",
   };
 
   function getRank(elo) {
@@ -252,6 +273,30 @@ function WidgetPage({ params }) {
             bgColor={bgColor}
             fontFamily={fontFamily}
             showTimer={showTimer}
+          />
+        ) : widgetType === '5' ? (
+          <CarouselWidget
+            carouselWidgets={carouselWidgets}
+            transitionDuration={transitionDuration}
+            playerUUID={playerUUID}
+            startTimestamp={initialTimestamp}
+            graphType={graphType}
+            playerData={{
+              rankIcon: rankIcons[playerRank],
+              playerRank: playerRank,
+              elo: currentElo,
+              eloPlusMinus: eloPlusMinus,
+              winCount: winCount,
+              lossCount: lossCount,
+              drawCount: drawCount,
+              winRate: calWinRate(winCount, lossCount, drawCount),
+              matches: matches || []
+            }}
+            opacity={opacity}
+            bgColor={bgColor}
+            showTimer={showTimer}
+            fontFamily={fontFamily}
+            showProgressIndicator={showProgressIndicator}
           />
         ) : (
           <div>widgetType is missing</div>

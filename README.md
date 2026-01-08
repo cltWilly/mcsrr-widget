@@ -8,6 +8,8 @@ A modern, customizable widget for [OBS](https://obsproject.com/) that displays r
 ![Small Widget Example](./images/smallWidget.jpg)
 ![Graph Widget Example](./images/winLossGraphWidget.jpg)
 
+<img src="./images/carouselWidget.gif" alt="Carousel Widget Example" width="300" height="176" />
+
 ## ✨ Features
 
 - 📊 **Real-time Stats** - ELO rating, rank, wins/losses/draws, win rate, and more
@@ -27,11 +29,12 @@ A modern, customizable widget for [OBS](https://obsproject.com/) that displays r
   - **Small Box** - Compact version for minimal overlays
   - **Custom** - Fully customizable drag-and-drop layout
   - **Graph** - Graph widget showing historical win/loss/elo trends
+  - **Carousel** - Multiple widgets with auto-rotating transitions
 4. Configure your settings (timestamp, colors, positioning)
 5. Click **Generate Widget** and copy the URL
 6. Add as a **Browser Source** in OBS with the generated URL
 
-**Recommended dimensions:** 300px × 100px (adjustable for custom widgets)
+**Recommended dimensions:** 300px × 100px (Default/Small), 320px × 136px (Graph), 320px × 176px (Carousel)
 
 ## 🎨 Custom Widget Features
 
@@ -50,6 +53,17 @@ The custom widget type offers advanced customization:
   - Average Completion Time
   - Countdown Timer
 
+## 🎠 Carousel Widget Features
+
+Display multiple widgets with smooth auto-rotating transitions:
+
+- **Multi-Widget Support** - Combine Default, Small Box, and Graph widgets
+- **Configurable Duration** - Set transition time from 3-15 seconds
+- **Smooth Transitions** - 300ms fade animation between widgets
+- **Progress Indicator** - Animated dots showing current widget (toggleable)
+- **Shared Timer** - Single countdown timer synced across all widgets
+- **Smart Positioning** - Automatically adjusts for different widget sizes
+
 ## 📡 API Endpoints
 
 Base URL: `https://mcsrr-widget.cltw.dev`
@@ -63,10 +77,17 @@ Base URL: `https://mcsrr-widget.cltw.dev`
 ### Query Parameters
 
 - `player` - **(required)** MCSR Ranked username
-- `widgetType` - Widget style: `1` (default), `2` (small), `3` (custom), `4` (graph)
+- `widgetType` - Widget style: `1` (default), `2` (small), `3` (custom), `4` (graph), `5` (carousel)
 - `layout` - Custom widget layout configuration (JSON)
 - `width` - Custom widget width in pixels (100-800)
 - `height` - Custom widget height in pixels (50-400)
+- `carouselWidgets` - Comma-separated widget types for carousel (e.g., `1,2,4`)
+- `transitionDuration` - Seconds between transitions (3-15, default: 5)
+- `showProgressIndicator` - Show/hide progress dots (`true`/`false`)
+- `opacity` - Widget opacity (0-100)
+- `bgColor` - Background color (hex or `transparent`)
+- `showTimer` - Show/hide countdown timer (`true`/`false`)
+- `fontFamily` - Font family for text elements
 
 - `font` - Optional CSS font-family string to override the default font for text elements (example: `Inter, Arial, sans-serif`). If `layout` JSON includes per-element `font` fields, those take precedence over this global `font`.
 
@@ -124,15 +145,15 @@ Built with [Next.js 14](https://nextjs.org/) and [Tailwind CSS](https://tailwind
 ### Current Features
 - ✅ Core widget functionality
 - ✅ Real-time stat tracking
-- ✅ Multiple widget types (Default, Small, Custom, Graph)
+- ✅ Multiple widget types (Default, Small, Custom, Graph, Carousel)
 - ✅ Drag-and-drop custom widget editor (need improvements :D)
 - ✅ Background color and opacity customization
 - ✅ Font family selection
 - ✅ Timer toggle option
 - ✅ Historical data from custom timestamps
+- ✅ Carousel with multiple widgets and auto-transitions
 
 ### Planned Features
-- Animated transitions between multiple widgets, multiple widget support
 - UI/UX improvements for the generator interface
 - Additional graph types and visualizations
 - More widget themes and presets
