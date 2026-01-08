@@ -4,7 +4,9 @@
 
 A modern, customizable widget for [OBS](https://obsproject.com/) that displays real-time player statistics from [MCSR Ranked](https://mcsrranked.com/). Track your rank, ELO, match history, and performance metrics with a fully customizable drag-and-drop interface.
 
-![Widget Example](https://i.imgur.com/KtEXrnP.png)
+![Default Widget Example](./images/defaultWidget.jpg)
+![Small Widget Example](./images/smallWidget.jpg)
+![Graph Widget Example](./images/winLossGraphWidget.jpg)
 
 ## ✨ Features
 
@@ -18,7 +20,7 @@ A modern, customizable widget for [OBS](https://obsproject.com/) that displays r
 
 ## 🚀 Quick Start
 
-1. Visit the [generator page]({domain}/generator)
+1. Visit the [Widget Generator Page](https://mcsrr-widget.cltw.dev)
 2. Enter your MCSR Ranked username
 3. Choose your widget type:
   - **Default** - Classic layout with all stats
@@ -50,7 +52,7 @@ The custom widget type offers advanced customization:
 
 ## 📡 API Endpoints
 
-Base URL: not deployed yet
+Base URL: `https://mcsrr-widget.cltw.dev`
 
 ### Widget Endpoints
 
