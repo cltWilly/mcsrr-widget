@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, ChevronRight, Github, Loader2 } from "lucide-react";
+import { ChevronDown, ChevronRight, Github, Loader2, Info } from "lucide-react";
 import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { DragDropWidgetEditor } from "@/components/customizableWidget";
 import { toast, Toaster } from "sonner";
@@ -314,7 +314,16 @@ export default function Page() {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium font-bold">Timestamp</label>
+        <div className="flex items-center gap-2 mb-1">
+          <label className="block text-sm font-medium font-bold">Timestamp</label>
+          <div className="group relative">
+            <Info className="h-4 w-4 text-gray-400 cursor-help" />
+            <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-72 p-2 bg-gray-800 text-white text-xs rounded-md shadow-lg z-10 border border-gray-600">
+              <strong>Now:</strong> Use as default for OBS. Shows stats from current moment onwards<br/>
+              <strong>Custom:</strong> Use for accurate data from a specific date/time (e.g., when OBS crashes and you need to restore from that point)
+            </div>
+          </div>
+        </div>
         <div className="mt-1">
           <label className="inline-flex items-center">
             <input
