@@ -152,14 +152,16 @@ Built with [Next.js 14](https://nextjs.org/) and [Tailwind CSS](https://tailwind
 - ✅ Timer toggle option
 - ✅ Historical data from custom timestamps
 - ✅ Carousel with multiple widgets and auto-transitions
+- ✅ Show/hide elements based on conditions (like elso +/- color change)
+- ✅ Templates for custom widgets (pre-made layouts)
 
 ### Planned Features
 - UI/UX improvements for the generator interface
 - Additional graph types and visualizations
 - More widget themes and presets
 - Mobile-responsive widget editor
-- Templates for custom widgets (pre-made layouts)
-- Show/hide elements based on conditions (like show win rate only if above 50%)
+- Add more conditional formatting options
+- Add more templates for custom widgets
 
 Have a feature request? [Open an issue](https://github.com/cltWilly/mcsrr-widget/issues)!
 
