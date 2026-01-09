@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { calWinRate, countMatches, normalizePlusMinusElo, rankIcons } from "@/lib/widgetUtils";
-import { snapToGrid, SAMPLE_DATA, AVAILABLE_FEATURES, AVAILABLE_FONTS, WIDGET_TEMPLATES } from "@/lib/customWidgetHelpers";
+import { snapToGrid, SAMPLE_DATA, AVAILABLE_FEATURES, AVAILABLE_FONTS, WIDGET_TEMPLATES, getConditionalColor } from "@/lib/customWidgetHelpers";
 import { AnimatedNumber, AnimatedPercentage } from "./AnimatedNumber";
 
 function DraggableFeature({ feature, isPlaced, onDragStart }) {
@@ -238,25 +238,25 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
           />
         );
       case 'playerRank':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{playerRank}</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, playerRank), fontFamily: element.font || AVAILABLE_FONTS[0] }}>{playerRank}</div>;
       case 'elo':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={elo} /> ELO</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, elo), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={elo} /> ELO</div>;
       case 'eloPlusMinus':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>({eloPlusMinus})</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, eloPlusMinus), fontFamily: element.font || AVAILABLE_FONTS[0] }}>({eloPlusMinus})</div>;
       case 'wins':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#10B981', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={winCount} />W</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, winCount), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={winCount} />W</div>;
       case 'losses':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#EF4444', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={lossCount} />L</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, lossCount), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={lossCount} />L</div>;
       case 'draws':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={drawCount} />D</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, drawCount), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={drawCount} />D</div>;
       case 'winRate':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedPercentage value={parseFloat(winRate)} />% WR</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, parseFloat(winRate)), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedPercentage value={parseFloat(winRate)} />% WR</div>;
       case 'totalMatches':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={totalGames} /> {totalGames === 1 ? 'MATCH' : 'MATCHES'}</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, totalGames), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={totalGames} /> {totalGames === 1 ? 'MATCH' : 'MATCHES'}</div>;
       case 'countdown':
-        return <div className="text-xs whitespace-nowrap" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{countdown}s</div>;
+        return <div className="text-xs whitespace-nowrap" style={{ color: getConditionalColor(element, countdown), fontFamily: element.font || AVAILABLE_FONTS[0] }}>{countdown}s</div>;
       case 'averageTime':
-        return <div className="text-sm whitespace-nowrap" style={{ color: element.color || '#60A5FA', fontFamily: element.font || AVAILABLE_FONTS[0] }}>Avg: {averageTime || 'N/A'}</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, averageTime), fontFamily: element.font || AVAILABLE_FONTS[0] }}>Avg: {averageTime || 'N/A'}</div>;
       default:
         return null;
     }
@@ -665,6 +665,201 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
                   <option value={AVAILABLE_FONTS[5]}>Monospace</option>
                 </select>
               </div>
+              
+              {/* Conditional Color Section (Collapsible) - Inside Style Settings */}
+              {(AVAILABLE_FEATURES.find(f => f.id === selectedElement)?.supportsConditional || 
+                canvasElements.find(el => el.id === selectedElement)?.supportsConditional) && (
+                <div className="mt-3 pt-3 border-t border-gray-600">
+                  <button
+                    onClick={() => {
+                      const element = canvasElements.find(el => el.id === selectedElement);
+                      setCanvasElements(canvasElements.map(el =>
+                        el.id === selectedElement ? { 
+                          ...el, 
+                          showConditionalSettings: !el.showConditionalSettings 
+                        } : el
+                      ));
+                    }}
+                    className="w-full flex items-center justify-between text-white text-xs font-semibold mb-1 hover:text-blue-400 transition-colors"
+                  >
+                    <span>🎨 Smart Color Conditions</span>
+                    <span className="text-lg">{canvasElements.find(el => el.id === selectedElement)?.showConditionalSettings ? '−' : '+'}</span>
+                  </button>
+                  
+                  {canvasElements.find(el => el.id === selectedElement)?.showConditionalSettings && (
+                    <div className="mt-2 space-y-2">
+                      <label className="flex items-center space-x-2 text-xs cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={canvasElements.find(el => el.id === selectedElement)?.useConditionalColor || false}
+                          onChange={(e) => {
+                            const element = canvasElements.find(el => el.id === selectedElement);
+                            const feature = AVAILABLE_FEATURES.find(f => f.id === selectedElement);
+                            const conditionalType = element?.conditionalType || feature?.conditionalType;
+                            setCanvasElements(canvasElements.map(el =>
+                              el.id === selectedElement ? { 
+                                ...el, 
+                                useConditionalColor: e.target.checked,
+                                conditionalType: conditionalType,
+                                supportsConditional: true,
+                                // Set default conditional colors if enabling
+                                ...(e.target.checked && conditionalType === 'positive-negative' ? {
+                                  positiveColor: el.positiveColor || '#10B981',
+                                  negativeColor: el.negativeColor || '#EF4444',
+                                  neutralColor: el.neutralColor || '#9CA3AF'
+                                } : {}),
+                                ...(e.target.checked && conditionalType === 'winrate' ? {
+                                  highColor: el.highColor || '#10B981',
+                                  mediumColor: el.mediumColor || '#FFFFFF',
+                                  lowColor: el.lowColor || '#EF4444',
+                                  highThreshold: el.highThreshold || 60,
+                                  lowThreshold: el.lowThreshold || 40
+                                } : {})
+                              } : el
+                            ));
+                          }}
+                          className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-white">Enable Smart Color</span>
+                      </label>
+                      
+                      {/* Description based on condition type */}
+                      {(AVAILABLE_FEATURES.find(f => f.id === selectedElement)?.conditionalType === 'positive-negative' ||
+                        canvasElements.find(el => el.id === selectedElement)?.conditionalType === 'positive-negative') && (
+                        <p className="text-xs text-gray-400 pl-6">
+                          Automatically changes color based on whether value is positive (+) or negative (-)
+                        </p>
+                      )}
+                      {(AVAILABLE_FEATURES.find(f => f.id === selectedElement)?.conditionalType === 'winrate' ||
+                        canvasElements.find(el => el.id === selectedElement)?.conditionalType === 'winrate') && (
+                        <p className="text-xs text-gray-400 pl-6">
+                          Automatically changes color based on win rate percentage thresholds
+                        </p>
+                      )}
+                      
+                      {/* Conditional Color Settings for positive-negative */}
+                      {canvasElements.find(el => el.id === selectedElement)?.useConditionalColor && 
+                       canvasElements.find(el => el.id === selectedElement)?.conditionalType === 'positive-negative' && (
+                        <div className="mt-2 space-y-2 pl-2 border-l-2 border-blue-500">
+                          <div>
+                            <label className="text-gray-300 text-xs block mb-1">Positive (+)</label>
+                            <input
+                              type="color"
+                              value={canvasElements.find(el => el.id === selectedElement)?.positiveColor || '#10B981'}
+                              onChange={(e) => {
+                                setCanvasElements(canvasElements.map(el =>
+                                  el.id === selectedElement ? { ...el, positiveColor: e.target.value } : el
+                                ));
+                              }}
+                              className="w-full h-6 rounded cursor-pointer"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-gray-300 text-xs block mb-1">Negative (-)</label>
+                            <input
+                              type="color"
+                              value={canvasElements.find(el => el.id === selectedElement)?.negativeColor || '#EF4444'}
+                              onChange={(e) => {
+                                setCanvasElements(canvasElements.map(el =>
+                                  el.id === selectedElement ? { ...el, negativeColor: e.target.value } : el
+                                ));
+                              }}
+                              className="w-full h-6 rounded cursor-pointer"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-gray-300 text-xs block mb-1">Neutral (0)</label>
+                            <input
+                              type="color"
+                              value={canvasElements.find(el => el.id === selectedElement)?.neutralColor || '#9CA3AF'}
+                              onChange={(e) => {
+                                setCanvasElements(canvasElements.map(el =>
+                                  el.id === selectedElement ? { ...el, neutralColor: e.target.value } : el
+                                ));
+                              }}
+                              className="w-full h-6 rounded cursor-pointer"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Conditional Color Settings for winrate */}
+                      {canvasElements.find(el => el.id === selectedElement)?.useConditionalColor && 
+                       canvasElements.find(el => el.id === selectedElement)?.conditionalType === 'winrate' && (
+                        <div className="mt-2 space-y-2 pl-2 border-l-2 border-blue-500">
+                          <div>
+                            <label className="text-gray-300 text-xs block mb-1">High (≥{canvasElements.find(el => el.id === selectedElement)?.highThreshold || 60}%)</label>
+                            <div className="flex gap-2">
+                              <input
+                                type="color"
+                                value={canvasElements.find(el => el.id === selectedElement)?.highColor || '#10B981'}
+                                onChange={(e) => {
+                                  setCanvasElements(canvasElements.map(el =>
+                                    el.id === selectedElement ? { ...el, highColor: e.target.value } : el
+                                  ));
+                                }}
+                                className="w-12 h-6 rounded cursor-pointer"
+                              />
+                              <input
+                                type="number"
+                                value={canvasElements.find(el => el.id === selectedElement)?.highThreshold || 60}
+                                onChange={(e) => {
+                                  setCanvasElements(canvasElements.map(el =>
+                                    el.id === selectedElement ? { ...el, highThreshold: parseInt(e.target.value) } : el
+                                  ));
+                                }}
+                                className="flex-1 bg-gray-600 text-white text-xs px-2 py-1 rounded"
+                                min="0"
+                                max="100"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-gray-300 text-xs block mb-1">Medium</label>
+                            <input
+                              type="color"
+                              value={canvasElements.find(el => el.id === selectedElement)?.mediumColor || '#FFFFFF'}
+                              onChange={(e) => {
+                                setCanvasElements(canvasElements.map(el =>
+                                  el.id === selectedElement ? { ...el, mediumColor: e.target.value } : el
+                                ));
+                              }}
+                              className="w-full h-6 rounded cursor-pointer"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-gray-300 text-xs block mb-1">Low (≤{canvasElements.find(el => el.id === selectedElement)?.lowThreshold || 40}%)</label>
+                            <div className="flex gap-2">
+                              <input
+                                type="color"
+                                value={canvasElements.find(el => el.id === selectedElement)?.lowColor || '#EF4444'}
+                                onChange={(e) => {
+                                  setCanvasElements(canvasElements.map(el =>
+                                    el.id === selectedElement ? { ...el, lowColor: e.target.value } : el
+                                  ));
+                                }}
+                                className="w-12 h-6 rounded cursor-pointer"
+                              />
+                              <input
+                                type="number"
+                                value={canvasElements.find(el => el.id === selectedElement)?.lowThreshold || 40}
+                                onChange={(e) => {
+                                  setCanvasElements(canvasElements.map(el =>
+                                    el.id === selectedElement ? { ...el, lowThreshold: parseInt(e.target.value) } : el
+                                  ));
+                                }}
+                                className="flex-1 bg-gray-600 text-white text-xs px-2 py-1 rounded"
+                                min="0"
+                                max="100"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
           

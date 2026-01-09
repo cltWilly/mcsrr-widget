@@ -40,6 +40,9 @@ export default function Page() {
   const [carouselWidgets, setCarouselWidgets] = useState(["1", "4"]); // Default: Default + Graph
   const [transitionDuration, setTransitionDuration] = useState(5); // seconds
   const [showProgressIndicator, setShowProgressIndicator] = useState(true);
+  
+  // Smart Conditions state
+  const [isSmartConditionsOpen, setIsSmartConditionsOpen] = useState(false);
 
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
@@ -478,6 +481,51 @@ export default function Page() {
           </div>
         )}
       </div>
+      
+      {/* Smart Conditions Collapsible Section */}
+      {widgetTypeOption === "3" && (
+        <div className="mb-4 border border-gray-600 rounded-md w-full md:w-1/2">
+          <button
+            onClick={() => setIsSmartConditionsOpen(!isSmartConditionsOpen)}
+            className="w-full px-4 py-3 bg-gray-800 hover:bg-gray-750 text-white font-medium rounded-md flex items-center justify-between transition-colors"
+          >
+            <span>Smart Conditions</span>
+            {isSmartConditionsOpen ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+          </button>
+          
+          {isSmartConditionsOpen && (
+            <div className="p-4">
+              <p className="text-sm text-gray-400 mb-3">
+                Configure conditional colors for your custom widget elements. Elements like ELO +/- and Win Rate can automatically change colors based on their values.
+              </p>
+              <div className="bg-gray-900 p-3 rounded-md">
+                <h4 className="text-sm font-semibold text-white mb-2">Supported Elements:</h4>
+                <ul className="space-y-2 text-sm text-gray-300">
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5">✓</span>
+                    <div>
+                      <strong>ELO +/-</strong>
+                      <p className="text-xs text-gray-400">Green for positive, red for negative, gray for neutral</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-400 mt-0.5">✓</span>
+                    <div>
+                      <strong>Win Rate %</strong>
+                      <p className="text-xs text-gray-400">Green for high (≥60%), white for medium, red for low (≤40%)</p>
+                    </div>
+                  </li>
+                </ul>
+                <div className="mt-3 p-2 bg-blue-900/20 border border-blue-700/30 rounded">
+                  <p className="text-xs text-blue-300">
+                    To configure: Open Widget Editor → Add an element with smart color support → Click the element → Expand "Smart Color Conditions" in the style settings
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
      
       {widgetTypeOption === "3" && (
         <div className="mb-4">
