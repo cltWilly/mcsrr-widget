@@ -31,7 +31,7 @@ function WidgetPage({ params }) {
   const opacity = parseInt(searchParams.get('opacity')) || 100;
   const bgColor = searchParams.get('bgColor') || "#171e1f";
   const showTimer = searchParams.get('showTimer') === 'false' ? false : true;
-  const fontFamily = searchParams.get('fontFamily') || 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial';
+  const fontFamily = searchParams.get('fontFamily') || "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial";
   const carouselWidgetsParam = searchParams.get('carouselWidgets');
   const carouselWidgets = carouselWidgetsParam ? carouselWidgetsParam.split(',') : ["1", "4"];
   const transitionDuration = parseInt(searchParams.get('transitionDuration')) || 5;
@@ -44,6 +44,7 @@ function WidgetPage({ params }) {
     try {
       layout = JSON.parse(decodeURIComponent(layoutParam));
     } catch (e) {
+      console.log("Parsed layout:", layout);
       console.error('Failed to parse layout:', e);
     }
   }
@@ -248,6 +249,8 @@ function WidgetPage({ params }) {
             playerUUID={playerUUID}
             startTimestamp={initialTimestamp}
             graphType={graphType}
+            graphWidth={graphWidth}
+            graphHeight={graphHeight}
             playerData={{
               rankIcon: rankIcons[playerRank],
               playerRank: playerRank,
@@ -264,6 +267,8 @@ function WidgetPage({ params }) {
             showTimer={showTimer}
             fontFamily={fontFamily}
             showProgressIndicator={showProgressIndicator}
+            widget1ShowTimer={showTimer}
+            widget4ShowTimer={showTimer}
           />
         ) : (
           <div>widgetType is missing</div>

@@ -27,7 +27,7 @@ function WidgetPage() {
   const opacity = parseInt(searchParams.get('opacity')) || 100;
   const bgColor = searchParams.get('bgColor') || "#171e1f";
   const showTimer = searchParams.get('showTimer') === 'false' ? false : true;
-  const fontFamily = searchParams.get('fontFamily') || 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial';
+  const fontFamily = searchParams.get('fontFamily') || "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial";
   const carouselWidgetsParam = searchParams.get('carouselWidgets');
   const carouselWidgets = carouselWidgetsParam ? carouselWidgetsParam.split(',') : ["1", "4"];
   const transitionDuration = parseInt(searchParams.get('transitionDuration')) || 5;
