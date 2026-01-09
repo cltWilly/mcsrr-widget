@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { calWinRate, countMatches, normalizePlusMinusElo, rankIcons } from "@/lib/widgetUtils";
 import { AnimatedNumber, AnimatedPercentage } from "./AnimatedNumber";
 
-export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, bgColor = "#171e1f", showTimer = true, fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial' }) {
+export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, bgColor = "#171e1f", showTimer = true, fontFamily = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" }) {
 
   const winRate = calWinRate(winCount, lossCount, drawCount);
   const totalGames = countMatches(winCount, lossCount, drawCount);
@@ -119,7 +119,7 @@ export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimest
   );
 }
 
-export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, bgColor = "#171e1f", fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial' })  {
+export function OnlySmallBoxWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, bgColor = "#171e1f", fontFamily = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" })  {
 
   const winRate = calWinRate(winCount, lossCount, drawCount);
   const totalGames = countMatches(winCount, lossCount, drawCount);

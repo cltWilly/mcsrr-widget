@@ -11,11 +11,16 @@ export function CarouselWidget({
   playerUUID,
   startTimestamp,
   graphType = "winLossHistory",
+  graphWidth = 320,
+  graphHeight = 96,
   opacity = 100,
   bgColor = "#171e1f",
   showTimer = true,
-  fontFamily = "Inter, system-ui, sans-serif",
-  showProgressIndicator = true
+  fontFamily = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
+  showProgressIndicator = true,
+  // Widget-specific settings
+  widget1ShowTimer = true,
+  widget4ShowTimer = true,
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -71,7 +76,7 @@ export function CarouselWidget({
             startTimestamp={startTimestamp}
             opacity={opacity}
             bgColor={bgColor}
-            showTimer={false}
+            showTimer={widget1ShowTimer}
             fontFamily={fontFamily}
           />
         );
@@ -100,10 +105,10 @@ export function CarouselWidget({
             graphType={graphType}
             opacity={opacity}
             bgColor={bgColor}
-            showTimer={false}
+            showTimer={widget4ShowTimer}
             fontFamily={fontFamily}
-            graphWidth={320}
-            graphHeight={96}
+            graphWidth={graphWidth}
+            graphHeight={graphHeight}
           />
         );
       default:

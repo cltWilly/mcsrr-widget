@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { calWinRate, countMatches, normalizePlusMinusElo, rankIcons } from "@/lib/widgetUtils";
-import { snapToGrid, SAMPLE_DATA, AVAILABLE_FEATURES, AVAILABLE_FONTS } from "@/lib/customWidgetHelpers";
+import { snapToGrid, SAMPLE_DATA, AVAILABLE_FEATURES, AVAILABLE_FONTS, WIDGET_TEMPLATES } from "@/lib/customWidgetHelpers";
 import { AnimatedNumber, AnimatedPercentage } from "./AnimatedNumber";
 
 function DraggableFeature({ feature, isPlaced, onDragStart }) {
@@ -284,13 +284,22 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
   );
 }
 
-export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidth = 300, canvasHeight = 100 }) {
+export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidth = 300, canvasHeight = 100, onCanvasSizeChange }) {
   const [canvasElements, setCanvasElements] = useState(initialLayout || []);
   const [selectedElement, setSelectedElement] = useState(null);
   const [draggedFeature, setDraggedFeature] = useState(null);
   const [dropPreview, setDropPreview] = useState(null);
   const [showRemoveButtons, setShowRemoveButtons] = useState(true);
   const [isShiftHeld, setIsShiftHeld] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
+
+  const loadTemplate = (template) => {
+    setCanvasElements(template.elements);
+    if (onCanvasSizeChange) {
+      onCanvasSizeChange(template.canvasWidth, template.canvasHeight);
+    }
+    setShowTemplates(false);
+  };
 
   useEffect(() => {
     if (onLayoutChange) {
@@ -472,8 +481,45 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
     <div className="bg-gray-800 p-3 rounded-md">
       <div className="flex justify-between items-center mb-1">
         <h3 className="text-white font-bold text-sm">Customize Widget Layout</h3>
+        <button
+          onClick={() => setShowTemplates(!showTemplates)}
+          className="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded flex items-center gap-1"
+        >
+          <span>📋</span>
+          <span>Templates</span>
+        </button>
       </div>
       <p className="text-gray-400 text-xs mb-3">Drag features from the palette to the canvas and position them</p>
+      
+      {/* Template Selection Modal */}
+      {showTemplates && (
+        <div className="mb-3 bg-gray-900 border border-purple-600 rounded-md p-3">
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="text-white text-sm font-bold">Choose a Template</h4>
+            <button
+              onClick={() => setShowTemplates(false)}
+              className="text-gray-400 hover:text-white text-lg"
+            >
+              ×
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+            {WIDGET_TEMPLATES.map((template) => (
+              <button
+                key={template.id}
+                onClick={() => loadTemplate(template)}
+                className="bg-gray-800 hover:bg-gray-700 border border-gray-600 hover:border-purple-500 rounded-md p-2 text-left transition-all"
+              >
+                <div className="text-white text-xs font-semibold mb-1">{template.name}</div>
+                <div className="text-gray-400 text-xs mb-2">{template.description}</div>
+                <div className="text-gray-500 text-xs">
+                  {template.canvasWidth}x{template.canvasHeight}px • {template.elements.length} elements
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       
       <div className="flex gap-3">
         {/* Feature Palette */}

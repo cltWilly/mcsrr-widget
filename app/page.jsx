@@ -248,6 +248,10 @@ export default function Page() {
       url += `&carouselWidgets=${encodeURIComponent(carouselWidgets.join(','))}`;
       url += `&transitionDuration=${transitionDuration}`;
       url += `&showProgressIndicator=${showProgressIndicator}`;
+      url += `&showTimer=${showTimer}`;
+      url += `&fontFamily=${encodeURIComponent(fontFamily)}`;
+      url += `&graphType=${encodeURIComponent(graphType)}`;
+      url += `&graphWidth=${graphWidth}&graphHeight=${graphHeight}`;
     }
     
     // Apply canvas and graph size changes (only when Generate/Update pressed)
@@ -549,6 +553,50 @@ export default function Page() {
               <span>Show Progress Indicator</span>
             </label>
           </div>
+          
+          {/* Graph Widget Settings (if graph widget is selected) */}
+          {carouselWidgets.includes("4") && (
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <h4 className="text-md font-bold mb-2">Graph Widget Settings</h4>
+              <div className="mb-2">
+                <label className="block text-sm font-medium mb-2">Graph Type</label>
+                <select
+                  value={graphType}
+                  onChange={(e) => setGraphType(e.target.value)}
+                  className="block w-full p-2 border border-gray-300 rounded-md bg-gray-900 text-white text-sm"
+                >
+                  <option value="winLossHistory">Win/Loss History</option>
+                  <option value="eloHistory">ELO History</option>
+                  <option value="opponentEloDistribution">Opponent ELO Distribution</option>
+                  <option value="winRateByOpponentElo">Win Rate by Opponent ELO</option>
+                </select>
+              </div>
+              <div className="flex gap-4 mb-2">
+                <div className="flex-1">
+                  <label className="block text-xs text-gray-400 mb-1">Width (px)</label>
+                  <input
+                    type="number"
+                    value={graphWidth}
+                    onChange={(e) => setGraphWidth(parseInt(e.target.value) || 320)}
+                    className="w-full p-2 border border-gray-300 rounded-md bg-gray-900 text-white text-sm"
+                    min="200"
+                    max="600"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs text-gray-400 mb-1">Height (px)</label>
+                  <input
+                    type="number"
+                    value={graphHeight}
+                    onChange={(e) => setGraphHeight(parseInt(e.target.value) || 96)}
+                    className="w-full p-2 border border-gray-300 rounded-md bg-gray-900 text-white text-sm"
+                    min="60"
+                    max="200"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
       {/* Generate Widget button - commented out for auto-preview */}

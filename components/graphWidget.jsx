@@ -10,7 +10,7 @@ export function GraphWidget({
   graphWidth = 320,
   graphHeight = 96,
   bgColor = "#171e1f",
-  fontFamily = 'Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
+  fontFamily = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
   showTimer = true
 }) {
   const canvasRef = useRef(null);
