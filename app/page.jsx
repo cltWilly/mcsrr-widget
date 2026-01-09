@@ -498,9 +498,6 @@ export default function Page() {
               <p className="text-sm text-gray-400 mb-3">
                 Configure conditional colors for your custom widget elements. Elements like ELO +/- and Win Rate can automatically change colors based on their values.
               </p>
-              <p className="text-xs text-blue-400 mb-3">
-                💡 Tip: Add elements with conditional support in the Widget Editor, then customize their conditions here after selecting them.
-              </p>
               <div className="bg-gray-900 p-3 rounded-md">
                 <h4 className="text-sm font-semibold text-white mb-2">Supported Elements:</h4>
                 <ul className="space-y-2 text-sm text-gray-300">
