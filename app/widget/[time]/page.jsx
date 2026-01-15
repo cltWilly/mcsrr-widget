@@ -141,6 +141,14 @@ function WidgetPage({ params }) {
         interval = setInterval(async () => {
           console.log("fetching new win loss data");
           console.log("current timestamp: " + initialTimestamp);
+
+          // Only fetch eloRank for customizable widget (type 3)
+          if (widgetType === '3') {
+            const updatedPlayerData = await fetchInitPlayer(player);
+            if (updatedPlayerData) {
+              setEloRank(updatedPlayerData.eloRank || null);
+            }
+          }
           
           const result = await fetchAllMatches(data.uuid, initialTimestamp);
           if (!result) {

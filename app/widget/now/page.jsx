@@ -127,6 +127,13 @@ function WidgetPage() {
           console.log("fetching new win/loss data");
           console.log("current timestamp: " + initialTimestamp);
 
+          if (widgetType === '3') {
+            const updatedPlayerData = await fetchInitPlayer(player);
+            if (updatedPlayerData) {
+              setEloRank(updatedPlayerData.eloRank || null);
+            }
+          }
+
           // Refetch matches every 2 minutes
           const result = await fetchAllMatches(data.uuid, initialTimestamp);
           if (!result) {
