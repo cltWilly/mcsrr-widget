@@ -11,7 +11,7 @@ import {
   getCurrentTimestamp,
   getEloPlusMinus
 } from "@/lib/generatorUtils";
-import { calculateAverageTime, formatTime, getRank } from "@/lib/widgetUtils";
+import { calculateAverageTime, formatTime, getRank, rankIcons, ranksTable } from "@/lib/widgetUtils";
 import { AVAILABLE_FONTS } from "@/lib/customWidgetHelpers";
 
 export default function Page() {
@@ -160,40 +160,6 @@ export default function Page() {
     const averageTimeMs = calculateAverageTime(allMatches, playerUUID, startTimestamp);
     const averageTime = formatTime(averageTimeMs);
 
-    const ranksTable = {
-      "0-400": "Coal 1",
-      "401-500": "Coal 2",
-      "501-600": "Coal 3",
-      "601-700": "Iron 1",
-      "701-800": "Iron 2",
-      "801-900": "Iron 3",
-      "901-1000": "Gold 1",
-      "1001-1100": "Gold 2",
-      "1101-1200": "Gold 3",
-      "1201-1300": "Emerald 1",
-      "1301-1400": "Emerald 2",
-      "1401-1500": "Emerald 3",
-      "1501-1650": "Diamond 1",
-      "1651-1800": "Diamond 2",
-      "1801-2000": "Diamond 3",
-      "2001+": "Netherite 1",
-    };
-
-    const rankIcons = {
-      "Iron 1": "/iron.png",
-      "Iron 2": "/iron.png",
-      "Iron 3": "/iron.png",
-      "Gold 1": "/gold.png",
-      "Gold 2": "/gold.png",
-      "Gold 3": "/gold.png",
-      "Emerald 1": "/emerald.png",
-      "Emerald 2": "/emerald.png",
-      "Emerald 3": "/emerald.png",
-      "Diamond 1": "/diamond.png",
-      "Diamond 2": "/diamond.png",
-      "Diamond 3": "/diamond.png",
-      "Netherite 1": "/netherite.png",
-    };
 
     function getRank(elo) {
       if (elo > 2001) {
@@ -308,7 +274,7 @@ export default function Page() {
   const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? 136 : widgetTypeOption === "2" ? 96 : widgetTypeOption === "5" ? 176 : 100;
 
   return (
-    <div className="p-8">
+    <>
       <div className="mb-6 p-3 bg-blue-900/20 border border-blue-700/30 rounded-md">
         <p className="text-sm text-blue-300">
           <span className="font-semibold">Note:</span> This generator is currently in development. UI improvements and additional functionality will be added in future updates. See roadmap on{" "}
@@ -786,18 +752,19 @@ export default function Page() {
 
       {/* Custom Widget Editor Modal */}
       {isEditorModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setIsEditorModalOpen(false)}>
-          <div className="bg-gray-800 rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-white">Customize Widget Layout</h2>
-              <button
-                onClick={() => setIsEditorModalOpen(false)}
-                className="text-gray-400 hover:text-white text-2xl font-bold"
-              >
-                ×
-              </button>
-            </div>
-            <div className="p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto" onClick={() => setIsEditorModalOpen(false)}>
+          <div className="min-h-screen flex items-start justify-center p-4 pt-8">
+            <div className="bg-gray-800 rounded-lg shadow-xl max-w-6xl w-full my-8" onClick={(e) => e.stopPropagation()}>
+              <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center z-10">
+                <h2 className="text-xl font-bold text-white">Customize Widget Layout</h2>
+                <button
+                  onClick={() => setIsEditorModalOpen(false)}
+                  className="text-gray-400 hover:text-white text-2xl font-bold"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="p-6">
               <div className="mb-4">
                 <label className="block text-sm font-medium font-bold mb-2 text-white">Canvas Size</label>
                 <div className="flex gap-4 items-center">
@@ -882,7 +849,8 @@ export default function Page() {
                   }}
                 />
               </div>
-              <div className="flex justify-end gap-3">
+              </div>
+              <div className="flex justify-end gap-3 p-6 pt-0">
                 <button
                   onClick={() => setIsEditorModalOpen(false)}
                   className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded"
@@ -894,6 +862,6 @@ export default function Page() {
           </div>
         </div>
       )}
-    </div>
-  );
+    </>
+  )
 }

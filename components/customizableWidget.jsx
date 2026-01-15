@@ -482,7 +482,7 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
       <div className="flex justify-between items-center mb-1">
         <h3 className="text-white font-bold text-sm">Customize Widget Layout</h3>
         <div className="flex gap-2">
-          <button
+          {/* <button
             onClick={saveLayoutAsJSON}
             disabled={canvasElements.length === 0}
             className={`text-xs px-3 py-1.5 rounded flex items-center gap-1 ${
@@ -494,7 +494,7 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
           >
             <span>💾</span>
             <span>Save</span>
-          </button>
+          </button> */}
           <button
             onClick={() => setShowTemplates(!showTemplates)}
             className="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded flex items-center gap-1"
