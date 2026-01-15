@@ -71,6 +71,7 @@ function WidgetPage({ params }) {
   const didFetchRef = useRef(false);
 
   const [playerRank, setPlayerRank] = useState(null);
+  const [eloRank, setEloRank] = useState(null);
   const [winCount, setWinCount] = useState(null);
   const [lossCount, setLossCount] = useState(null);
   const [drawCount, setDrawCount] = useState(null);
@@ -112,6 +113,7 @@ function WidgetPage({ params }) {
         setApiError(null);
         setPlayerUUID(data.uuid);
         setStartElo(data.eloRate);
+        setEloRank(data.eloRank || null);
 
         fetchAllMatches(data.uuid, initialTimestamp).then((result) => {
           if (!result) {
@@ -233,6 +235,7 @@ function WidgetPage({ params }) {
           <CustomizableWidget
             uuid={playerUUID}
             elo={currentElo}
+            eloRank={eloRank}
             eloPlusMinus={eloPlusMinus}
             playerRank={playerRank}
             startTimestamp={initialTimestamp}

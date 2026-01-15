@@ -133,6 +133,8 @@ function CanvasElement({ element, onMove, onRemove, isSelected, onSelect, canvas
         return <div className="font-bold text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.playerRank}</div>;
       case 'elo':
         return <div className="text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.elo} ELO</div>;
+      case 'eloRank':
+        return <div className="text-sm" style={{ color: element.color || '#FFD700', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>#{SAMPLE_DATA.eloRank}</div>;
       case 'eloPlusMinus':
         return <div className="text-sm" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>({SAMPLE_DATA.eloPlusMinus})</div>;
       case 'wins':
@@ -191,7 +193,7 @@ function CanvasElement({ element, onMove, onRemove, isSelected, onSelect, canvas
   );
 }
 
-export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, layout, playerName, canvasWidth = 300, canvasHeight = 100, averageTime, bgColor = "#171e1f" }) {
+export function CustomizableWidget({ uuid, elo, eloRank, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, layout, playerName, canvasWidth = 300, canvasHeight = 100, averageTime, bgColor = "#171e1f" }) {
   const winRate = calWinRate(winCount, lossCount, drawCount);
   const totalGames = countMatches(winCount, lossCount, drawCount);
   eloPlusMinus = normalizePlusMinusElo(eloPlusMinus);
@@ -241,6 +243,8 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
         return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, playerRank), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{playerRank}</div>;
       case 'elo':
         return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, elo), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}><AnimatedNumber value={elo} /> ELO</div>;
+      case 'eloRank':
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, eloRank), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>#{eloRank ? <AnimatedNumber value={eloRank} /> : 'N/A'}</div>;
       case 'eloPlusMinus':
         return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, eloPlusMinus), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>({eloPlusMinus})</div>;
       case 'wins':

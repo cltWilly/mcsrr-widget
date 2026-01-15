@@ -59,6 +59,7 @@ function WidgetPage() {
   const [initialTimestamp, setInitialTimestamp] = useState(null);
 
   const [playerRank, setPlayerRank] = useState(null);
+  const [eloRank, setEloRank] = useState(null);
   const [winCount, setWinCount] = useState(null);
   const [lossCount, setLossCount] = useState(null);
   const [drawCount, setDrawCount] = useState(null);
@@ -96,6 +97,7 @@ function WidgetPage() {
         setApiError(null);
         setPlayerUUID(data.uuid);
         setStartElo(data.eloRate);
+        setEloRank(data.eloRank || null);
         const initialTimestamp = getCurrentTimestamp();
         setInitialTimestamp(initialTimestamp);
 
@@ -225,6 +227,7 @@ function WidgetPage() {
           <CustomizableWidget
             uuid={playerUUID}
             elo={currentElo}
+            eloRank={eloRank}
             eloPlusMinus={eloPlusMinus}
             playerRank={playerRank}
             startTimestamp={initialTimestamp}

@@ -183,6 +183,7 @@ export default function Page() {
       rankIcon: rankIcon,
       playerRank: playerRank,
       elo: startElo,
+      eloRank: playerData.eloRank || null,
       eloPlusMinus: eloPlusMinus,
       winCount: winCount,
       lossCount: lossCount,
