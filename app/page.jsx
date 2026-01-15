@@ -702,7 +702,7 @@ export default function Page() {
       <div className="lg:w-1/2 w-full lg:sticky lg:top-8 lg:self-start">
   
       <div className="lg:mt-0 mt-8">
-        {widgetUrl && (
+        {widgetUrl ? (
           <>
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               Widget Preview
@@ -746,6 +746,13 @@ export default function Page() {
               </div>
             )}
           </>
+        ) : (
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center p-6">
+              <h3 className="text-xl font-semibold text-gray-400 mb-2">Widget Preview</h3>
+              <p className="text-gray-500">Enter a player name to generate your widget preview</p>
+            </div>
+          </div>
         )}
       </div>
       </div>
