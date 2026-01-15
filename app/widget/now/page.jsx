@@ -36,6 +36,9 @@ function WidgetPage() {
   const boldWinRate = searchParams.get('boldWinRate') === 'true';
   const boldMatches = searchParams.get('boldMatches') === 'true';
   
+  // Player head option
+  const usePlayerHead = searchParams.get('usePlayerHead') === 'true';
+  
   const carouselWidgetsParam = searchParams.get('carouselWidgets');
   const carouselWidgets = carouselWidgetsParam ? carouselWidgetsParam.split(',') : ["1", "4"];
   const transitionDuration = parseInt(searchParams.get('transitionDuration')) || 5;
@@ -66,6 +69,7 @@ function WidgetPage() {
   const [matches, setMatches] = useState(null);
   const [averageTime, setAverageTime] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const [lastFetchTime, setLastFetchTime] = useState(Date.now());
 
 
   function getRank(elo) {
@@ -121,6 +125,7 @@ function WidgetPage() {
           // Calculate average time
           const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
           setAverageTime(formatTime(avgTimeMs));
+          setLastFetchTime(Date.now());
         });
 
         interval = setInterval(async () => {
@@ -158,6 +163,7 @@ function WidgetPage() {
           // Update average time
           const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
           setAverageTime(formatTime(avgTimeMs));
+          setLastFetchTime(Date.now());
         }, 2 * 60 * 1000); // 2 minutes
 
         console.log(data);
@@ -213,6 +219,9 @@ function WidgetPage() {
             boldWLD={boldWLD}
             boldWinRate={boldWinRate}
             boldMatches={boldMatches}
+            usePlayerHead={usePlayerHead}
+            playerName={playerName}
+            lastFetchTime={lastFetchTime}
           />
         ) : widgetType === '2' ? (
           <OnlySmallBoxWidget
@@ -259,6 +268,7 @@ function WidgetPage() {
             bgColor={bgColor}
             fontFamily={fontFamily}
             showTimer={showTimer}
+            lastFetchTime={lastFetchTime}
           />
         ) : widgetType === '5' ? (
           <CarouselWidget

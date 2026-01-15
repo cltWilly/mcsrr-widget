@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { calWinRate, countMatches, normalizePlusMinusElo, rankIcons } from "@/lib/widgetUtils";
 import { AnimatedNumber, AnimatedPercentage } from "./AnimatedNumber";
 
-export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, bgColor = "#171e1f", showTimer = true, fontFamily = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial", boldRank = true, boldElo = false, boldWLD = true, boldWinRate = false, boldMatches = false, usePlayerHead = false, playerName = "" }) {
+export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, bgColor = "#171e1f", showTimer = true, fontFamily = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial", boldRank = true, boldElo = false, boldWLD = true, boldWinRate = false, boldMatches = false, usePlayerHead = false, playerName = "", lastFetchTime = null }) {
 
   const winRate = calWinRate(winCount, lossCount, drawCount);
   const totalGames = countMatches(winCount, lossCount, drawCount);
@@ -42,6 +42,12 @@ export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimest
     setDebugDraws(null);
   };
 
+  // Reset countdown when lastFetchTime changes
+  useEffect(() => {
+    if (lastFetchTime) {
+      setCountdown(120);
+    }
+  }, [lastFetchTime]);
 
   useEffect(() => {
     const interval = setInterval(() => {

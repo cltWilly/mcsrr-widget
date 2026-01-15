@@ -81,6 +81,7 @@ function WidgetPage({ params }) {
   const [matches, setMatches] = useState(null);
   const [averageTime, setAverageTime] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const [lastFetchTime, setLastFetchTime] = useState(Date.now());
 
 
 
@@ -136,6 +137,7 @@ function WidgetPage({ params }) {
           // Calculate average time
           const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
           setAverageTime(formatTime(avgTimeMs));
+          setLastFetchTime(Date.now());
         });
 
         interval = setInterval(async () => {
@@ -173,6 +175,7 @@ function WidgetPage({ params }) {
           // Update average time
           const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
           setAverageTime(formatTime(avgTimeMs));
+          setLastFetchTime(Date.now());
         }, 2 * 60 * 1000); // 2 minutes
 
         console.log(data);
@@ -227,6 +230,7 @@ function WidgetPage({ params }) {
             boldMatches={boldMatches}
             usePlayerHead={usePlayerHead}
             playerName={playerName}
+            lastFetchTime={lastFetchTime}
           />
         ) : widgetType === '2' ? (
           <OnlySmallBoxWidget
@@ -273,6 +277,7 @@ function WidgetPage({ params }) {
             bgColor={bgColor}
             fontFamily={fontFamily}
             showTimer={showTimer}
+            lastFetchTime={lastFetchTime}
           />
         ) : widgetType === '5' ? (
           <CarouselWidget
