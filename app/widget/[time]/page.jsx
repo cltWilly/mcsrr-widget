@@ -32,6 +32,17 @@ function WidgetPage({ params }) {
   const bgColor = searchParams.get('bgColor') || "#171e1f";
   const showTimer = searchParams.get('showTimer') === 'false' ? false : true;
   const fontFamily = searchParams.get('fontFamily') || "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial";
+  
+  // Bold text options
+  const boldRank = searchParams.get('boldRank') === 'true' || searchParams.get('boldRank') === null;
+  const boldElo = searchParams.get('boldElo') === 'true';
+  const boldWLD = searchParams.get('boldWLD') === 'true' || searchParams.get('boldWLD') === null;
+  const boldWinRate = searchParams.get('boldWinRate') === 'true';
+  const boldMatches = searchParams.get('boldMatches') === 'true';
+  
+  // Player head option
+  const usePlayerHead = searchParams.get('usePlayerHead') === 'true';
+  
   const carouselWidgetsParam = searchParams.get('carouselWidgets');
   const carouselWidgets = carouselWidgetsParam ? carouselWidgetsParam.split(',') : ["1", "4"];
   const transitionDuration = parseInt(searchParams.get('transitionDuration')) || 5;
@@ -63,12 +74,14 @@ function WidgetPage({ params }) {
   const didFetchRef = useRef(false);
 
   const [playerRank, setPlayerRank] = useState(null);
+  const [eloRank, setEloRank] = useState(null);
   const [winCount, setWinCount] = useState(null);
   const [lossCount, setLossCount] = useState(null);
   const [drawCount, setDrawCount] = useState(null);
   const [matches, setMatches] = useState(null);
   const [averageTime, setAverageTime] = useState(null);
   const [apiError, setApiError] = useState(null);
+  const [lastFetchTime, setLastFetchTime] = useState(Date.now());
 
 
 
@@ -92,8 +105,10 @@ function WidgetPage({ params }) {
     if (!player || didFetchRef.current) {
       return;
     }
-    didFetchRef.current = true;
+    
     let interval;
+    let isMounted = true;
+    didFetchRef.current = true;
 
     fetchInitPlayer(player).then((data) => {
         if (!data) {
@@ -101,11 +116,16 @@ function WidgetPage({ params }) {
           return;
         }
         
+        if (!isMounted) return;
+        
         setApiError(null);
         setPlayerUUID(data.uuid);
         setStartElo(data.eloRate);
+        setEloRank(data.eloRank || null);
 
         fetchAllMatches(data.uuid, initialTimestamp).then((result) => {
+          if (!isMounted) return;
+          
           if (!result) {
             setApiError('Failed to fetch match data. API may be down for maintenance.');
             return;
@@ -123,11 +143,20 @@ function WidgetPage({ params }) {
           // Calculate average time
           const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
           setAverageTime(formatTime(avgTimeMs));
+          setLastFetchTime(Date.now());
         });
 
         interval = setInterval(async () => {
           console.log("fetching new win loss data");
           console.log("current timestamp: " + initialTimestamp);
+
+          // Only fetch eloRank for customizable widget (type 3)
+          if (widgetType === '3') {
+            const updatedPlayerData = await fetchInitPlayer(player);
+            if (updatedPlayerData) {
+              setEloRank(updatedPlayerData.eloRank || null);
+            }
+          }
           
           const result = await fetchAllMatches(data.uuid, initialTimestamp);
           if (!result) {
@@ -152,6 +181,7 @@ function WidgetPage({ params }) {
           // Update average time
           const avgTimeMs = calculateAverageTime(allMatches, data.uuid, initialTimestamp);
           setAverageTime(formatTime(avgTimeMs));
+          setLastFetchTime(Date.now());
         }, 2 * 60 * 1000); // 2 minutes
 
         console.log(data);
@@ -164,7 +194,13 @@ function WidgetPage({ params }) {
         setPlayerRank(getRank(data.eloRate));
       });
 
-  return () => clearInterval(interval); // Clear interval on component unmount
+  return () => {
+    isMounted = false;
+    didFetchRef.current = false;
+    if (interval) {
+      clearInterval(interval);
+    }
+  };
   }, [player]);
 
   // Recalculate player rank whenever currentElo changes
@@ -199,6 +235,14 @@ function WidgetPage({ params }) {
             bgColor={bgColor}
             showTimer={showTimer}
             fontFamily={fontFamily}
+            boldRank={boldRank}
+            boldElo={boldElo}
+            boldWLD={boldWLD}
+            boldWinRate={boldWinRate}
+            boldMatches={boldMatches}
+            usePlayerHead={usePlayerHead}
+            playerName={playerName}
+            lastFetchTime={lastFetchTime}
           />
         ) : widgetType === '2' ? (
           <OnlySmallBoxWidget
@@ -212,11 +256,15 @@ function WidgetPage({ params }) {
             drawCount={drawCount}
             bgColor={bgColor}
             fontFamily={fontFamily}
+            boldWLD={boldWLD}
+            boldWinRate={boldWinRate}
+            boldMatches={boldMatches}
           />
         ) : widgetType === '3' ? (
           <CustomizableWidget
             uuid={playerUUID}
             elo={currentElo}
+            eloRank={eloRank}
             eloPlusMinus={eloPlusMinus}
             playerRank={playerRank}
             startTimestamp={initialTimestamp}
@@ -241,6 +289,7 @@ function WidgetPage({ params }) {
             bgColor={bgColor}
             fontFamily={fontFamily}
             showTimer={showTimer}
+            lastFetchTime={lastFetchTime}
           />
         ) : widgetType === '5' ? (
           <CarouselWidget

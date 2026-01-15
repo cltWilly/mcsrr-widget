@@ -11,7 +11,8 @@ export function GraphWidget({
   graphHeight = 96,
   bgColor = "#171e1f",
   fontFamily = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
-  showTimer = true
+  showTimer = true,
+  lastFetchTime = null
 }) {
   const canvasRef = useRef(null);
   const [countdown, setCountdown] = useState(120);
@@ -20,6 +21,13 @@ export function GraphWidget({
   
   // Calculate match count
   const matchCount = matches ? matches.filter(match => match.date > startTimestamp).length : 0;
+
+  // Reset countdown when lastFetchTime changes
+  useEffect(() => {
+    if (lastFetchTime) {
+      setCountdown(120);
+    }
+  }, [lastFetchTime]);
 
   useEffect(() => {
     const interval = setInterval(() => {

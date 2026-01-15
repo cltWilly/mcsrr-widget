@@ -11,7 +11,7 @@ import {
   getCurrentTimestamp,
   getEloPlusMinus
 } from "@/lib/generatorUtils";
-import { calculateAverageTime, formatTime, getRank } from "@/lib/widgetUtils";
+import { calculateAverageTime, formatTime, getRank, rankIcons, ranksTable } from "@/lib/widgetUtils";
 import { AVAILABLE_FONTS } from "@/lib/customWidgetHelpers";
 
 export default function Page() {
@@ -36,6 +36,16 @@ export default function Page() {
   const [showTimer, setShowTimer] = useState(true);
   const [fontFamily, setFontFamily] = useState(AVAILABLE_FONTS[0]);
   
+  // Bold text options for default and small widgets
+  const [boldRank, setBoldRank] = useState(true);
+  const [boldElo, setBoldElo] = useState(false);
+  const [boldWLD, setBoldWLD] = useState(true);
+  const [boldWinRate, setBoldWinRate] = useState(false);
+  const [boldMatches, setBoldMatches] = useState(false);
+  
+  // Player head option for default widget
+  const [usePlayerHead, setUsePlayerHead] = useState(false);
+  
   // Carousel widget configuration
   const [carouselWidgets, setCarouselWidgets] = useState(["1", "4"]); // Default: Default + Graph
   const [transitionDuration, setTransitionDuration] = useState(5); // seconds
@@ -43,12 +53,12 @@ export default function Page() {
   
   // Smart Conditions state
   const [isSmartConditionsOpen, setIsSmartConditionsOpen] = useState(false);
+  const [isStyleSettingsOpen, setIsStyleSettingsOpen] = useState(false);
 
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState('Copy URL');
   const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
-  const [isStyleSettingsOpen, setIsStyleSettingsOpen] = useState(false);
 
   // Debounce timer ref
   const debounceTimerRef = useRef(null);
@@ -79,7 +89,7 @@ export default function Page() {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight, carouselWidgets, transitionDuration, showProgressIndicator]);
+  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight, carouselWidgets, transitionDuration, showProgressIndicator, boldRank, boldElo, boldWLD, boldWinRate, boldMatches, usePlayerHead]);
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -153,40 +163,6 @@ export default function Page() {
     const averageTimeMs = calculateAverageTime(allMatches, playerUUID, startTimestamp);
     const averageTime = formatTime(averageTimeMs);
 
-    const ranksTable = {
-      "0-400": "Coal 1",
-      "401-500": "Coal 2",
-      "501-600": "Coal 3",
-      "601-700": "Iron 1",
-      "701-800": "Iron 2",
-      "801-900": "Iron 3",
-      "901-1000": "Gold 1",
-      "1001-1100": "Gold 2",
-      "1101-1200": "Gold 3",
-      "1201-1300": "Emerald 1",
-      "1301-1400": "Emerald 2",
-      "1401-1500": "Emerald 3",
-      "1501-1650": "Diamond 1",
-      "1651-1800": "Diamond 2",
-      "1801-2000": "Diamond 3",
-      "2001+": "Netherite 1",
-    };
-
-    const rankIcons = {
-      "Iron 1": "/iron.png",
-      "Iron 2": "/iron.png",
-      "Iron 3": "/iron.png",
-      "Gold 1": "/gold.png",
-      "Gold 2": "/gold.png",
-      "Gold 3": "/gold.png",
-      "Emerald 1": "/emerald.png",
-      "Emerald 2": "/emerald.png",
-      "Emerald 3": "/emerald.png",
-      "Diamond 1": "/diamond.png",
-      "Diamond 2": "/diamond.png",
-      "Diamond 3": "/diamond.png",
-      "Netherite 1": "/netherite.png",
-    };
 
     function getRank(elo) {
       if (elo > 2001) {
@@ -210,6 +186,7 @@ export default function Page() {
       rankIcon: rankIcon,
       playerRank: playerRank,
       elo: startElo,
+      eloRank: playerData.eloRank || null,
       eloPlusMinus: eloPlusMinus,
       winCount: winCount,
       lossCount: lossCount,
@@ -232,6 +209,15 @@ export default function Page() {
     // Add fontFamily parameter for widgets 1, 2, and 4
     if (widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4") {
       url += `&fontFamily=${encodeURIComponent(fontFamily)}`;
+    }
+    
+    // Add bold text options for default and small widgets
+    if (widgetTypeOption === "1" || widgetTypeOption === "2") {
+      url += `&boldWLD=${boldWLD}&boldWinRate=${boldWinRate}&boldMatches=${boldMatches}`;
+      if (widgetTypeOption === "1") {
+        url += `&boldRank=${boldRank}&boldElo=${boldElo}`;
+        url += `&usePlayerHead=${usePlayerHead}`;
+      }
     }
     
     // Add layout configuration for customizable widget
@@ -293,12 +279,12 @@ export default function Page() {
   const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? 136 : widgetTypeOption === "2" ? 96 : widgetTypeOption === "5" ? 176 : 100;
 
   return (
-    <div className="p-8">
+    <>
       <div className="mb-6 p-3 bg-blue-900/20 border border-blue-700/30 rounded-md">
         <p className="text-sm text-blue-300">
           <span className="font-semibold">Note:</span> This generator is currently in development. UI improvements and additional functionality will be added in future updates. See roadmap on{" "}
           <a
-            href="https://github.com/cltWilly/mcsrr-widget/tree/master?tab=readme-ov-file#-roadmap"
+            href="https://github.com/cltWilly/mcsrr-widget/tree/master?tab=readme-ov-file#roadmap"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-white"
@@ -476,6 +462,78 @@ export default function Page() {
                   />
                   <span>Show Timer</span>
                 </label>
+              </div>
+            )}
+            
+            {widgetTypeOption === "1" && (
+              <div>
+                <label className="flex items-center space-x-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={usePlayerHead}
+                    onChange={(e) => setUsePlayerHead(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                  />
+                  <span>Use Player Head Instead of Rank Icon</span>
+                </label>
+              </div>
+            )}
+            
+            {/* Bold Text Options */}
+            {(widgetTypeOption === "1" || widgetTypeOption === "2") && (
+              <div>
+                <h4 className="text-sm font-semibold text-white mb-3">Bold Text Options</h4>
+                <div className="space-y-2">
+                  {widgetTypeOption === "1" && (
+                    <>
+                      <label className="flex items-center space-x-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={boldRank}
+                          onChange={(e) => setBoldRank(e.target.checked)}
+                          className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                        />
+                        <span>Bold Rank Name</span>
+                      </label>
+                      <label className="flex items-center space-x-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={boldElo}
+                          onChange={(e) => setBoldElo(e.target.checked)}
+                          className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                        />
+                        <span>Bold ELO</span>
+                      </label>
+                    </>
+                  )}
+                  <label className="flex items-center space-x-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={boldWLD}
+                      onChange={(e) => setBoldWLD(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                    />
+                    <span>Bold W/L/D</span>
+                  </label>
+                  <label className="flex items-center space-x-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={boldWinRate}
+                      onChange={(e) => setBoldWinRate(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                    />
+                    <span>Bold Win Rate</span>
+                  </label>
+                  <label className="flex items-center space-x-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={boldMatches}
+                      onChange={(e) => setBoldMatches(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                    />
+                    <span>Bold Match Count</span>
+                  </label>
+                </div>
               </div>
             )}
           </div>
@@ -662,7 +720,7 @@ export default function Page() {
       <div className="lg:w-1/2 w-full lg:sticky lg:top-8 lg:self-start">
   
       <div className="lg:mt-0 mt-8">
-        {widgetUrl && (
+        {widgetUrl ? (
           <>
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               Widget Preview
@@ -671,6 +729,7 @@ export default function Page() {
             <div className="mb-4 flex justify-start">
               {widgetUrl && (
                 <iframe
+                  key={widgetUrl}
                   src={widgetUrl}
                   className="rounded-md"
                     style={{ 
@@ -706,6 +765,13 @@ export default function Page() {
               </div>
             )}
           </>
+        ) : (
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center p-6">
+              <h3 className="text-xl font-semibold text-gray-400 mb-2">Widget Preview</h3>
+              <p className="text-gray-500">Enter a player name to generate your widget preview</p>
+            </div>
+          </div>
         )}
       </div>
       </div>
@@ -713,18 +779,19 @@ export default function Page() {
 
       {/* Custom Widget Editor Modal */}
       {isEditorModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setIsEditorModalOpen(false)}>
-          <div className="bg-gray-800 rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-white">Customize Widget Layout</h2>
-              <button
-                onClick={() => setIsEditorModalOpen(false)}
-                className="text-gray-400 hover:text-white text-2xl font-bold"
-              >
-                ×
-              </button>
-            </div>
-            <div className="p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto" onClick={() => setIsEditorModalOpen(false)}>
+          <div className="min-h-screen flex items-start justify-center p-4 pt-8">
+            <div className="bg-gray-800 rounded-lg shadow-xl max-w-6xl w-full my-8" onClick={(e) => e.stopPropagation()}>
+              <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center z-10">
+                <h2 className="text-xl font-bold text-white">Customize Widget Layout</h2>
+                <button
+                  onClick={() => setIsEditorModalOpen(false)}
+                  className="text-gray-400 hover:text-white text-2xl font-bold"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="p-6">
               <div className="mb-4">
                 <label className="block text-sm font-medium font-bold mb-2 text-white">Canvas Size</label>
                 <div className="flex gap-4 items-center">
@@ -809,7 +876,8 @@ export default function Page() {
                   }}
                 />
               </div>
-              <div className="flex justify-end gap-3">
+              </div>
+              <div className="flex justify-end gap-3 p-6 pt-0">
                 <button
                   onClick={() => setIsEditorModalOpen(false)}
                   className="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded"
@@ -821,6 +889,6 @@ export default function Page() {
           </div>
         </div>
       )}
-    </div>
-  );
+    </>
+  )
 }
