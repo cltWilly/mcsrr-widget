@@ -36,6 +36,13 @@ export default function Page() {
   const [showTimer, setShowTimer] = useState(true);
   const [fontFamily, setFontFamily] = useState(AVAILABLE_FONTS[0]);
   
+  // Bold text options for default and small widgets
+  const [boldRank, setBoldRank] = useState(true);
+  const [boldElo, setBoldElo] = useState(false);
+  const [boldWLD, setBoldWLD] = useState(true);
+  const [boldWinRate, setBoldWinRate] = useState(false);
+  const [boldMatches, setBoldMatches] = useState(false);
+  
   // Carousel widget configuration
   const [carouselWidgets, setCarouselWidgets] = useState(["1", "4"]); // Default: Default + Graph
   const [transitionDuration, setTransitionDuration] = useState(5); // seconds
@@ -43,12 +50,12 @@ export default function Page() {
   
   // Smart Conditions state
   const [isSmartConditionsOpen, setIsSmartConditionsOpen] = useState(false);
+  const [isStyleSettingsOpen, setIsStyleSettingsOpen] = useState(false);
 
   // Track whether data is being updated
   const [isUpdating, setIsUpdating] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState('Copy URL');
   const [isEditorModalOpen, setIsEditorModalOpen] = useState(false);
-  const [isStyleSettingsOpen, setIsStyleSettingsOpen] = useState(false);
 
   // Debounce timer ref
   const debounceTimerRef = useRef(null);
@@ -79,7 +86,7 @@ export default function Page() {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight, carouselWidgets, transitionDuration, showProgressIndicator]);
+  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight, carouselWidgets, transitionDuration, showProgressIndicator, boldRank, boldElo, boldWLD, boldWinRate, boldMatches]);
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -232,6 +239,14 @@ export default function Page() {
     // Add fontFamily parameter for widgets 1, 2, and 4
     if (widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4") {
       url += `&fontFamily=${encodeURIComponent(fontFamily)}`;
+    }
+    
+    // Add bold text options for default and small widgets
+    if (widgetTypeOption === "1" || widgetTypeOption === "2") {
+      url += `&boldWLD=${boldWLD}&boldWinRate=${boldWinRate}&boldMatches=${boldMatches}`;
+      if (widgetTypeOption === "1") {
+        url += `&boldRank=${boldRank}&boldElo=${boldElo}`;
+      }
     }
     
     // Add layout configuration for customizable widget
@@ -476,6 +491,64 @@ export default function Page() {
                   />
                   <span>Show Timer</span>
                 </label>
+              </div>
+            )}
+            
+            {/* Bold Text Options */}
+            {(widgetTypeOption === "1" || widgetTypeOption === "2") && (
+              <div>
+                <h4 className="text-sm font-semibold text-white mb-3">Bold Text Options</h4>
+                <div className="space-y-2">
+                  {widgetTypeOption === "1" && (
+                    <>
+                      <label className="flex items-center space-x-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={boldRank}
+                          onChange={(e) => setBoldRank(e.target.checked)}
+                          className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                        />
+                        <span>Bold Rank Name</span>
+                      </label>
+                      <label className="flex items-center space-x-2 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={boldElo}
+                          onChange={(e) => setBoldElo(e.target.checked)}
+                          className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                        />
+                        <span>Bold ELO</span>
+                      </label>
+                    </>
+                  )}
+                  <label className="flex items-center space-x-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={boldWLD}
+                      onChange={(e) => setBoldWLD(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                    />
+                    <span>Bold W/L/D</span>
+                  </label>
+                  <label className="flex items-center space-x-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={boldWinRate}
+                      onChange={(e) => setBoldWinRate(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                    />
+                    <span>Bold Win Rate</span>
+                  </label>
+                  <label className="flex items-center space-x-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={boldMatches}
+                      onChange={(e) => setBoldMatches(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                    />
+                    <span>Bold Match Count</span>
+                  </label>
+                </div>
               </div>
             )}
           </div>

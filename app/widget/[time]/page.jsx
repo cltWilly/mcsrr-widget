@@ -32,6 +32,14 @@ function WidgetPage({ params }) {
   const bgColor = searchParams.get('bgColor') || "#171e1f";
   const showTimer = searchParams.get('showTimer') === 'false' ? false : true;
   const fontFamily = searchParams.get('fontFamily') || "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial";
+  
+  // Bold text options
+  const boldRank = searchParams.get('boldRank') === 'true' || searchParams.get('boldRank') === null;
+  const boldElo = searchParams.get('boldElo') === 'true';
+  const boldWLD = searchParams.get('boldWLD') === 'true' || searchParams.get('boldWLD') === null;
+  const boldWinRate = searchParams.get('boldWinRate') === 'true';
+  const boldMatches = searchParams.get('boldMatches') === 'true';
+  
   const carouselWidgetsParam = searchParams.get('carouselWidgets');
   const carouselWidgets = carouselWidgetsParam ? carouselWidgetsParam.split(',') : ["1", "4"];
   const transitionDuration = parseInt(searchParams.get('transitionDuration')) || 5;
@@ -199,6 +207,11 @@ function WidgetPage({ params }) {
             bgColor={bgColor}
             showTimer={showTimer}
             fontFamily={fontFamily}
+            boldRank={boldRank}
+            boldElo={boldElo}
+            boldWLD={boldWLD}
+            boldWinRate={boldWinRate}
+            boldMatches={boldMatches}
           />
         ) : widgetType === '2' ? (
           <OnlySmallBoxWidget
@@ -212,6 +225,9 @@ function WidgetPage({ params }) {
             drawCount={drawCount}
             bgColor={bgColor}
             fontFamily={fontFamily}
+            boldWLD={boldWLD}
+            boldWinRate={boldWinRate}
+            boldMatches={boldMatches}
           />
         ) : widgetType === '3' ? (
           <CustomizableWidget

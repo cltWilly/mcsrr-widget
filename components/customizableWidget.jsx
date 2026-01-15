@@ -130,27 +130,27 @@ function CanvasElement({ element, onMove, onRemove, isSelected, onSelect, canvas
           />
         );
       case 'playerRank':
-        return <div className="font-bold text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.playerRank}</div>;
+        return <div className="font-bold text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.playerRank}</div>;
       case 'elo':
-        return <div className="text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.elo} ELO</div>;
+        return <div className="text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.elo} ELO</div>;
       case 'eloPlusMinus':
-        return <div className="text-sm" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>({SAMPLE_DATA.eloPlusMinus})</div>;
+        return <div className="text-sm" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>({SAMPLE_DATA.eloPlusMinus})</div>;
       case 'wins':
-        return <div className="font-bold text-sm" style={{ color: element.color || '#10B981', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.wins}W</div>;
+        return <div className="font-bold text-sm" style={{ color: element.color || '#10B981', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.wins}W</div>;
       case 'losses':
-        return <div className="font-bold text-sm" style={{ color: element.color || '#EF4444', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.losses}L</div>;
+        return <div className="font-bold text-sm" style={{ color: element.color || '#EF4444', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.losses}L</div>;
       case 'draws':
-        return <div className="font-bold text-sm" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.draws}D</div>;
+        return <div className="font-bold text-sm" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.draws}D</div>;
       case 'winRate':
-        return <div className="text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.winRate}% WR</div>;
+        return <div className="text-sm" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.winRate}% WR</div>;
       case 'totalMatches':
-        return <div className="text-sm" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.totalMatches} MATCHES</div>;
+        return <div className="text-sm" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.totalMatches} MATCHES</div>;
       case 'countdown':
-        return <div className="text-xs" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.countdown}s</div>;
+        return <div className="text-xs" style={{ color: element.color || '#9CA3AF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.countdown}s</div>;
       case 'averageTime':
-        return <div className="text-sm" style={{ color: element.color || '#60A5FA', fontFamily: element.font || AVAILABLE_FONTS[0] }}>Avg: {SAMPLE_DATA.averageTime}</div>;
+        return <div className="text-sm" style={{ color: element.color || '#60A5FA', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>Avg: {SAMPLE_DATA.averageTime}</div>;
       default:
-        return <div className="text-xs" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0] }}>{element.label}</div>;
+        return <div className="text-xs" style={{ color: element.color || '#FFFFFF', fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{element.label}</div>;
     }
   };
 
@@ -238,25 +238,25 @@ export function CustomizableWidget({ uuid, elo, eloPlusMinus, playerRank, startT
           />
         );
       case 'playerRank':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, playerRank), fontFamily: element.font || AVAILABLE_FONTS[0] }}>{playerRank}</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, playerRank), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{playerRank}</div>;
       case 'elo':
-        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, elo), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={elo} /> ELO</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, elo), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}><AnimatedNumber value={elo} /> ELO</div>;
       case 'eloPlusMinus':
-        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, eloPlusMinus), fontFamily: element.font || AVAILABLE_FONTS[0] }}>({eloPlusMinus})</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, eloPlusMinus), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>({eloPlusMinus})</div>;
       case 'wins':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, winCount), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={winCount} />W</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, winCount), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}><AnimatedNumber value={winCount} />W</div>;
       case 'losses':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, lossCount), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={lossCount} />L</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, lossCount), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}><AnimatedNumber value={lossCount} />L</div>;
       case 'draws':
-        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, drawCount), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={drawCount} />D</div>;
+        return <div className="font-bold text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, drawCount), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}><AnimatedNumber value={drawCount} />D</div>;
       case 'winRate':
-        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, parseFloat(winRate)), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedPercentage value={parseFloat(winRate)} />% WR</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, parseFloat(winRate)), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}><AnimatedPercentage value={parseFloat(winRate)} />% WR</div>;
       case 'totalMatches':
-        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, totalGames), fontFamily: element.font || AVAILABLE_FONTS[0] }}><AnimatedNumber value={totalGames} /> {totalGames === 1 ? 'MATCH' : 'MATCHES'}</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, totalGames), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}><AnimatedNumber value={totalGames} /> {totalGames === 1 ? 'MATCH' : 'MATCHES'}</div>;
       case 'countdown':
-        return <div className="text-xs whitespace-nowrap" style={{ color: getConditionalColor(element, countdown), fontFamily: element.font || AVAILABLE_FONTS[0] }}>{countdown}s</div>;
+        return <div className="text-xs whitespace-nowrap" style={{ color: getConditionalColor(element, countdown), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>{countdown}s</div>;
       case 'averageTime':
-        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, averageTime), fontFamily: element.font || AVAILABLE_FONTS[0] }}>Avg: {averageTime || 'N/A'}</div>;
+        return <div className="text-sm whitespace-nowrap" style={{ color: getConditionalColor(element, averageTime), fontFamily: element.font || AVAILABLE_FONTS[0], fontWeight: element.bold ? 'bold' : 'normal' }}>Avg: {averageTime || 'N/A'}</div>;
       default:
         return null;
     }
@@ -453,27 +453,27 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
           />
         );
       case 'playerRank':
-        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.playerRank}</div>;
+        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.playerRank}</div>;
       case 'elo':
-        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.elo} ELO</div>;
+        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.elo} ELO</div>;
       case 'eloPlusMinus':
-        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>({SAMPLE_DATA.eloPlusMinus})</div>;
+        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>({SAMPLE_DATA.eloPlusMinus})</div>;
       case 'wins':
-        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.wins}W</div>;
+        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.wins}W</div>;
       case 'losses':
-        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.losses}L</div>;
+        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.losses}L</div>;
       case 'draws':
-        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.draws}D</div>;
+        return <div className="font-bold text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.draws}D</div>;
       case 'winRate':
-        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.winRate}% WR</div>;
+        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.winRate}% WR</div>;
       case 'totalMatches':
-        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.totalMatches} MATCHES</div>;
+        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.totalMatches} MATCHES</div>;
       case 'countdown':
-        return <div className="text-xs" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{SAMPLE_DATA.countdown}s</div>;
+        return <div className="text-xs" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>{SAMPLE_DATA.countdown}s</div>;
       case 'averageTime':
-        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0] }}>Avg: {SAMPLE_DATA.averageTime}</div>;
+        return <div className="text-sm" style={{ color: feature.defaultColor, fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>Avg: {SAMPLE_DATA.averageTime}</div>;
       default:
-        return <div className="text-xs" style={{ color: feature.defaultColor || '#FFFFFF', fontFamily: feature.font || AVAILABLE_FONTS[0] }}>{feature.label}</div>;
+        return <div className="text-xs" style={{ color: feature.defaultColor || '#FFFFFF', fontFamily: feature.font || AVAILABLE_FONTS[0], fontWeight: feature.bold ? 'bold' : 'normal' }}>{feature.label}</div>;
     }
   };
 
@@ -481,13 +481,28 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
     <div className="bg-gray-800 p-3 rounded-md">
       <div className="flex justify-between items-center mb-1">
         <h3 className="text-white font-bold text-sm">Customize Widget Layout</h3>
-        <button
-          onClick={() => setShowTemplates(!showTemplates)}
-          className="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded flex items-center gap-1"
-        >
-          <span>📋</span>
-          <span>Templates</span>
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={saveLayoutAsJSON}
+            disabled={canvasElements.length === 0}
+            className={`text-xs px-3 py-1.5 rounded flex items-center gap-1 ${
+              canvasElements.length === 0
+                ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                : 'bg-green-600 hover:bg-green-700 text-white'
+            }`}
+            title="Save current layout as JSON file"
+          >
+            <span>💾</span>
+            <span>Save</span>
+          </button>
+          <button
+            onClick={() => setShowTemplates(!showTemplates)}
+            className="text-xs bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded flex items-center gap-1"
+          >
+            <span>📋</span>
+            <span>Templates</span>
+          </button>
+        </div>
       </div>
       <p className="text-gray-400 text-xs mb-3">Drag features from the palette to the canvas and position them</p>
       
@@ -664,6 +679,23 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
                   <option value={AVAILABLE_FONTS[4]}>Serif</option>
                   <option value={AVAILABLE_FONTS[5]}>Monospace</option>
                 </select>
+              </div>
+              
+              {/* Bold toggle */}
+              <div className="mt-2">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={canvasElements.find(el => el.id === selectedElement)?.bold || false}
+                    onChange={(e) => {
+                      setCanvasElements(canvasElements.map(el =>
+                        el.id === selectedElement ? { ...el, bold: e.target.checked } : el
+                      ));
+                    }}
+                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                  />
+                  <span className="text-white text-xs font-semibold">Bold Text</span>
+                </label>
               </div>
               
               {/* Conditional Color Section (Collapsible) - Inside Style Settings */}
