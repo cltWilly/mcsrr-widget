@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { calWinRate, countMatches, normalizePlusMinusElo, rankIcons } from "@/lib/widgetUtils";
 import { AnimatedNumber, AnimatedPercentage } from "./AnimatedNumber";
 
-export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, bgColor = "#171e1f", showTimer = true, fontFamily = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial", boldRank = true, boldElo = false, boldWLD = true, boldWinRate = false, boldMatches = false }) {
+export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimestamp, winCount, lossCount, drawCount, bgColor = "#171e1f", showTimer = true, fontFamily = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial", boldRank = true, boldElo = false, boldWLD = true, boldWinRate = false, boldMatches = false, usePlayerHead = false, playerName = "" }) {
 
   const winRate = calWinRate(winCount, lossCount, drawCount);
   const totalGames = countMatches(winCount, lossCount, drawCount);
   eloPlusMinus = normalizePlusMinusElo(eloPlusMinus);
   const rankIcon = rankIcons[playerRank];
+  const playerHeadUrl = playerName ? `https://mc-heads.net/avatar/${playerName}/64` : rankIcon;
 
   const [countdown, setCountdown] = useState(120);
   const [debugMode, setDebugMode] = useState(false);
@@ -54,12 +55,12 @@ export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimest
     <div className="text-white p-4 rounded-md w-full max-w-xs relative" style={{ backgroundColor: bgColor, fontFamily: fontFamily }}>
       <div className="flex items-center space-x-4">
         <img
-          src={rankIcon}
-          alt="Rank Icon"
+          src={usePlayerHead ? playerHeadUrl : rankIcon}
+          alt={usePlayerHead ? "Player Head" : "Rank Icon"}
           className="w-10 h-10"
           width="64"
           height="64"
-          style={{ aspectRatio: "40/40", objectFit: "cover", imageRendering: "pixelated" }} />
+          style={{ aspectRatio: "40/40", objectFit: "cover", imageRendering: usePlayerHead ? "auto" : "pixelated" }} />
         <div>
           <div className="text-lg" style={{ fontWeight: boldRank ? 'bold' : 'normal' }}>{playerRank}</div>
           <div className="text-sm text-gray-400" style={{ fontWeight: boldElo ? 'bold' : 'normal' }}>

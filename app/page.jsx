@@ -43,6 +43,9 @@ export default function Page() {
   const [boldWinRate, setBoldWinRate] = useState(false);
   const [boldMatches, setBoldMatches] = useState(false);
   
+  // Player head option for default widget
+  const [usePlayerHead, setUsePlayerHead] = useState(false);
+  
   // Carousel widget configuration
   const [carouselWidgets, setCarouselWidgets] = useState(["1", "4"]); // Default: Default + Graph
   const [transitionDuration, setTransitionDuration] = useState(5); // seconds
@@ -86,7 +89,7 @@ export default function Page() {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight, carouselWidgets, transitionDuration, showProgressIndicator, boldRank, boldElo, boldWLD, boldWinRate, boldMatches]);
+  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight, carouselWidgets, transitionDuration, showProgressIndicator, boldRank, boldElo, boldWLD, boldWinRate, boldMatches, usePlayerHead]);
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -213,6 +216,7 @@ export default function Page() {
       url += `&boldWLD=${boldWLD}&boldWinRate=${boldWinRate}&boldMatches=${boldMatches}`;
       if (widgetTypeOption === "1") {
         url += `&boldRank=${boldRank}&boldElo=${boldElo}`;
+        url += `&usePlayerHead=${usePlayerHead}`;
       }
     }
     
@@ -280,7 +284,7 @@ export default function Page() {
         <p className="text-sm text-blue-300">
           <span className="font-semibold">Note:</span> This generator is currently in development. UI improvements and additional functionality will be added in future updates. See roadmap on{" "}
           <a
-            href="https://github.com/cltWilly/mcsrr-widget/tree/master?tab=readme-ov-file#-roadmap"
+            href="https://github.com/cltWilly/mcsrr-widget/tree/master?tab=readme-ov-file#roadmap"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-white"
@@ -457,6 +461,20 @@ export default function Page() {
                     className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
                   />
                   <span>Show Timer</span>
+                </label>
+              </div>
+            )}
+            
+            {widgetTypeOption === "1" && (
+              <div>
+                <label className="flex items-center space-x-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={usePlayerHead}
+                    onChange={(e) => setUsePlayerHead(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                  />
+                  <span>Use Player Head Instead of Rank Icon</span>
                 </label>
               </div>
             )}
@@ -711,6 +729,7 @@ export default function Page() {
             <div className="mb-4 flex justify-start">
               {widgetUrl && (
                 <iframe
+                  key={widgetUrl}
                   src={widgetUrl}
                   className="rounded-md"
                     style={{ 

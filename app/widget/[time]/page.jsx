@@ -40,6 +40,9 @@ function WidgetPage({ params }) {
   const boldWinRate = searchParams.get('boldWinRate') === 'true';
   const boldMatches = searchParams.get('boldMatches') === 'true';
   
+  // Player head option
+  const usePlayerHead = searchParams.get('usePlayerHead') === 'true';
+  
   const carouselWidgetsParam = searchParams.get('carouselWidgets');
   const carouselWidgets = carouselWidgetsParam ? carouselWidgetsParam.split(',') : ["1", "4"];
   const transitionDuration = parseInt(searchParams.get('transitionDuration')) || 5;
@@ -214,6 +217,8 @@ function WidgetPage({ params }) {
             boldWLD={boldWLD}
             boldWinRate={boldWinRate}
             boldMatches={boldMatches}
+            usePlayerHead={usePlayerHead}
+            playerName={playerName}
           />
         ) : widgetType === '2' ? (
           <OnlySmallBoxWidget
