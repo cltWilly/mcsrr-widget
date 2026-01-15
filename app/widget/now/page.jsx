@@ -91,12 +91,15 @@ function WidgetPage() {
   useEffect(() => {
     if (player) {
       let interval;
+      let isMounted = true;
 
       fetchInitPlayer(player).then((data) => {
         if (!data) {
           setApiError('MCSR Ranked API is currently unavailable. Please try again later.');
           return;
         }
+        
+        if (!isMounted) return;
         
         setApiError(null);
         setPlayerUUID(data.uuid);
@@ -107,6 +110,8 @@ function WidgetPage() {
 
         // Fetch all matches across pages using the new function
         fetchAllMatches(data.uuid, initialTimestamp).then((result) => {
+          if (!isMounted) return;
+          
           if (!result) {
             setApiError('Failed to fetch match data. API may be down for maintenance.');
             return;
@@ -178,7 +183,12 @@ function WidgetPage() {
         setPlayerRank(getRank(data.eloRate));
       });
 
-      return () => clearInterval(interval); // Clear interval on component unmount
+      return () => {
+        isMounted = false;
+        if (interval) {
+          clearInterval(interval);
+        }
+      };
     }
   }, [player]);
 

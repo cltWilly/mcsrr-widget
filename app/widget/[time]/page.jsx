@@ -105,8 +105,10 @@ function WidgetPage({ params }) {
     if (!player || didFetchRef.current) {
       return;
     }
-    didFetchRef.current = true;
+    
     let interval;
+    let isMounted = true;
+    didFetchRef.current = true;
 
     fetchInitPlayer(player).then((data) => {
         if (!data) {
@@ -114,12 +116,16 @@ function WidgetPage({ params }) {
           return;
         }
         
+        if (!isMounted) return;
+        
         setApiError(null);
         setPlayerUUID(data.uuid);
         setStartElo(data.eloRate);
         setEloRank(data.eloRank || null);
 
         fetchAllMatches(data.uuid, initialTimestamp).then((result) => {
+          if (!isMounted) return;
+          
           if (!result) {
             setApiError('Failed to fetch match data. API may be down for maintenance.');
             return;
@@ -188,7 +194,13 @@ function WidgetPage({ params }) {
         setPlayerRank(getRank(data.eloRate));
       });
 
-  return () => clearInterval(interval); // Clear interval on component unmount
+  return () => {
+    isMounted = false;
+    didFetchRef.current = false;
+    if (interval) {
+      clearInterval(interval);
+    }
+  };
   }, [player]);
 
   // Recalculate player rank whenever currentElo changes
