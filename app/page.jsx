@@ -294,7 +294,7 @@ export default function Page() {
         </p>
       </div>
       <Toaster position="top-center" richColors />
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-4 mb-6 lg:ml-8">
         <h1 className="text-2xl font-bold">Widget Generator</h1>
         <a
           href="https://github.com/cltWilly/mcsrr-widget"
@@ -307,7 +307,7 @@ export default function Page() {
         </a>
       </div>
       <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
-        <div className="lg:w-1/2 w-full">
+        <div className="lg:w-1/2 w-full lg:ml-8">
           <h2 className="text-xl font-bold mb-4">Configuration</h2>
       <div className="mb-4">
         <label className="block text-sm font-medium font-bold">Player Name</label>
