@@ -123,7 +123,7 @@ function CanvasElement({ element, onMove, onRemove, isSelected, onSelect, canvas
       case 'playerHead':
         return (
           <img 
-            src="https://mc-heads.net/avatar/Notch/40" 
+            src="https://mineskin.eu/helm/Notch/40" 
             alt="Player Head" 
             className="w-full h-full object-contain"
             style={{ imageRendering: 'pixelated' }}
@@ -233,7 +233,7 @@ export function CustomizableWidget({ uuid, elo, eloRank, eloPlusMinus, playerRan
       case 'playerHead':
         return (
           <img 
-            src={`https://mc-heads.net/avatar/${playerName || 'Steve'}/${element.width}`}
+            src={`https://mineskin.eu/helm/${playerName || 'Steve'}/${element.width}`}
             alt="Player Head" 
             className="w-full h-full object-contain"
             style={{ imageRendering: 'pixelated' }}
@@ -450,7 +450,7 @@ export function DragDropWidgetEditor({ onLayoutChange, initialLayout, canvasWidt
       case 'playerHead':
         return (
           <img 
-            src="https://mc-heads.net/avatar/Notch/40" 
+            src="https://mineskin.eu/helm/Notch/40" 
             alt="Player Head" 
             className="w-full h-full object-contain"
             style={{ imageRendering: 'pixelated' }}
