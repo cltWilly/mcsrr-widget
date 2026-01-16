@@ -8,7 +8,7 @@ export function DefaultWidget({ uuid, elo, eloPlusMinus, playerRank, startTimest
   const totalGames = countMatches(winCount, lossCount, drawCount);
   eloPlusMinus = normalizePlusMinusElo(eloPlusMinus);
   const rankIcon = rankIcons[playerRank];
-  const playerHeadUrl = playerName ? `https://mc-heads.net/avatar/${playerName}/64` : rankIcon;
+  const playerHeadUrl = playerName ? `https://mineskin.eu/helm/${playerName}/64` : rankIcon;
 
   const [countdown, setCountdown] = useState(120);
   const [debugMode, setDebugMode] = useState(false);
