@@ -8,8 +8,8 @@ export function AnimatedNumber({ value, duration = 600, className = "" }) {
   const animationRef = useRef(null);
 
   useEffect(() => {
-    const prevValue = prevValueRef.current;
-    const targetValue = value;
+    const prevValue = Number(prevValueRef.current) || 0;
+    const targetValue = Number(value) || 0;
 
     // Skip animation if value hasn't changed
     if (prevValue === targetValue) return;
@@ -57,8 +57,8 @@ export function AnimatedPercentage({ value, duration = 600, decimals = 1, classN
   const animationRef = useRef(null);
 
   useEffect(() => {
-    const prevValue = prevValueRef.current;
-    const targetValue = value;
+    const prevValue = Number(prevValueRef.current) || 0;
+    const targetValue = Number(value) || 0;
 
     if (prevValue === targetValue) return;
 

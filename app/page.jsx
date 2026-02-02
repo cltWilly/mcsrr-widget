@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown, ChevronRight, Github, Loader2, Info } from "lucide-react";
-import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { DragDropWidgetEditor } from "@/components/customizableWidget";
 import { toast, Toaster } from "sonner";
 import {
@@ -201,13 +200,13 @@ export default function Page() {
     const timestamp = timestampOption === "now" ? "now" : selectedTimestamp;
     let url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?widgetType=${encodeURIComponent(widgetTypeOption)}&player=${encodeURIComponent(playerName)}&opacity=${opacity}&bgColor=${encodeURIComponent(bgColor)}`;
     
-    // Add showTimer parameter for default widget and graph widget
-    if (widgetTypeOption === "1" || widgetTypeOption === "4") {
+    // Add showTimer parameter for default widget, graph widget, and stats+graph widget
+    if (widgetTypeOption === "1" || widgetTypeOption === "4" || widgetTypeOption === "6") {
       url += `&showTimer=${showTimer}`;
     }
     
-    // Add fontFamily parameter for widgets 1, 2, and 4
-    if (widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4") {
+    // Add fontFamily parameter for widgets 1, 2, 4, and 6
+    if (widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4" || widgetTypeOption === "6") {
       url += `&fontFamily=${encodeURIComponent(fontFamily)}`;
     }
     
@@ -275,8 +274,8 @@ export default function Page() {
   };
 
   // Recommend sizes based on selected widget and applied dimensions
-  const recommendedWidth = widgetTypeOption === "3" ? appliedCanvasWidth : widgetTypeOption === "4" ? 320 : widgetTypeOption === "2" ? 130 : widgetTypeOption === "5" ? 320 : 300;
-  const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? 136 : widgetTypeOption === "2" ? 96 : widgetTypeOption === "5" ? 176 : 100;
+  const recommendedWidth = widgetTypeOption === "3" ? appliedCanvasWidth : widgetTypeOption === "4" ? 320 : widgetTypeOption === "2" ? 130 : widgetTypeOption === "5" ? 320 : widgetTypeOption === "6" ? 420 : 300;
+  const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? 136 : widgetTypeOption === "2" ? 96 : widgetTypeOption === "5" ? 176 : widgetTypeOption === "6" ? 96 : 100;
 
   return (
     <>
@@ -373,6 +372,7 @@ export default function Page() {
           <option value="3">Customizable Widget (Drag & Drop)</option>
           <option value="4">Graph Widget</option>
           <option value="5">Carousel (Multiple Widgets)</option>
+          <option value="6">Stats + Graph Widget</option>
         </select>
       </div>
       
@@ -434,7 +434,7 @@ export default function Page() {
               </div>
             </div>
             
-            {(widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4") && (
+            {(widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4" || widgetTypeOption === "6") && (
               <div>
                 <label className="block text-sm font-medium mb-2">Font Family</label>
                 <select
@@ -733,8 +733,8 @@ export default function Page() {
                   src={widgetUrl}
                   className="rounded-md"
                     style={{ 
-                    width: widgetTypeOption === "3" ? `${appliedCanvasWidth}px` : widgetTypeOption === "4" ? `${appliedGraphWidth}px` : widgetTypeOption === "5" ? '320px' : '100%',
-                    height: widgetTypeOption === "3" ? `${appliedCanvasHeight}px` : widgetTypeOption === "4" ? `${appliedGraphHeight + 40}px` : widgetTypeOption === "5" ? '176px' : '6.0rem',
+                    width: widgetTypeOption === "3" ? `${appliedCanvasWidth}px` : widgetTypeOption === "4" ? `${appliedGraphWidth}px` : widgetTypeOption === "5" ? '320px' : widgetTypeOption === "6" ? '420px' : '100%',
+                    height: widgetTypeOption === "3" ? `${appliedCanvasHeight}px` : widgetTypeOption === "4" ? `${appliedGraphHeight + 40}px` : widgetTypeOption === "5" ? '176px' : widgetTypeOption === "6" ? '96px' : '6.0rem',
                     overflow: 'hidden' 
                   }}
                   title="Widget Preview"
