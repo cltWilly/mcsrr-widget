@@ -52,86 +52,85 @@ function StatsWidgetContent() {
   };
 
   // Initial data fetch
-  useEffect(() => {
-    if (!player) return;
+  // Initial data fetch
+useEffect(() => {
+  if (!player) return;
 
-    let isMounted = true;
+  let isMounted = true;
 
-    const fetchData = async () => {
-      try {
-        setApiError(null);
-        
-        // Always fetch current data
-        const currentPlayerData = await fetchInitPlayer(player);
-        if (!isMounted) return;
-        
-        if (!currentPlayerData) {
-          setApiError('Failed to fetch player data. API may be down.');
-          return;
-        }
-
-        setPlayerUUID(currentPlayerData.uuid);
-
-        // Fetch current matches
-        const currentResult = await fetchAllMatches(currentPlayerData.uuid, getCurrentTimestamp());
-        if (!isMounted) return;
-        
-        if (!currentResult) {
-          setApiError('Failed to fetch match data. API may be down.');
-          return;
-        }
-
-        setCurrentData({
-          elo: currentPlayerData.eloRate,
-          rank: getRank(currentPlayerData.eloRate),
-          matches: currentResult.allMatches,
-          winCount: currentResult.winCount,
-          lossCount: currentResult.lossCount,
-          drawCount: currentResult.drawsCount,
-          eloPlusMinus: getEloPlusMinus(currentResult.allMatches, currentPlayerData.uuid, getCurrentTimestamp()),
-          timestamp: getCurrentTimestamp()
-        });
-
-        // Fetch historical data if needed
-        if ((statsSource === 'time' || graphSource === 'time') && timestamp) {
-          const histTimestamp = getTimestampValue();
-          const historicalResult = await fetchAllMatches(currentPlayerData.uuid, histTimestamp);
-          
-          if (!isMounted) return;
-          
-          if (historicalResult) {
-            setHistoricalData({
-              elo: currentPlayerData.eloRate,
-              rank: getRank(currentPlayerData.eloRate),
-              matches: historicalResult.allMatches,
-              winCount: historicalResult.winCount,
-              lossCount: historicalResult.lossCount,
-              drawCount: historicalResult.drawsCount,
-              eloPlusMinus: getEloPlusMinus(historicalResult.allMatches, currentPlayerData.uuid, histTimestamp),
-              timestamp: histTimestamp
-            });
-          }
-        }
-
-        setLastFetchTime(Date.now());
-
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setApiError('An error occurred while fetching data.');
+  const fetchData = async () => {
+    try {
+      setApiError(null);
+      
+      const currentPlayerData = await fetchInitPlayer(player);
+      if (!isMounted) return;
+      
+      if (!currentPlayerData) {
+        setApiError('Failed to fetch player data.');
+        return;
       }
-    };
 
-    fetchData();
+      setPlayerUUID(currentPlayerData.uuid);
 
-    // Set up auto-refresh every 2 minutes
-    const interval = setInterval(fetchData, 120000);
+      // Fetch current data with current timestamp
+      const currentTimestamp = getCurrentTimestamp();
+      const currentResult = await fetchAllMatches(currentPlayerData.uuid, currentTimestamp);
+      
+      if (!isMounted) return;
+      
+      if (!currentResult) {
+        setApiError('Failed to fetch match data. API may be down.');
+        return;
+      }
 
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
-  }, [player, statsSource, graphSource, timestamp]);
+      setCurrentData({
+        elo: currentPlayerData.eloRate,
+        rank: getRank(currentPlayerData.eloRate),
+        matches: currentResult.allMatches,
+        winCount: currentResult.winCount,
+        lossCount: currentResult.lossCount,
+        drawCount: currentResult.drawsCount,
+        eloPlusMinus: getEloPlusMinus(currentResult.allMatches, currentPlayerData.uuid, currentTimestamp),
+        timestamp: currentTimestamp
+      });
 
+      // Fetch historical data only if needed
+      if ((statsSource === 'time' || graphSource === 'time') && timestamp) {
+        const histTimestamp = getTimestampValue();
+        const historicalResult = await fetchAllMatches(currentPlayerData.uuid, histTimestamp);
+        
+        if (!isMounted) return;
+        
+        if (historicalResult) {
+          setHistoricalData({
+            elo: currentPlayerData.eloRate,
+            rank: getRank(currentPlayerData.eloRate),
+            matches: historicalResult.allMatches,
+            winCount: historicalResult.winCount,
+            lossCount: historicalResult.lossCount,
+            drawCount: historicalResult.drawsCount,
+            eloPlusMinus: getEloPlusMinus(historicalResult.allMatches, currentPlayerData.uuid, histTimestamp),
+            timestamp: histTimestamp
+          });
+        }
+      }
+
+      setLastFetchTime(Date.now());
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setApiError('An error occurred while fetching data.');
+    }
+  };
+
+  fetchData();
+  const interval = setInterval(fetchData, 120000);
+
+  return () => {
+    isMounted = false;
+    clearInterval(interval);
+  };
+}, [player, statsSource, graphSource, timestamp]);
   // Determine which data to use for stats and graph
   const statsData = statsSource === 'now' ? currentData : historicalData;
   const graphData = graphSource === 'now' ? currentData : historicalData;
