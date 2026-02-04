@@ -124,6 +124,14 @@ export default function Page() {
       return;
     }
 
+    // Validate timestamp is set if Stats+Graph widget uses historical data
+    if (widgetTypeOption === "6" && (statsSource === "time" || graphSource === "time")) {
+      if (timestampOption !== "custom" || !selectedTimestamp || selectedTimestamp.trim() === "") {
+        toast.error("Please select a custom timestamp when using historical data for Stats+Graph widget");
+        return;
+      }
+    }
+
     setIsUpdating(true); // Set loading state
 
     try {
