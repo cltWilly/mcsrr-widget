@@ -103,7 +103,7 @@ export function StatsGraphWidget({
       </div>
       
       {/* Left side - Stats */}
-      <div className="flex flex-col justify-center pr-1 py-3" style={{ width: '200px' }}>
+      <div className="flex flex-col justify-center pr-3 py-3" style={{ width: '200px' }}>
         {/* Elo with difference */}
         <div className="flex items-center gap-2 mb-1">
           <div className="text-[32px] font-bold text-white leading-none">
@@ -139,7 +139,7 @@ export function StatsGraphWidget({
       )} */}
 
       {/* Right side - Mini Graph */}
-      <div className="flex-1 flex items-center justify-center pl-1 py-1 relative">
+      <div className="flex-1 flex items-center justify-center px-1 py-1 relative">
         <canvas 
           ref={canvasRef} 
           width={200}
