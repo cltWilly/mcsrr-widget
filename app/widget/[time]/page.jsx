@@ -6,6 +6,7 @@ import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
 import { CustomizableWidget } from "@/components/customizableWidget";
 import { GraphWidget } from "@/components/graphWidget";
 import { CarouselWidget } from "@/components/carouselWidget";
+import { StatsGraphWidget } from "@/components/statsGraphWidget";
 import { 
   fetchInitPlayer, 
   fetchAllMatches, 
@@ -318,6 +319,23 @@ function WidgetPage({ params }) {
             showProgressIndicator={showProgressIndicator}
             widget1ShowTimer={showTimer}
             widget4ShowTimer={showTimer}
+          />
+        ) : widgetType === '6' ? (
+          <StatsGraphWidget
+            uuid={playerUUID}
+            elo={currentElo}
+            eloPlusMinus={eloPlusMinus}
+            winCount={winCount}
+            lossCount={lossCount}
+            drawCount={drawCount}
+            matches={matches || []}
+            playerUUID={playerUUID}
+            startTimestamp={initialTimestamp}
+            playerRank={playerRank}
+            bgColor={bgColor}
+            showTimer={showTimer}
+            fontFamily={fontFamily}
+            lastFetchTime={lastFetchTime}
           />
         ) : (
           <div>widgetType is missing</div>

@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { DefaultWidget, OnlySmallBoxWidget } from "@/components/widget";
+import { StatsGraphWidget } from "@/components/statsGraphWidget";
 import { CustomizableWidget } from "@/components/customizableWidget";
 import { GraphWidget } from "@/components/graphWidget";
 import { CarouselWidget } from "@/components/carouselWidget";
@@ -304,6 +305,23 @@ function WidgetPage() {
             fontFamily={fontFamily}
             showProgressIndicator={showProgressIndicator}
           />
+           ) : widgetType === '6' ? (
+            <StatsGraphWidget
+              uuid={playerUUID}
+              elo={currentElo}
+              eloPlusMinus={eloPlusMinus}
+              winCount={winCount}
+              lossCount={lossCount}
+              drawCount={drawCount}
+              matches={matches || []}
+              playerUUID={playerUUID}
+              startTimestamp={initialTimestamp}
+              playerRank={playerRank}
+              bgColor={bgColor}
+              showTimer={showTimer}
+              fontFamily={fontFamily}
+              lastFetchTime={lastFetchTime}
+            />
         ) : (
           <div>widgetType is missing</div>
         )}

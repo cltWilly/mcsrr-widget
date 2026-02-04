@@ -1,4 +1,4 @@
-# 🎮 MCSR Ranked Widget
+# MCSR Ranked Widget
 
 > **Project Status:** ✅ Active - This project has been revived and is actively maintained!
 
@@ -7,20 +7,21 @@ A modern, customizable widget for [OBS](https://obsproject.com/) that displays r
 ![Default Widget Example](./images/defaultWidget.jpg)
 ![Small Widget Example](./images/smallWidget.jpg)
 ![Graph Widget Example](./images/winLossGraphWidget.jpg)
+![Stats + Graph Widget Example](./images/statsGraphWidget.jpg)
 
 <img src="./images/carouselWidget.gif" alt="Carousel Widget Example" width="300" height="176" />
 
-## ✨ Features
+## Features
 
-- 📊 **Real-time Stats** - ELO rating, rank, wins/losses/draws, win rate, and more
-- 🎨 **Fully Customizable** - Drag-and-drop interface with custom colors and positioning
-- 📏 **Snap-to-Grid** - Hold Shift while dragging for precise alignment
-- ⏱️ **Average Completion Time** - Track your average speedrun time from won matches
-- 🖼️ **Player Avatars** - Display Minecraft player heads using mc-heads.net API
-- 🔄 **Auto-Updates** - Statistics refresh every 2 minutes automatically
-- 📱 **Responsive Sizing** - Customize widget dimensions to fit your stream layout
+- **Real-time Stats** - ELO rating, rank, wins/losses/draws, win rate, and more
+- **Fully Customizable** - Drag-and-drop interface with custom colors and positioning
+- **Snap-to-Grid** - Hold Shift while dragging for precise alignment
+- **Average Completion Time** - Track your average speedrun time from won matches
+- **Player Avatars** - Display Minecraft player heads using mc-heads.net API
+- **Auto-Updates** - Statistics refresh every 2 minutes automatically
+- **Responsive Sizing** - Customize widget dimensions to fit your stream layout
 
-## 🚀 Quick Start
+## Quick Start
 
 1. Visit the [Widget Generator Page](https://mcsrr-widget.cltw.dev)
 2. Enter your MCSR Ranked username
@@ -36,7 +37,7 @@ A modern, customizable widget for [OBS](https://obsproject.com/) that displays r
 
 **Recommended dimensions:** 300px × 100px (Default/Small), 320px × 136px (Graph), 320px × 176px (Carousel)
 
-## 🎨 Custom Widget Features
+## Custom Widget Features
 
 The custom widget type offers advanced customization:
 
@@ -53,7 +54,7 @@ The custom widget type offers advanced customization:
   - Average Completion Time
   - Countdown Timer
 
-## 🎠 Carousel Widget Features
+## Carousel Widget Features
 
 Display multiple widgets with smooth auto-rotating transitions:
 
@@ -64,11 +65,9 @@ Display multiple widgets with smooth auto-rotating transitions:
 - **Shared Timer** - Single countdown timer synced across all widgets
 - **Smart Positioning** - Automatically adjusts for different widget sizes
 
-## 📡 API Endpoints
-
-Base URL: `https://mcsrr-widget.cltw.dev`
 
 ### Widget Endpoints
+
 
 - `/widget/now?player=USERNAME` - Track stats from current time forward
 - `/widget/[timestamp]?player=USERNAME` - Track stats from specific date/time
@@ -122,19 +121,12 @@ Base URL: `https://mcsrr-widget.cltw.dev`
 ]
 ```
 
-## 🔧 Development
+## Development
 
 ```bash
-# Install dependencies
 npm install
-
-# Run development server
 npm run dev
-
-# Build for production
 npm run build
-
-# Start production server
 npm start
 ```
 
@@ -154,6 +146,7 @@ Built with [Next.js 14](https://nextjs.org/) and [Tailwind CSS](https://tailwind
 - ✅ Carousel with multiple widgets and auto-transitions
 - ✅ Show/hide elements based on conditions (like elso +/- color change)
 - ✅ Templates for custom widgets (pre-made layouts)
+- ✅ New widget type: Stats + Graph combined
 
 ### Planned Features
 - UI/UX improvements for the generator interface
@@ -165,7 +158,7 @@ Built with [Next.js 14](https://nextjs.org/) and [Tailwind CSS](https://tailwind
 
 Have a feature request? [Open an issue](https://github.com/cltWilly/mcsrr-widget/issues)!
 
-## 🎥 Streamers Using This Widget
+## Streamers Using This Widget
 
 These awesome streamers are using the MCSR Ranked Widget on their streams:
 
@@ -174,12 +167,11 @@ These awesome streamers are using the MCSR Ranked Widget on their streams:
 
 Using this widget on your stream? I'd love to feature you! Just open an issue or submit a pull request with your channel name and link.
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
 
-## 📄 License
-
+## License
 This project is open source. If you use or fork this code, please provide credit to the original project.
 
 ---
