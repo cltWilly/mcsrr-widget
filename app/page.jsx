@@ -50,6 +50,10 @@ export default function Page() {
   const [transitionDuration, setTransitionDuration] = useState(5); // seconds
   const [showProgressIndicator, setShowProgressIndicator] = useState(true);
   
+  // Stats + Graph widget configuration
+  const [statsSource, setStatsSource] = useState("now"); // "now" or "time"
+  const [graphSource, setGraphSource] = useState("time"); // "now" or "time"
+  
   // Smart Conditions state
   const [isSmartConditionsOpen, setIsSmartConditionsOpen] = useState(false);
   const [isStyleSettingsOpen, setIsStyleSettingsOpen] = useState(false);
@@ -88,7 +92,7 @@ export default function Page() {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight, carouselWidgets, transitionDuration, showProgressIndicator, boldRank, boldElo, boldWLD, boldWinRate, boldMatches, usePlayerHead]);
+  }, [playerName, timestampOption, selectedTimestamp, widgetTypeOption, opacity, bgColor, showTimer, fontFamily, widgetLayout, canvasWidth, canvasHeight, graphType, graphWidth, graphHeight, carouselWidgets, transitionDuration, showProgressIndicator, boldRank, boldElo, boldWLD, boldWinRate, boldMatches, usePlayerHead, statsSource, graphSource]);
 
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
@@ -198,7 +202,14 @@ export default function Page() {
     // Generate widget URL
     const baseUrl = window.location.origin;
     const timestamp = timestampOption === "now" ? "now" : selectedTimestamp;
-    let url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?widgetType=${encodeURIComponent(widgetTypeOption)}&player=${encodeURIComponent(playerName)}&opacity=${opacity}&bgColor=${encodeURIComponent(bgColor)}`;
+    
+    // Stats+Graph widget uses a different route
+    let url;
+    if (widgetTypeOption === "6") {
+      url = `${baseUrl}/widget/combinated?player=${encodeURIComponent(playerName)}&opacity=${opacity}&bgColor=${encodeURIComponent(bgColor)}`;
+    } else {
+      url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?widgetType=${encodeURIComponent(widgetTypeOption)}&player=${encodeURIComponent(playerName)}&opacity=${opacity}&bgColor=${encodeURIComponent(bgColor)}`;
+    }
     
     // Add showTimer parameter for default widget, graph widget, and stats+graph widget
     if (widgetTypeOption === "1" || widgetTypeOption === "4" || widgetTypeOption === "6") {
@@ -240,6 +251,15 @@ export default function Page() {
       url += `&fontFamily=${encodeURIComponent(fontFamily)}`;
       url += `&graphType=${encodeURIComponent(graphType)}`;
       url += `&graphWidth=${graphWidth}&graphHeight=${graphHeight}`;
+    }
+    
+    // Add stats+graph widget configuration
+    if (widgetTypeOption === "6") {
+      url += `&statsSource=${statsSource}&graphSource=${graphSource}`;
+      // Add timestamp if either source uses historical data
+      if ((statsSource === "time" || graphSource === "time") && selectedTimestamp) {
+        url += `&time=${selectedTimestamp}`;
+      }
     }
     
     // Apply canvas and graph size changes (only when Generate/Update pressed)
@@ -705,6 +725,51 @@ export default function Page() {
           )}
         </div>
       )}
+      
+      {widgetTypeOption === "6" && (
+        <div className="mb-4 p-4 border border-gray-600 rounded-md w-full md:w-1/2">
+          <h3 className="text-lg font-bold mb-3">Stats + Graph Configuration</h3>
+          <p className="text-sm text-gray-400 mb-4">
+            Choose separate data sources for left side (stats) and right side (graph)
+          </p>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium font-bold mb-2">Left Side (Stats)</label>
+              <select
+                value={statsSource}
+                onChange={(e) => setStatsSource(e.target.value)}
+                className="block w-full p-2 border border-gray-300 rounded-md bg-gray-900 text-white text-sm"
+              >
+                <option value="now">Current Stats (Now)</option>
+                <option value="time">Historical Stats (Timestamp)</option>
+              </select>
+              <p className="mt-1 text-xs text-gray-400">
+                Controls: Elo, W/L record, rank icon
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium font-bold mb-2">Right Side (Graph)</label>
+              <select
+                value={graphSource}
+                onChange={(e) => setGraphSource(e.target.value)}
+                className="block w-full p-2 border border-gray-300 rounded-md bg-gray-900 text-white text-sm"
+              >
+                <option value="now">Current Graph (Now)</option>
+                <option value="time">Historical Graph (Timestamp)</option>
+              </select>
+              <p className="mt-1 text-xs text-gray-400">
+                Controls: Match history visualization
+              </p>
+            </div>
+            <div className="p-3 bg-blue-900/20 border border-blue-700/30 rounded">
+              <p className="text-xs text-blue-300">
+                💡 Mix and match: Show current stats with historical graph, or vice versa. When using "Timestamp" option above, the historical data will be from that point.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Generate Widget button - commented out for auto-preview */}
       {/* <button
         onClick={handleGeneratePreview}

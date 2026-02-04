@@ -16,7 +16,6 @@ export function StatsGraphWidget({
   startTimestamp,
   playerRank,
   bgColor = "#171e1f", 
-  showTimer = true, 
   fontFamily = "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
   lastFetchTime = null 
 }) {
