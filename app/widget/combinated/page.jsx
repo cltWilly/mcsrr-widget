@@ -136,11 +136,22 @@ function StatsWidgetContent() {
   const statsData = statsSource === 'now' ? currentData : historicalData;
   const graphData = graphSource === 'now' ? currentData : historicalData;
 
+  // Check if timestamp is required but not provided
+  const needsTimestamp = (statsSource === 'time' || graphSource === 'time') && !timestamp;
 
   return (
     <div className="relative min-h-screen" style={{ opacity: opacity / 100 }}>
       <div className="absolute top-0 left-0">
-        {apiError ? (
+        {needsTimestamp ? (
+          <div className="bg-[#171e1f] text-white rounded-md p-6 shadow-lg border-2 border-yellow-500" style={{ width: '420px', minHeight: '96px' }}>
+            <div className="flex flex-col items-center justify-center h-full text-center">
+              <div className="text-4xl mb-3">⚠️</div>
+              <div className="text-yellow-400 font-bold text-lg mb-2">Configuration Error</div>
+              <div className="text-gray-300 text-sm leading-relaxed">Timestamp is required when using historical data sources.</div>
+              <div className="mt-2 text-xs text-gray-400">Please add &time=TIMESTAMP to the URL</div>
+            </div>
+          </div>
+        ) : apiError ? (
           <div className="bg-[#171e1f] text-white rounded-md p-6 shadow-lg border-2 border-red-500" style={{ width: '420px', minHeight: '96px' }}>
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="text-4xl mb-3">⚠️</div>
