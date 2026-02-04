@@ -125,12 +125,12 @@ export default function Page() {
     }
 
     // Validate timestamp is set if Stats+Graph widget uses historical data
-    if (widgetTypeOption === "6" && (statsSource === "time" || graphSource === "time")) {
-      if (timestampOption !== "custom" || !selectedTimestamp || selectedTimestamp.trim() === "") {
-        toast.error("Please select a custom timestamp when using historical data for Stats+Graph widget");
-        return;
-      }
-    }
+    // if (widgetTypeOption === "6" && (statsSource === "time" || graphSource === "time")) {
+    //   if (timestampOption !== "custom" || !selectedTimestamp || selectedTimestamp.trim() === "") {
+    //     toast.error("Please select a custom timestamp when using historical data for Stats+Graph widget");
+    //     return;
+    //   }
+    // }
 
     setIsUpdating(true); // Set loading state
 
@@ -213,19 +213,19 @@ export default function Page() {
     
     // Stats+Graph widget uses a different route
     let url;
-    if (widgetTypeOption === "6") {
-      url = `${baseUrl}/widget/combinated?player=${encodeURIComponent(playerName)}&opacity=${opacity}&bgColor=${encodeURIComponent(bgColor)}`;
-    } else {
+    // if (widgetTypeOption === "6") {
+    //   url = `${baseUrl}/widget/combinated?player=${encodeURIComponent(playerName)}&opacity=${opacity}&bgColor=${encodeURIComponent(bgColor)}`;
+    // } else {
       url = `${baseUrl}/widget/${encodeURIComponent(timestamp)}?widgetType=${encodeURIComponent(widgetTypeOption)}&player=${encodeURIComponent(playerName)}&opacity=${opacity}&bgColor=${encodeURIComponent(bgColor)}`;
-    }
+    // }
     
     // Add showTimer parameter for default widget, graph widget, and stats+graph widget
-    if (widgetTypeOption === "1" || widgetTypeOption === "4" || widgetTypeOption === "6") {
+    if (widgetTypeOption === "1" || widgetTypeOption === "4" /* || widgetTypeOption === "6" */) {
       url += `&showTimer=${showTimer}`;
     }
     
     // Add fontFamily parameter for widgets 1, 2, 4, and 6
-    if (widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4" || widgetTypeOption === "6") {
+    if (widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4" /* || widgetTypeOption === "6" */) {
       url += `&fontFamily=${encodeURIComponent(fontFamily)}`;
     }
     
@@ -262,13 +262,13 @@ export default function Page() {
     }
     
     // Add stats+graph widget configuration
-    if (widgetTypeOption === "6") {
-      url += `&statsSource=${statsSource}&graphSource=${graphSource}`;
-      // Add timestamp if either source uses historical data
-      if ((statsSource === "time" || graphSource === "time") && selectedTimestamp) {
-        url += `&time=${selectedTimestamp}`;
-      }
-    }
+    // if (widgetTypeOption === "6") {
+    //   url += `&statsSource=${statsSource}&graphSource=${graphSource}`;
+    //   // Add timestamp if either source uses historical data
+    //   if ((statsSource === "time" || graphSource === "time") && selectedTimestamp) {
+    //     url += `&time=${selectedTimestamp}`;
+    //   }
+    // }
     
     // Apply canvas and graph size changes (only when Generate/Update pressed)
     setAppliedCanvasWidth(canvasWidth);
@@ -302,8 +302,8 @@ export default function Page() {
   };
 
   // Recommend sizes based on selected widget and applied dimensions
-  const recommendedWidth = widgetTypeOption === "3" ? appliedCanvasWidth : widgetTypeOption === "4" ? 320 : widgetTypeOption === "2" ? 130 : widgetTypeOption === "5" ? 320 : widgetTypeOption === "6" ? 420 : 300;
-  const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? 136 : widgetTypeOption === "2" ? 96 : widgetTypeOption === "5" ? 176 : widgetTypeOption === "6" ? 96 : 100;
+  const recommendedWidth = widgetTypeOption === "3" ? appliedCanvasWidth : widgetTypeOption === "4" ? 320 : widgetTypeOption === "2" ? 130 : widgetTypeOption === "5" ? 320 /* : widgetTypeOption === "6" ? 420 */ : 300;
+  const recommendedHeight = widgetTypeOption === "3" ? appliedCanvasHeight : widgetTypeOption === "4" ? 136 : widgetTypeOption === "2" ? 96 : widgetTypeOption === "5" ? 176 /* : widgetTypeOption === "6" ? 96 */ : 100;
 
   return (
     <>
@@ -400,7 +400,7 @@ export default function Page() {
           <option value="3">Customizable Widget (Drag & Drop)</option>
           <option value="4">Graph Widget</option>
           <option value="5">Carousel (Multiple Widgets)</option>
-          <option value="6">Stats + Graph Widget</option>
+          {/* <option value="6">Stats + Graph Widget</option> */}
         </select>
       </div>
       
@@ -462,7 +462,7 @@ export default function Page() {
               </div>
             </div>
             
-            {(widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4" || widgetTypeOption === "6") && (
+            {(widgetTypeOption === "1" || widgetTypeOption === "2" || widgetTypeOption === "4" /* || widgetTypeOption === "6" */) && (
               <div>
                 <label className="block text-sm font-medium mb-2">Font Family</label>
                 <select
@@ -734,7 +734,7 @@ export default function Page() {
         </div>
       )}
       
-      {widgetTypeOption === "6" && (
+      {/* {widgetTypeOption === "6" && (
         <div className="mb-4 p-4 border border-gray-600 rounded-md w-full md:w-1/2">
           <h3 className="text-lg font-bold mb-3">Stats + Graph Configuration</h3>
           <p className="text-sm text-gray-400 mb-4">
@@ -776,7 +776,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
       
       {/* Generate Widget button - commented out for auto-preview */}
       {/* <button
@@ -806,8 +806,8 @@ export default function Page() {
                   src={widgetUrl}
                   className="rounded-md"
                     style={{ 
-                    width: widgetTypeOption === "3" ? `${appliedCanvasWidth}px` : widgetTypeOption === "4" ? `${appliedGraphWidth}px` : widgetTypeOption === "5" ? '320px' : widgetTypeOption === "6" ? '420px' : '100%',
-                    height: widgetTypeOption === "3" ? `${appliedCanvasHeight}px` : widgetTypeOption === "4" ? `${appliedGraphHeight + 40}px` : widgetTypeOption === "5" ? '176px' : widgetTypeOption === "6" ? '96px' : '6.0rem',
+                    width: widgetTypeOption === "3" ? `${appliedCanvasWidth}px` : widgetTypeOption === "4" ? `${appliedGraphWidth}px` : widgetTypeOption === "5" ? '320px' /* : widgetTypeOption === "6" ? '420px' */ : '100%',
+                    height: widgetTypeOption === "3" ? `${appliedCanvasHeight}px` : widgetTypeOption === "4" ? `${appliedGraphHeight + 40}px` : widgetTypeOption === "5" ? '176px' /* : widgetTypeOption === "6" ? '96px' */ : '6.0rem',
                     overflow: 'hidden' 
                   }}
                   title="Widget Preview"
